@@ -9,7 +9,7 @@ data class ApplicationState(val running: Boolean = true, val initialized: Boolea
 
 fun main() {
     val env = Environment()
-    val applicationState = ApplicationState();
+    val applicationState = ApplicationState()
     val applicationServer = embeddedServer(Netty, env.applicationPort) {
         routing { registerNaisApi(readynessCheck = { true }, livenessCheck = { applicationState.running } ) }
     }

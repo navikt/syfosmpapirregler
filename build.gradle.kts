@@ -5,15 +5,20 @@ val ktorVersion = "1.2.3"
 val prometheusVersion = "0.5.0"
 val spekVersion = "2.0.5"
 val kluentVersion = "1.39"
+val logbackVersion = "1.2.3"
+val logstashEncoderVersion = "5.1"
 
 plugins {
+    java
     kotlin("jvm") version "1.3.41"
+    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 group = "no.nav.syfo"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
+    maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://kotlin.bintray.com/kotlinx")
     mavenCentral()
@@ -21,11 +26,16 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation ("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
+
+
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
@@ -41,6 +51,19 @@ dependencies {
 
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks {
+    withType<Jar> {
+        manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
+    }
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    withType<Test> {
+        useJUnitPlatform {
+            includeEngines("spek2")
+        }
+        testLogging {
+            showStandardStreams = true
+        }
+    }
 }
