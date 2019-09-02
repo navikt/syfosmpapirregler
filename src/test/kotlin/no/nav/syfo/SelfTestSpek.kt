@@ -6,16 +6,17 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import no.nav.syfo.api.registerNaisApi
+import no.nav.syfo.application.ApplicationState
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 object SelfTestSpek : Spek({
-    val applicationState = ApplicationState();
+    val applicationState = ApplicationState()
     describe("Successfull liveness and readyness tests") {
         with(TestApplicationEngine()) {
             start()
-            application.routing { registerNaisApi( readynessCheck = {true}, livenessCheck = {applicationState.running}) }
+            application.routing { registerNaisApi(readynessCheck = { true }, livenessCheck = { applicationState.running }) }
 
             it("Returns ok on is_alive") {
                 with(handleRequest(HttpMethod.Get, "/is_alive")) {
@@ -34,7 +35,7 @@ object SelfTestSpek : Spek({
     describe("Unsuccessful liveness and readyness") {
         with(TestApplicationEngine()) {
             start()
-            application.routing { registerNaisApi(readynessCheck = {false}, livenessCheck = {false}) }
+            application.routing { registerNaisApi(readynessCheck = { false }, livenessCheck = { false }) }
 
             it("Returns internal server error when liveness check fails") {
                 with(handleRequest(HttpMethod.Get, "/is_alive")) {
