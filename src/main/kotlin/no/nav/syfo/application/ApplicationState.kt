@@ -1,3 +1,3 @@
 package no.nav.syfo.application
 
-data class ApplicationState(var running: Boolean = true, var initialized: Boolean = false)
+data class ApplicationState(var running: Boolean = false, var initialized: Boolean = true)

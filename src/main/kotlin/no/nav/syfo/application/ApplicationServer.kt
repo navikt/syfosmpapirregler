@@ -18,7 +18,7 @@ class ApplicationServer(private val env: Environment, private val jwkProvider: J
         val applicationServer = embeddedServer(Netty, env.applicationPort) {
             setupAuth(env, jwkProvider)
             routing {
-                registerNaisApi(readynessCheck = { applicationState.initialized }, livenessCheck = { applicationState.running })
+                registerNaisApi(applicationState)
                 route("/api") {
                     authenticate {
                         registerPapirsykemeldingsRegler(PapirsykemeldingRegelService())
@@ -27,5 +27,6 @@ class ApplicationServer(private val env: Environment, private val jwkProvider: J
             }
         }
         applicationServer.start(false)
+        applicationState.running = true
     }
 }
