@@ -7,7 +7,8 @@ val spekVersion = "2.0.6"
 val kluentVersion = "1.39"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
-
+val mockkVersion = "1.9.3"
+val nimbusdsVersion = "7.5.1"
 plugins {
     java
     kotlin("jvm") version "1.3.41"
@@ -41,8 +42,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    testImplementation ("io.mockk:mockk:1.9.3")
-    testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
+    testImplementation ("io.mockk:mockk:$mockkVersion")
+    testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testRuntimeOnly("org.spekframework.spek2:spek-runtime-jvm:$spekVersion") {
