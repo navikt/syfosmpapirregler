@@ -12,11 +12,14 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 object SelfTestSpek : Spek({
-    val applicationState = ApplicationState()
+
     describe("Successfull liveness and readyness tests") {
         with(TestApplicationEngine()) {
             start()
-            application.routing { registerNaisApi(readynessCheck = { true }, livenessCheck = { applicationState.running }) }
+            val applicationState = ApplicationState()
+            applicationState.running = true
+            applicationState.initialized = true
+            application.routing { registerNaisApi(applicationState) }
 
             it("Returns ok on is_alive") {
                 with(handleRequest(HttpMethod.Get, "/is_alive")) {
@@ -35,7 +38,10 @@ object SelfTestSpek : Spek({
     describe("Unsuccessful liveness and readyness") {
         with(TestApplicationEngine()) {
             start()
-            application.routing { registerNaisApi(readynessCheck = { false }, livenessCheck = { false }) }
+            val applicationState = ApplicationState()
+            applicationState.initialized = false
+            applicationState.running = false
+            application.routing { registerNaisApi(applicationState) }
 
             it("Returns internal server error when liveness check fails") {
                 with(handleRequest(HttpMethod.Get, "/is_alive")) {
