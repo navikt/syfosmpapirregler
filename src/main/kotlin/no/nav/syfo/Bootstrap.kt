@@ -1,17 +1,17 @@
 package no.nav.syfo
 
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import no.nav.syfo.api.registerNaisApi
-
-data class ApplicationState(val running: Boolean = true, val initialized: Boolean = false)
+import com.auth0.jwk.JwkProviderBuilder
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import no.nav.syfo.application.ApplicationServer
 
 fun main() {
     val env = Environment()
-    val applicationState = ApplicationState()
-    val applicationServer = embeddedServer(Netty, env.applicationPort) {
-        routing { registerNaisApi(readynessCheck = { true }, livenessCheck = { applicationState.running } ) }
-    }
-    applicationServer.start(true)
+    val jwkProvider = JwkProviderBuilder(URL(env.jwkKeysUrl))
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
+
+    val applicationServer = ApplicationServer(env, jwkProvider)
+    applicationServer.start()
 }

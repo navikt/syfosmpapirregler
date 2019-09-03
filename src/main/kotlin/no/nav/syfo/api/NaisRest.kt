@@ -9,10 +9,12 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
+import no.nav.syfo.application.ApplicationState
 
 fun Routing.registerNaisApi(
-    readynessCheck: () -> Boolean,
-    livenessCheck: () -> Boolean = { true },
+    applicationState: ApplicationState,
+    readynessCheck: () -> Boolean = { applicationState.running },
+    livenessCheck: () -> Boolean = { applicationState.initialized },
     collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 ) {
     get("/is_alive") {
