@@ -12,5 +12,10 @@ data class Environment(
         .map { it.trim() }
 )
 
+data class VaultCredentials(
+    val serviceuserUsername: String,
+    val serviceuserPassword: String
+)
+
 fun getEnvVar(varName: String, defaultValue: String? = null) =
     System.getenv(varName) ?: defaultValue ?: throw RuntimeException("Missing required variable \"$varName\"")
