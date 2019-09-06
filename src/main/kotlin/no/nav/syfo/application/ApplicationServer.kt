@@ -1,7 +1,12 @@
 package no.nav.syfo.application
 
 import com.auth0.jwk.JwkProvider
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.application.install
 import io.ktor.auth.authenticate
+import io.ktor.features.ContentNegotiation
+import io.ktor.jackson.jackson
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -23,6 +28,12 @@ class ApplicationServer(private val env: Environment, private val jwkProvider: J
                     authenticate {
                         registerPapirsykemeldingsRegler(PapirsykemeldingRegelService())
                     }
+                }
+            }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                    registerKotlinModule()
                 }
             }
         }
