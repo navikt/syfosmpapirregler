@@ -45,7 +45,10 @@ dependencies {
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
+    implementation ("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
+    implementation ("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
+    implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
+    implementation ("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
