@@ -20,7 +20,7 @@ enum class ValideringRuleChain(
     @Description("Hele sykmeldingsperioden er før bruker har fylt 13 år. Pensjonsopptjening kan starte fra 13 år.")
     PASIENT_YNGRE_ENN_13(
             1101,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
             "Pasienten er under 13 år. Sykmelding kan ikke benyttes.", { (healthInformation, metadata) ->
         healthInformation.perioder.sortedTOMDate().last() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
@@ -29,7 +29,7 @@ enum class ValideringRuleChain(
     @Description("Hele sykmeldingsperioden er etter at bruker har fylt 70 år. Dersom bruker fyller 70 år i perioden skal sykmelding gå gjennom på vanlig måte.")
     PASIENT_ELDRE_ENN_70(
             1102,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Sykmelding kan ikke benyttes etter at du har fylt 70 år",
             "Pasienten er over 70 år. Sykmelding kan ikke benyttes.", { (healthInformation, metadata) ->
         healthInformation.perioder.sortedFOMDate().first() > extractBornDate(metadata.patientPersonNumber).plusYears(70)
@@ -38,7 +38,7 @@ enum class ValideringRuleChain(
     @Description("Ukjent houved diagnosekode type")
     UKJENT_DIAGNOSEKODETYPE(
             1137,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Den må ha en kjent diagnosekode.",
             "Ukjent diagnosekode er benyttet. ", { (healthInformation, _) ->
         healthInformation.medisinskVurdering.hovedDiagnose != null &&
@@ -48,7 +48,7 @@ enum class ValideringRuleChain(
     @Description("Hvis hoveddiagnose er Z-diagnose (ICPC-2), avvises meldingen.")
     ICPC_2_Z_DIAGNOSE(
             1132,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
             "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (healthInformation, _) ->
         healthInformation.medisinskVurdering.hovedDiagnose?.toICPC2()?.firstOrNull()?.code?.startsWith("Z") == true
@@ -57,7 +57,7 @@ enum class ValideringRuleChain(
     @Description("Hvis hoveddiagnose mangler og det ikke er angitt annen lovfestet fraværsgrunn, avvises meldingen")
     HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(
             1133,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
             "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
             { (healthInformation, _) ->
@@ -68,7 +68,7 @@ enum class ValideringRuleChain(
     @Description("Hvis kodeverk ikke er angitt eller korrekt for hoveddiagnose, avvises meldingen.")
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
             1540,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Den må ha riktig kode for hoveddiagnose.",
             "Kodeverk for hoveddiagnose er feil eller mangler.", { (healthInformation, _) ->
         healthInformation.medisinskVurdering.hovedDiagnose?.system !in arrayOf(Diagnosekoder.ICPC2_CODE, Diagnosekoder.ICD10_CODE) ||
@@ -100,7 +100,7 @@ enum class ValideringRuleChain(
     @Description("Organisasjonsnummeret som er oppgitt er ikke 9 tegn.")
     UGYLDIG_ORGNR_LENGDE(
             9999,
-            Status.INVALID,
+            Status.MANUAL_PROCESSING,
             "Den må ha riktig organisasjonsnummer.",
             "Feil format på organisasjonsnummer. Dette skal være 9 sifre..", { (_, metadata) ->
         metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9

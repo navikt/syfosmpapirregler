@@ -43,7 +43,7 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
     )
 }
 
-fun generateSykemelding(perioder: List<Periode>): Sykmelding {
+fun generateSykemelding(perioder: List<Periode> = generatePerioder()): Sykmelding {
     return Sykmelding("1",
         "1",
         "2",
