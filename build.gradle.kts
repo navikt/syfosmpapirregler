@@ -11,6 +11,7 @@ val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
 val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d"
 val jacksonVersion = "2.9.8"
+val jfairyVersion = "0.6.2"
 
 plugins {
     java
@@ -49,6 +50,7 @@ dependencies {
     implementation ("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
+    implementation ("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -57,6 +59,7 @@ dependencies {
     testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testImplementation("com.devskiller:jfairy:$jfairyVersion")
     testRuntimeOnly("org.spekframework.spek2:spek-runtime-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
