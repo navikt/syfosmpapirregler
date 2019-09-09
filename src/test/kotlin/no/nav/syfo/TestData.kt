@@ -7,6 +7,7 @@ import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.Arbeidsgiver
 import no.nav.syfo.model.AvsenderSystem
 import no.nav.syfo.model.Behandler
+import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.HarArbeidsgiver
 import no.nav.syfo.model.KontaktMedPasient
 import no.nav.syfo.model.MedisinskVurdering
@@ -17,9 +18,12 @@ import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.sm.Diagnosekoder
 
 val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
+
+fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
         fellesformat = "felles",
