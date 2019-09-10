@@ -1,7 +1,5 @@
 package no.nav.syfo.rules
 
-import java.time.LocalDate
-import no.nav.syfo.model.Periode
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
 import no.nav.syfo.sm.Diagnosekoder
@@ -22,8 +20,8 @@ enum class ValideringRuleChain(
             1101,
             Status.MANUAL_PROCESSING,
             "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
-            "Pasienten er under 13 år. Sykmelding kan ikke benyttes.", { (healthInformation, metadata) ->
-        healthInformation.perioder.sortedTOMDate().last() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
+            "Pasienten er under 13 år. Sykmelding kan ikke benyttes.", { (sykemelding, metadata) ->
+        sykemelding.perioder.sortedTOMDate().last() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
     }),
 
     @Description("Hele sykmeldingsperioden er etter at bruker har fylt 70 år. Dersom bruker fyller 70 år i perioden skal sykmelding gå gjennom på vanlig måte.")
@@ -31,8 +29,8 @@ enum class ValideringRuleChain(
             1102,
             Status.MANUAL_PROCESSING,
             "Sykmelding kan ikke benyttes etter at du har fylt 70 år",
-            "Pasienten er over 70 år. Sykmelding kan ikke benyttes.", { (healthInformation, metadata) ->
-        healthInformation.perioder.sortedFOMDate().first() > extractBornDate(metadata.patientPersonNumber).plusYears(70)
+            "Pasienten er over 70 år. Sykmelding kan ikke benyttes.", { (sykemelding, metadata) ->
+        sykemelding.perioder.sortedFOMDate().first() > extractBornDate(metadata.patientPersonNumber).plusYears(70)
     }),
 
     @Description("Ukjent houved diagnosekode type")
@@ -40,9 +38,9 @@ enum class ValideringRuleChain(
             1137,
             Status.MANUAL_PROCESSING,
             "Den må ha en kjent diagnosekode.",
-            "Ukjent diagnosekode er benyttet. ", { (healthInformation, _) ->
-        healthInformation.medisinskVurdering.hovedDiagnose != null &&
-            healthInformation.medisinskVurdering.hovedDiagnose?.system !in Diagnosekoder
+            "Ukjent diagnosekode er benyttet. ", { (sykemelding, _) ->
+        sykemelding.medisinskVurdering.hovedDiagnose != null &&
+            sykemelding.medisinskVurdering.hovedDiagnose?.system !in Diagnosekoder
     }),
 
     @Description("Hvis hoveddiagnose er Z-diagnose (ICPC-2), avvises meldingen.")
@@ -50,8 +48,8 @@ enum class ValideringRuleChain(
             1132,
             Status.MANUAL_PROCESSING,
             "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
-            "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (healthInformation, _) ->
-        healthInformation.medisinskVurdering.hovedDiagnose?.toICPC2()?.firstOrNull()?.code?.startsWith("Z") == true
+            "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (sykemelding, _) ->
+        sykemelding.medisinskVurdering.hovedDiagnose?.toICPC2()?.firstOrNull()?.code?.startsWith("Z") == true
     }),
 
     @Description("Hvis hoveddiagnose mangler og det ikke er angitt annen lovfestet fraværsgrunn, avvises meldingen")
@@ -60,9 +58,9 @@ enum class ValideringRuleChain(
             Status.MANUAL_PROCESSING,
             "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
             "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
-            { (healthInformation, _) ->
-        healthInformation.medisinskVurdering.annenFraversArsak == null &&
-                healthInformation.medisinskVurdering.hovedDiagnose == null
+            { (sykemelding, _) ->
+        sykemelding.medisinskVurdering.annenFraversArsak == null &&
+                sykemelding.medisinskVurdering.hovedDiagnose == null
     }),
 
     @Description("Hvis kodeverk ikke er angitt eller korrekt for hoveddiagnose, avvises meldingen.")
@@ -70,9 +68,9 @@ enum class ValideringRuleChain(
             1540,
             Status.MANUAL_PROCESSING,
             "Den må ha riktig kode for hoveddiagnose.",
-            "Kodeverk for hoveddiagnose er feil eller mangler.", { (healthInformation, _) ->
-        healthInformation.medisinskVurdering.hovedDiagnose?.system !in arrayOf(Diagnosekoder.ICPC2_CODE, Diagnosekoder.ICD10_CODE) ||
-                healthInformation.medisinskVurdering.hovedDiagnose?.let { diagnose ->
+            "Kodeverk for hoveddiagnose er feil eller mangler.", { (sykemelding, _) ->
+        sykemelding.medisinskVurdering.hovedDiagnose?.system !in arrayOf(Diagnosekoder.ICPC2_CODE, Diagnosekoder.ICD10_CODE) ||
+                sykemelding.medisinskVurdering.hovedDiagnose?.let { diagnose ->
             if (diagnose.isICPC2()) {
                 Diagnosekoder.icpc2.containsKey(diagnose.kode)
             } else {
@@ -87,8 +85,8 @@ enum class ValideringRuleChain(
     UGYLDIG_KODEVERK_FOR_BIDIAGNOSE(
             1541,
             Status.MANUAL_PROCESSING, "Det er feil i koden for bidiagnosen.",
-            "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen.", { (healthInformation, _) ->
-        !healthInformation.medisinskVurdering.biDiagnoser.all { diagnose ->
+            "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen.", { (sykemelding, _) ->
+        !sykemelding.medisinskVurdering.biDiagnoser.all { diagnose ->
             if (diagnose.isICPC2()) {
                 Diagnosekoder.icpc2.containsKey(diagnose.kode)
             } else {
@@ -106,9 +104,3 @@ enum class ValideringRuleChain(
         metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9
     }),
 }
-
-fun List<Periode>.sortedFOMDate(): List<LocalDate> =
-    map { it.fom }.sorted()
-
-fun List<Periode>.sortedTOMDate(): List<LocalDate> =
-    map { it.tom }.sorted()
