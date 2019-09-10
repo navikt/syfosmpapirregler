@@ -4,10 +4,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import no.nav.syfo.model.Adresse
+import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.Arbeidsgiver
 import no.nav.syfo.model.AvsenderSystem
 import no.nav.syfo.model.Behandler
 import no.nav.syfo.model.Diagnose
+import no.nav.syfo.model.Gradert
 import no.nav.syfo.model.HarArbeidsgiver
 import no.nav.syfo.model.KontaktMedPasient
 import no.nav.syfo.model.MedisinskVurdering
@@ -43,7 +45,10 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
     )
 }
 
-fun generateSykemelding(perioder: List<Periode> = generatePerioder()): Sykmelding {
+fun generateSykemelding(
+    perioder: List<Periode> = generatePerioder(),
+    tidspunkt: LocalDateTime = behandletTidspunkt
+): Sykmelding {
     return Sykmelding("1",
         "1",
         "2",
@@ -59,7 +64,7 @@ fun generateSykemelding(perioder: List<Periode> = generatePerioder()): Sykmeldin
         null,
         null,
         generateKontaktMedPasient(),
-        behandletTidspunkt,
+        tidspunkt,
         generateBehandler(),
         AvsenderSystem("test", "1"),
         null,
@@ -79,6 +84,23 @@ fun generatePerioder(): List<Periode> {
         false
     ))
 }
+fun generatePeriode(
+    fom: LocalDate = LocalDate.now(),
+    tom: LocalDate = LocalDate.now().plusDays(10),
+    aktivitetIkkeMulig: AktivitetIkkeMulig? = null,
+    avventendeInnspillTilArbeidsgiver: String? = null,
+    behandlingsdager: Int? = null,
+    gradert: Gradert? = null,
+    reisetilskudd: Boolean = false
+) = Periode(
+    fom = fom,
+    tom = tom,
+    aktivitetIkkeMulig = aktivitetIkkeMulig,
+    avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
+    behandlingsdager = behandlingsdager,
+    gradert = gradert,
+    reisetilskudd = reisetilskudd
+)
 
 fun generateBehandler(): Behandler {
     return Behandler("test", null, "Tester", "1",
@@ -124,3 +146,11 @@ fun getInvalidResult(): ValidationResult {
                 "Ingen perioder registrert")
         ))
 }
+
+fun generateGradert(
+    reisetilskudd: Boolean = false,
+    grad: Int = 50
+) = Gradert(
+    reisetilskudd = reisetilskudd,
+    grad = grad
+)

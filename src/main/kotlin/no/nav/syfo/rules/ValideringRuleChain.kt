@@ -1,7 +1,5 @@
 package no.nav.syfo.rules
 
-import java.time.LocalDate
-import no.nav.syfo.model.Periode
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
 import no.nav.syfo.sm.Diagnosekoder
@@ -106,9 +104,3 @@ enum class ValideringRuleChain(
         metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9
     }),
 }
-
-fun List<Periode>.sortedFOMDate(): List<LocalDate> =
-    map { it.fom }.sorted()
-
-fun List<Periode>.sortedTOMDate(): List<LocalDate> =
-    map { it.tom }.sorted()
