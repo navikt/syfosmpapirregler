@@ -13,71 +13,71 @@ import org.spekframework.spek2.style.specification.describe
 
 object PeriodLogicRuleChainSpek : Spek({
     fun ruleData(
-        healthInformation: Sykmelding,
+        sykemelding: Sykmelding,
         receivedDate: LocalDateTime = LocalDateTime.now(),
         signatureDate: LocalDateTime = LocalDateTime.now(),
         patientPersonNumber: String = "1234567891",
         tssid: String? = "1314445"
-    ): RuleData<RuleMetadata> = RuleData(healthInformation, RuleMetadata(signatureDate, receivedDate, patientPersonNumber, "1", "123456789", tssid))
+    ): RuleData<RuleMetadata> = RuleData(sykemelding, RuleMetadata(signatureDate, receivedDate, patientPersonNumber, "1", "123456789", tssid))
 
     describe("Testing validation rules and checking the rule outcomes") {
 
         it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should trigger rule") {
-            val healthInformation = generateSykemelding(tidspunkt = LocalDateTime.now())
+            val sykemelding = generateSykemelding(tidspunkt = LocalDateTime.now())
 
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(healthInformation, signatureDate = LocalDateTime.now().minusDays(2))) shouldEqual true
+            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusDays(2))) shouldEqual true
         }
 
         it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should trigger rule") {
-            val healthInformation = generateSykemelding(tidspunkt = LocalDateTime.now())
+            val sykemelding = generateSykemelding(tidspunkt = LocalDateTime.now())
 
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(healthInformation, signatureDate = LocalDateTime.now().minusHours(4))) shouldEqual true
+            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusHours(4))) shouldEqual true
         }
 
         it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should NOT trigger rule") {
-            val healthInformation = generateSykemelding()
+            val sykemelding = generateSykemelding()
 
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(healthInformation, signatureDate = LocalDateTime.now().minusHours(3))) shouldEqual false
+            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusHours(3))) shouldEqual false
         }
 
         it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should NOT trigger rule") {
-            val healthInformation = generateSykemelding()
+            val sykemelding = generateSykemelding()
 
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule PERIODER_MANGLER, should trigger rule") {
-            val healthInformation = generateSykemelding(
+            val sykemelding = generateSykemelding(
                     perioder = listOf()
             )
 
-            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule PERIODER_MANGLER, should NOT trigger rule") {
-            val healthInformation = generateSykemelding()
+            val sykemelding = generateSykemelding()
 
-            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule FRADATO_ETTER_TILDATO, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(generatePeriode(fom = LocalDate.of(2018, 1, 9), tom = LocalDate.of(2018, 1, 7))))
+            val sykemelding = generateSykemelding(perioder = listOf(generatePeriode(fom = LocalDate.of(2018, 1, 9), tom = LocalDate.of(2018, 1, 7))))
 
-            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule FRADATO_ETTER_TILDATO, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2018, 1, 7),
                             tom = LocalDate.of(2018, 1, 9)
                     )))
 
-            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule OVERLAPPENDE_PERIODER, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2018, 1, 7),
                             tom = LocalDate.of(2018, 1, 9)
@@ -88,11 +88,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule OVERLAPPENDE_PERIODER, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2018, 1, 7),
                             tom = LocalDate.of(2018, 1, 9)
@@ -103,11 +103,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2018, 1, 1),
                             tom = LocalDate.of(2018, 1, 3)
@@ -126,11 +126,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule OPPHOLD_MELLOM_PERIODER, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2018, 1, 1),
                             tom = LocalDate.of(2018, 2, 1)
@@ -141,50 +141,50 @@ object PeriodLogicRuleChainSpek : Spek({
                             tom = LocalDate.of(2018, 5, 1)
                     )))
 
-            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should trigger rule") {
             val startDateTime = LocalDateTime.now().minusYears(3)
-            val healthInformation = generateSykemelding(
+            val sykemelding = generateSykemelding(
                     tidspunkt = startDateTime.minusDays(1),
                     perioder = listOf(generatePeriode(fom = LocalDate.now()))
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(
+            val sykemelding = generateSykemelding(
                 tidspunkt = LocalDateTime.now().minusYears(2)
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule FREMDATERT, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now().plusDays(31),
                             tom = LocalDate.now().plusDays(37)
                     )
             ))
 
-            PeriodLogicRuleChain.FREMDATERT(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.FREMDATERT(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule FREMDATERT, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now().plusDays(29),
                             tom = LocalDate.now().plusDays(31)
                     )))
 
-            PeriodLogicRuleChain.FREMDATERT(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.FREMDATERT(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule VARIGHET_OVER_ETT_AAR, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusYears(1)
@@ -193,11 +193,11 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now().minusDays(1)
             )
 
-            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule VARIGHET_OVER_ETT_AAR, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusYears(1)
@@ -206,26 +206,26 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule BEHANDLINGSDATO_ETTER_MOTTATTDATO, should trigger rule") {
-            val healthInformation = generateSykemelding(
+            val sykemelding = generateSykemelding(
                 tidspunkt = LocalDateTime.now().plusHours(3)
             )
 
-            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule BEHANDLINGSDATO_ETTER_MOTTATTDATO, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(
+            val sykemelding = generateSykemelding(
                 tidspunkt = LocalDateTime.now().plusHours(2)
             )
-            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(5),
@@ -238,22 +238,22 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(5)
                     )
             ))
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(5),
@@ -261,11 +261,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(5),
@@ -273,11 +273,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(17),
@@ -285,11 +285,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(16),
@@ -297,11 +297,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2019, 1, 7),
                             tom = LocalDate.of(2019, 1, 13),
@@ -309,11 +309,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.of(2019, 1, 7),
                             tom = LocalDate.of(2019, 1, 13),
@@ -321,11 +321,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now(),
@@ -333,11 +333,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now(),
@@ -345,11 +345,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(sykemelding)) shouldEqual false
         }
 
         it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now(),
@@ -357,11 +357,11 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(healthInformation)) shouldEqual true
+            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(sykemelding)) shouldEqual true
         }
 
         it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(perioder = listOf(
+            val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now(),
@@ -369,7 +369,7 @@ object PeriodLogicRuleChainSpek : Spek({
                     )
             ))
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(healthInformation)) shouldEqual false
+            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(sykemelding)) shouldEqual false
         }
     }
 })

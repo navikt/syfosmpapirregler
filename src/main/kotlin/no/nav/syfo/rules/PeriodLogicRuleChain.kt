@@ -50,9 +50,9 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Periodene må ikke overlappe hverandre.",
             "Hvis en eller flere perioder er overlappende avvises meldingen og hvilken periode det gjelder oppgis.",
-            { (healthInformation, _) ->
-        healthInformation.perioder.any { periodA ->
-            healthInformation.perioder
+            { (sykemelding, _) ->
+        sykemelding.perioder.any { periodA ->
+            sykemelding.perioder
                     .filter { periodB -> periodB != periodA }
                     .any { periodB ->
                         periodA.fom in periodB.range() || periodA.tom in periodB.range()
@@ -66,8 +66,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Det er opphold mellom sykmeldingsperiodene.",
             "Hvis det finnes opphold mellom perioder i sykmeldingen avvises meldingen.",
-            { (healthInformation, _) ->
-        val ranges = healthInformation.perioder
+            { (sykemelding, _) ->
+        val ranges = sykemelding.perioder
                 .sortedBy { it.fom }
                 .map { it.fom to it.tom }
 
@@ -84,8 +84,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Startdatoen er mer enn tre år tilbake.",
             "Sykmeldinges fom-dato er mer enn 3 år tilbake i tid.",
-            { (healthInformation, _) ->
-        healthInformation.perioder.sortedFOMDate().first().atStartOfDay().minusYears(3).isAfter(healthInformation.behandletTidspunkt)
+            { (sykemelding, _) ->
+        sykemelding.perioder.sortedFOMDate().first().atStartOfDay().minusYears(3).isAfter(sykemelding.behandletTidspunkt)
     }),
 
     @Description("Hvis sykmeldingen er fremdatert mer enn 30 dager etter konsultasjonsdato/signaturdato avvises meldingen.")
@@ -94,8 +94,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Sykmeldingen er datert mer enn 30 dager fram i tid.",
             "Hvis sykmeldingen er fremdatert mer enn 30 dager etter konsultasjonsdato/signaturdato avvises meldingen.",
-            { (healthInformation, ruleMetadata) ->
-        healthInformation.perioder.sortedFOMDate().first().atStartOfDay() > ruleMetadata.signatureDate.plusDays(30)
+            { (sykemelding, ruleMetadata) ->
+        sykemelding.perioder.sortedFOMDate().first().atStartOfDay() > ruleMetadata.signatureDate.plusDays(30)
     }),
 
     @Description("Hvis sykmeldingens sluttdato er mer enn ett år frem i tid, avvises meldingen.")
@@ -104,8 +104,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Den kan ikke ha en varighet på over ett år.",
             "Hvis sykmeldingens sluttdato er mer enn ett år frem i tid, avvises meldingen.",
-            { (healthInformation, _) ->
-        healthInformation.perioder.sortedTOMDate().last().atStartOfDay() > healthInformation.behandletTidspunkt.plusYears(1)
+            { (sykemelding, _) ->
+        sykemelding.perioder.sortedTOMDate().last().atStartOfDay() > sykemelding.behandletTidspunkt.plusYears(1)
     }),
 
     @Description("Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen")

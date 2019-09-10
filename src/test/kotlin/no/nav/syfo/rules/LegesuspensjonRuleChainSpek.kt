@@ -16,17 +16,17 @@ object LegesuspensjonRuleChainSpek : Spek({
 
     describe("Testing validation rules and checking the rule outcomes") {
         it("Should check rule BEHANDLER_SUSPENDERT, should trigger rule") {
-            val healthInformation = generateSykemelding(generatePerioder())
+            val sykemelding = generateSykemelding(generatePerioder())
             val suspended = true
 
-            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(healthInformation, suspended)) shouldEqual true
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldEqual true
         }
 
         it("Should check rule BEHANDLER_SUSPENDERT, should NOT trigger rule") {
-            val healthInformation = generateSykemelding(generatePerioder())
+            val sykemelding = generateSykemelding(generatePerioder())
             val suspended = false
 
-            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(healthInformation, suspended)) shouldEqual false
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldEqual false
         }
     }
 })
