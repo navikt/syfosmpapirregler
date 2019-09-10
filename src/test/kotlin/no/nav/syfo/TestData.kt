@@ -47,7 +47,9 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
 
 fun generateSykemelding(
     perioder: List<Periode> = generatePerioder(),
-    tidspunkt: LocalDateTime = behandletTidspunkt
+    tidspunkt: LocalDateTime = behandletTidspunkt,
+    signaturDateTime: LocalDateTime = signaturDato,
+    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient()
 ): Sykmelding {
     return Sykmelding("1",
         "1",
@@ -63,12 +65,12 @@ fun generateSykemelding(
         null,
         null,
         null,
-        generateKontaktMedPasient(),
+        kontaktMedPasient,
         tidspunkt,
         generateBehandler(),
         AvsenderSystem("test", "1"),
         null,
-        signaturDato,
+        signaturDateTime,
         null
         )
 }
@@ -111,8 +113,8 @@ fun generateAdresse(): Adresse {
     return Adresse(null, null, null, null, null)
 }
 
-fun generateKontaktMedPasient(): KontaktMedPasient {
-    return KontaktMedPasient(null, null)
+fun generateKontaktMedPasient(begrunnelseIkkeKontakt: String? = null, localDateTime: LocalDate = LocalDateTime.now().toLocalDate()): KontaktMedPasient {
+    return KontaktMedPasient(localDateTime, begrunnelseIkkeKontakt)
 }
 
 fun generatePrognose(): Prognose {
