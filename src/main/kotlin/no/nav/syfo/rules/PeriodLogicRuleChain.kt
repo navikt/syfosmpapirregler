@@ -114,8 +114,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Behandlingsdatoen må rettes.",
             "Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen",
-            { (healthInformation, ruleMetadata) ->
-        healthInformation.behandletTidspunkt > ruleMetadata.receivedDate.plusHours(2)
+            { (sykemelding, ruleMetadata) ->
+        sykemelding.behandletTidspunkt > ruleMetadata.receivedDate.plusHours(2)
     }),
 
     @Description("Hvis avventende sykmelding er funnet og det finnes en eller flere perioder")
@@ -124,9 +124,9 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "En avventende sykmelding kan bare inneholde én periode.",
             "Hvis avventende sykmelding er funnet og det finnes en eller flere perioder. ",
-            { (healthInformation, _) ->
-        val numberOfPendingPeriods = healthInformation.perioder.count { it.avventendeInnspillTilArbeidsgiver != null }
-        numberOfPendingPeriods != 0 && healthInformation.perioder.isNotEmpty()
+            { (sykemelding, _) ->
+        val numberOfPendingPeriods = sykemelding.perioder.count { it.avventendeInnspillTilArbeidsgiver != null }
+        numberOfPendingPeriods != 0 && sykemelding.perioder.isNotEmpty()
     }),
 
     @Description("Hvis innspill til arbeidsgiver om tilrettelegging i pkt 4.1.3 ikke er utfylt ved avventende sykmelding avvises meldingen")
@@ -135,8 +135,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "En avventende sykmelding forutsetter at du kan jobbe hvis arbeidsgiveren din legger til rette for det. Den som har sykmeldt deg har ikke foreslått hva arbeidsgiveren kan gjøre, noe som kreves for denne typen sykmelding.",
             "Hvis innspill til arbeidsgiver om tilrettelegging i pkt 4.1.3 ikke er utfylt ved avventende sykmelding avvises meldingen",
-            { (healthInformation, _) ->
-        healthInformation.perioder
+            { (sykemelding, _) ->
+        sykemelding.perioder
                 .any { it.avventendeInnspillTilArbeidsgiver != null && it.avventendeInnspillTilArbeidsgiver?.trim().isNullOrEmpty() }
     }),
 
@@ -146,8 +146,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "En avventende sykmelding kan bare gis for 16 dager.",
             "Hvis avventende sykmelding benyttes utover i arbeidsgiverperioden på 16 kalenderdager, avvises meldingen.",
-            { (healthInformation, _) ->
-        healthInformation.perioder
+            { (sykemelding, _) ->
+        sykemelding.perioder
                 .filter { it.avventendeInnspillTilArbeidsgiver != null }
                 .any { (it.fom..it.tom).daysBetween() > 16 }
     }),
@@ -158,8 +158,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Det er angitt for mange behandlingsdager. Det kan bare angis én behandlingsdag per uke.",
             "Hvis antall dager oppgitt for behandlingsdager periode er for høyt i forhold til periodens lengde avvises meldingen. Mer enn en dag per uke er for høyt. 1 dag per påbegynt uke.",
-            { (healthInformation, _) ->
-        healthInformation.perioder.any {
+            { (sykemelding, _) ->
+        sykemelding.perioder.any {
             it.behandlingsdager != null && it.behandlingsdager!! > it.range().startedWeeksBetween()
         }
     }),
@@ -170,8 +170,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Sykmeldingsgraden kan ikke være mindre enn 20 %.",
             "Hvis sykmeldingsgrad er mindre enn 20% for gradert sykmelding, avvises meldingen",
-            { (healthInformation, _) ->
-        healthInformation.perioder.any {
+            { (sykemelding, _) ->
+        sykemelding.perioder.any {
             it.gradert != null && it.gradert!!.grad < 20
         }
     }),
@@ -182,8 +182,8 @@ enum class PeriodLogicRuleChain(
             Status.MANUAL_PROCESSING,
             "Sykmeldingsgraden kan ikke være mer enn 99% fordi det er en gradert sykmelding.",
             "Hvis sykmeldingsgrad er høyere enn 99% for delvis sykmelding avvises meldingen",
-            { (healthInformation, _) ->
-        healthInformation.perioder.mapNotNull { it.gradert }.any { it.grad > 99 }
+            { (sykemelding, _) ->
+        sykemelding.perioder.mapNotNull { it.gradert }.any { it.grad > 99 }
     }),
 }
 
