@@ -51,7 +51,7 @@ dependencies {
     implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
-
+    implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
