@@ -13,12 +13,12 @@ import org.spekframework.spek2.style.specification.describe
 
 object SelfTestSpek : Spek({
 
-    describe("Successfull liveness and readyness tests") {
+    describe("Successfull alive and read tests") {
         with(TestApplicationEngine()) {
             start()
             val applicationState = ApplicationState()
-            applicationState.running = true
-            applicationState.initialized = true
+            applicationState.alive = true
+            applicationState.ready = true
             application.routing { registerNaisApi(applicationState) }
 
             it("Returns ok on is_alive") {
@@ -35,22 +35,22 @@ object SelfTestSpek : Spek({
             }
         }
     }
-    describe("Unsuccessful liveness and readyness") {
+    describe("Unsuccessful alive and ready") {
         with(TestApplicationEngine()) {
             start()
             val applicationState = ApplicationState()
-            applicationState.initialized = false
-            applicationState.running = false
+            applicationState.ready = false
+            applicationState.alive = false
             application.routing { registerNaisApi(applicationState) }
 
-            it("Returns internal server error when liveness check fails") {
+            it("Returns internal server error when alive check fails") {
                 with(handleRequest(HttpMethod.Get, "/is_alive")) {
                     response.status() shouldEqual HttpStatusCode.InternalServerError
                     response.content shouldEqual "I'm dead x_x"
                 }
             }
 
-            it("Returns internal server error when readyness check fails") {
+            it("Returns internal server error when ready check fails") {
                 with(handleRequest(HttpMethod.Get, "/is_ready")) {
                     response.status() shouldEqual HttpStatusCode.InternalServerError
                     response.content shouldEqual "Please wait! I'm not ready :("
