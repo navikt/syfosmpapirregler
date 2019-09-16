@@ -12,6 +12,7 @@ val nimbusdsVersion = "7.5.1"
 val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
+val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
 
 plugins {
     java
@@ -54,7 +55,9 @@ dependencies {
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+    implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
 
+    implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
     testImplementation ("io.mockk:mockk:$mockkVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
