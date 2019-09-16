@@ -12,10 +12,10 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import no.nav.syfo.Environment
-import no.nav.syfo.api.registerNaisApi
-import no.nav.syfo.api.registerPapirsykemeldingsRegler
-import no.nav.syfo.authentication.setupAuth
-import no.nav.syfo.service.PapirsykemeldingRegelService
+import no.nav.syfo.application.api.registerNaisApi
+import no.nav.syfo.application.authentication.setupAuth
+import no.nav.syfo.papirsykemelding.api.registerPapirsykemeldingsRegler
+import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 
 class ApplicationServer(private val env: Environment, private val jwkProvider: JwkProvider) {
     private val applicationState = ApplicationState()
