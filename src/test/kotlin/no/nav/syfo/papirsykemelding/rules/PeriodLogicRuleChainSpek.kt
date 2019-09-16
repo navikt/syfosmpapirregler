@@ -33,30 +33,6 @@ object PeriodLogicRuleChainSpek : Spek({
 
     describe("Testing validation rules and checking the rule outcomes") {
 
-        it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should trigger rule") {
-            val sykemelding = generateSykemelding(tidspunkt = LocalDateTime.now())
-
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusDays(2))) shouldEqual true
-        }
-
-        it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should trigger rule") {
-            val sykemelding = generateSykemelding(tidspunkt = LocalDateTime.now())
-
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusHours(4))) shouldEqual true
-        }
-
-        it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should NOT trigger rule") {
-            val sykemelding = generateSykemelding()
-
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding, signatureDate = LocalDateTime.now().minusHours(3))) shouldEqual false
-        }
-
-        it("Should check rule SIGNATURDATO_ETTER_MOTTATT_DATO, should NOT trigger rule") {
-            val sykemelding = generateSykemelding()
-
-            PeriodLogicRuleChain.SIGNATURDATO_ETTER_MOTTATT_DATO(ruleData(sykemelding)) shouldEqual false
-        }
-
         it("Should check rule PERIODER_MANGLER, should trigger rule") {
             val sykemelding = generateSykemelding(
                     perioder = listOf()

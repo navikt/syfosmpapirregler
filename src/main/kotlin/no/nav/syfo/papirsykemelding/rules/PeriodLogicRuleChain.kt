@@ -19,15 +19,6 @@ enum class PeriodLogicRuleChain(
     override val messageForSender: String,
     override val predicate: (RuleData<RuleMetadata>) -> Boolean
 ) : Rule<RuleData<RuleMetadata>> {
-    @Description("Behandlet dato (felt 12.1) er etter dato for mottak av sykmeldingen.")
-    SIGNATURDATO_ETTER_MOTTATT_DATO(
-            1123,
-            Status.MANUAL_PROCESSING,
-            "Den må ha riktig dato for behandlingen.",
-            "Behandlet dato (felt 12.1) er etter dato for mottak av sykmeldingen.",
-            { (sykmelding, ruleMetadata) ->
-                sykmelding.behandletTidspunkt > ruleMetadata.signatureDate.plusHours(3)
-    }),
 
     @Description("Hvis ingen perioder er oppgitt skal sykmeldingen avvises.")
     PERIODER_MANGLER(
