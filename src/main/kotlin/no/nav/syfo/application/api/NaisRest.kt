@@ -13,19 +13,19 @@ import no.nav.syfo.application.ApplicationState
 
 fun Routing.registerNaisApi(
     applicationState: ApplicationState,
-    readynessCheck: () -> Boolean = { applicationState.running },
-    livenessCheck: () -> Boolean = { applicationState.initialized },
+    aliveCheck: () -> Boolean = { applicationState.alive },
+    readyCheck: () -> Boolean = { applicationState.ready },
     collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 ) {
     get("/is_alive") {
-        if (livenessCheck()) {
+        if (aliveCheck()) {
             call.respondText("I'm alive! :)")
         } else {
             call.respondText("I'm dead x_x", status = HttpStatusCode.InternalServerError)
         }
     }
     get("/is_ready") {
-        if (readynessCheck()) {
+        if (readyCheck()) {
             call.respondText("I'm ready! :)")
         } else {
             call.respondText("Please wait! I'm not ready :(", status = HttpStatusCode.InternalServerError)

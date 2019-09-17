@@ -38,6 +38,6 @@ class ApplicationServer(private val env: Environment, private val jwkProvider: J
             }
         }
         applicationServer.start(false)
-        applicationState.running = true
+        applicationState.ready = true
     }
 }
