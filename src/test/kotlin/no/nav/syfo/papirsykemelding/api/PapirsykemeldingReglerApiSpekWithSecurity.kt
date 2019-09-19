@@ -36,7 +36,9 @@ object PapirsykemeldingReglerApiSpekWithSecurity : Spek({
         val environment = Environment(8080,
             jwtIssuer = "https://sts.issuer.net/myid",
             appIds = "2,3".split(","),
-            clientId = "1")
+            clientId = "1",
+            diskresjonskodeEndpointUrl = "",
+            securityTokenServiceURL = "")
         val path = "src/test/resources/jwkset.json"
         val uri = Path.of(path).toUri().toURL()
         val jwkProvider = JwkProviderBuilder(uri).build()
