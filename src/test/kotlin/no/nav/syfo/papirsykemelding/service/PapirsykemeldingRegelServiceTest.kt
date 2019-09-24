@@ -1,12 +1,16 @@
 package no.nav.syfo.papirsykemelding.service
 
+import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.prometheus.client.Counter
 import kotlinx.coroutines.runBlocking
-import no.nav.syfo.client.DiskresjonskodeService
+import no.nav.syfo.client.diskresjonskode.DiskresjonskodeService
+import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
+import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
+import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateReceivedSykemelding
 import no.nav.syfo.getDiskresjonskodeRule
@@ -16,12 +20,16 @@ import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@KtorExperimentalAPI
 class PapirsykemeldingRegelServiceTest : Spek({
 
     val ruleHitCounter = mockk<Counter>()
     val ruleHitCounterChild = mockk<Counter.Child>()
     val diskresjonskodeService = mockk<DiskresjonskodeService>()
-    val service = PapirsykemeldingRegelService(ruleHitCounter, diskresjonskodeService)
+    val legeSuspensjonsClient = mockk<LegeSuspensjonClient>()
+    val syketilfelleClient = mockk<SyketilfelleClient>()
+    val norskHelsenettClient = mockk<NorskHelsenettClient>()
+    val service = PapirsykemeldingRegelService(ruleHitCounter, diskresjonskodeService, legeSuspensjonsClient, syketilfelleClient, norskHelsenettClient)
 
     beforeEachTest {
         io.mockk.clearMocks(ruleHitCounter, ruleHitCounterChild)

@@ -1,4 +1,4 @@
-package no.nav.syfo.client
+package no.nav.syfo.client.legesuspensjon
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.accept
@@ -8,12 +8,16 @@ import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.syfo.VaultCredentials
+import no.nav.syfo.client.StsOidcClient
+import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import no.nav.syfo.helpers.retry
 
 @KtorExperimentalAPI
 class LegeSuspensjonClient(private val endpointUrl: String, private val credentials: VaultCredentials, private val stsClient: StsOidcClient, private val httpClient: HttpClient) {
 
-    suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry("lege_suspansjon") {
+    suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry("lege_suspansjon",
+        retryIntervals = arrayOf(500L, 1000L)) {
+
         httpClient.get<Suspendert>("$endpointUrl/api/v1/suspensjon/status") {
             accept(ContentType.Application.Json)
             val oidcToken = stsClient.oidcToken()
@@ -28,5 +32,3 @@ class LegeSuspensjonClient(private val endpointUrl: String, private val credenti
         }
     }
 }
-
-data class Suspendert(val suspendert: Boolean)

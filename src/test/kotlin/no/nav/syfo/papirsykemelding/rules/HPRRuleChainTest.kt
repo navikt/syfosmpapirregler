@@ -1,8 +1,8 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import no.nav.syfo.client.Behandler
-import no.nav.syfo.client.Godkjenning
-import no.nav.syfo.client.Kode
+import no.nav.syfo.client.norskhelsenett.Behandler
+import no.nav.syfo.client.norskhelsenett.Godkjenning
+import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.rules.RuleData
@@ -129,16 +129,47 @@ class HPRRuleChainTest : Spek({
 
 private fun getBehandler(
     autorisasjon: Kode = Kode(true, 7704, "1"),
-    helsepersonellkategori: Kode = Kode(aktiv = false, verdi = "LE", oid = 9060)
+    helsepersonellkategori: Kode = Kode(
+        aktiv = false,
+        verdi = "LE",
+        oid = 9060
+    )
 ) =
-    Behandler(listOf(Godkjenning(helsepersonellkategori, autorisasjon)))
+    Behandler(
+        listOf(
+            Godkjenning(
+                helsepersonellkategori,
+                autorisasjon
+            )
+        )
+    )
 
 private fun getRuleData(behandler: Behandler) = RuleData(generateSykemelding(), behandler)
 
 fun getGyldigBehandler(): Behandler {
-    return Behandler(listOf(Godkjenning(autorisasjon = Kode(true, 1, "LE"))))
+    return Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    true,
+                    1,
+                    "LE"
+                )
+            )
+        )
+    )
 }
 
 fun getUgyldigBehandler(): Behandler {
-    return Behandler(listOf(Godkjenning(autorisasjon = Kode(false, 2, "LE"))))
+    return Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    false,
+                    2,
+                    "LE"
+                )
+            )
+        )
+    )
 }

@@ -3,6 +3,7 @@ package no.nav.syfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.syfo.client.syketilfelle.model.Syketilfelle
 import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.Arbeidsgiver
@@ -164,3 +165,12 @@ fun generateGradert(
     reisetilskudd = reisetilskudd,
     grad = grad
 )
+
+fun generateSyketilfeller(): List<Syketilfelle> {
+    return listOf(generateSyketilfelle())
+}
+
+fun generateSyketilfelle(): Syketilfelle {
+    return Syketilfelle("123", "123", LocalDateTime.now(), "tags", "resosourceId",
+        LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1))
+}

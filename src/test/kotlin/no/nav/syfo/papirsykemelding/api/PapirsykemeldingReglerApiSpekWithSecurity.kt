@@ -28,7 +28,7 @@ import org.amshove.kluent.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-object PapirsykemeldingReglerApiSpekWithSecurity : Spek({
+class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
     io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
     fun withTestApplicationForApi(receiver: TestApplicationEngine, block: TestApplicationEngine.() -> Unit) {
@@ -38,7 +38,9 @@ object PapirsykemeldingReglerApiSpekWithSecurity : Spek({
             appIds = "2,3".split(","),
             clientId = "1",
             diskresjonskodeEndpointUrl = "",
-            securityTokenServiceURL = "")
+            securityTokenServiceURL = "",
+            helsenettproxyId = "",
+            aadAccessTokenUrl = "")
         val path = "src/test/resources/jwkset.json"
         val uri = Path.of(path).toUri().toURL()
         val jwkProvider = JwkProviderBuilder(uri).build()

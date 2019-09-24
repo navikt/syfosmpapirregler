@@ -1,6 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import no.nav.syfo.client.Behandler
+import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.rules.Description

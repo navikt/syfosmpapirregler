@@ -1,4 +1,4 @@
-package no.nav.syfo.client
+package no.nav.syfo.client.norskhelsenett
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
@@ -22,7 +22,7 @@ class NorskHelsenettClient(private val endpointUrl: String, private val accessTo
 
     suspend fun finnBehandler(behandlerFnr: String, msgId: String): Behandler? = retry(
         callName = "finnbehandler",
-        retryIntervals = arrayOf(500L, 1000L, 3000L, 5000L, 10000L)) {
+        retryIntervals = arrayOf(500L, 1000L)) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
         val httpResponse = httpClient.get<HttpResponse>("$endpointUrl/api/behandler") {
             accept(ContentType.Application.Json)
@@ -33,6 +33,7 @@ class NorskHelsenettClient(private val endpointUrl: String, private val accessTo
                 append("behandlerFnr", behandlerFnr)
             }
         }
+
         if (httpResponse.status == InternalServerError) {
             log.error("Syfohelsenettproxy svarte med feilmelding for msgId {}", msgId)
             throw IOException("Syfohelsenettproxy svarte med feilmelding for $msgId")

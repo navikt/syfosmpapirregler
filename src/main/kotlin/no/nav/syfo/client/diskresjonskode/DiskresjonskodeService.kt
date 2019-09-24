@@ -1,4 +1,4 @@
-package no.nav.syfo.client
+package no.nav.syfo.client.diskresjonskode
 
 import com.ctc.wstx.exc.WstxException
 import java.io.IOException
@@ -10,7 +10,7 @@ class DiskresjonskodeService(private val diskresjonskodePortType: Diskresjonskod
 
     suspend fun hentDiskresjonskode(ident: String): String = retry(
             callName = "hent_diskresjonskode",
-            retryIntervals = arrayOf(500L, 1000L, 3000L, 5000L, 10000L, 60000L),
+            retryIntervals = arrayOf(500L, 1000L),
             legalExceptions = *arrayOf(IOException::class, WstxException::class)
     ) {
         diskresjonskodePortType.hentDiskresjonskode(WSHentDiskresjonskodeRequest().withIdent(ident)).diskresjonskode

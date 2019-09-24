@@ -5,7 +5,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.application.metrics.RULE_HIT_STATUS_COUNTER
-import no.nav.syfo.client.DiskresjonskodeService
+import no.nav.syfo.client.diskresjonskode.DiskresjonskodeService
+import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
+import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
+import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
@@ -20,7 +23,10 @@ import org.slf4j.LoggerFactory
 
 class PapirsykemeldingRegelService(
     private val ruleHitStatusCounter: Counter = RULE_HIT_STATUS_COUNTER,
-    private val diskresjonskodeService: DiskresjonskodeService
+    private val diskresjonskodeService: DiskresjonskodeService,
+    private val legeSuspensjonClient: LegeSuspensjonClient,
+    private val syketilfelleClient: SyketilfelleClient,
+    private val norskHelsenettClient: NorskHelsenettClient
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
