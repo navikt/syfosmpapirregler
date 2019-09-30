@@ -12,6 +12,7 @@ val nimbusdsVersion = "7.5.1"
 val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
+val javaxJaxwsApiVersion = "2.2.1"
 val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
 
 plugins {
@@ -47,6 +48,7 @@ dependencies {
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
