@@ -20,6 +20,7 @@ import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.sm.Diagnosekoder
 
 val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
@@ -147,6 +148,13 @@ fun getInvalidResult(): ValidationResult {
                 "Ingen perioder registrert",
                 "Ingen perioder registrert")
         ))
+}
+
+fun getDiskresjonskodeRule(): ValidationResult {
+    return ValidationResult(Status.MANUAL_PROCESSING, listOf(RuleInfo(
+        PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.name,
+        PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender,
+        PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender)))
 }
 
 fun generateGradert(

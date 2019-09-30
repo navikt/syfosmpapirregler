@@ -7,6 +7,8 @@ data class Environment(
     val jwkKeysUrl: String = getEnvVar("JWKKEYS_URL", "https://login.microsoftonline.com/common/discovery/keys"),
     val clientId: String = getEnvVar("CLIENT_ID"),
     val jwtIssuer: String = getEnvVar("JWT_ISSUER"),
+    val diskresjonskodeEndpointUrl: String = getEnvVar("DISKRESJONSKODE_ENDPOINT_URL"),
+    val securityTokenServiceURL: String = getEnvVar("SECURITY_TOKEN_SERVICE_URL"),
     val appIds: List<String> = getEnvVar("ALLOWED_APP_IDS")
         .split(",")
         .map { it.trim() }
