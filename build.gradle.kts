@@ -13,6 +13,9 @@ val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
 val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
+val javaxJaxwsApiVersion = "2.2.1"
+val jaxwsToolsVersion = "2.3.1"
+val jaxbApiVersion = "2.4.0-b180830.0359"
 
 plugins {
     java
@@ -47,6 +50,7 @@ dependencies {
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
@@ -57,6 +61,11 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
     implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
+    implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
+
     testImplementation ("io.mockk:mockk:$mockkVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
