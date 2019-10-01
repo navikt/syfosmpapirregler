@@ -33,11 +33,11 @@ val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
-        fellesformat = "felles",
-        legekontorHerId = "1",
-        legekontorOrgName = "legekontor",
-        legekontorOrgNr = "123456789",
-        legekontorReshId = "123",
+        fellesformat = "",
+        legekontorHerId = null,
+        legekontorOrgName = "",
+        legekontorOrgNr = null,
+        legekontorReshId = null,
         mottattDato = LocalDateTime.of(2019, 1, 1, 0, 0),
         msgId = UUID.randomUUID().toString(),
         navLogId = UUID.randomUUID().toString(),

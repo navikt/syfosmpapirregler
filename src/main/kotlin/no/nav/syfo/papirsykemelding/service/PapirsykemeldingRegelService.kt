@@ -43,8 +43,7 @@ class PapirsykemeldingRegelService(
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
 
-    suspend fun validateSykemelding(receivedSykmelding: ReceivedSykmelding): ValidationResult = with(GlobalScope) {
-
+    suspend fun validateSykemelding(receivedSykmelding: ReceivedSykmelding): ValidationResult {
         val loggingMeta = LoggingMeta(
             mottakId = receivedSykmelding.navLogId,
             orgNr = receivedSykmelding.legekontorOrgNr,
