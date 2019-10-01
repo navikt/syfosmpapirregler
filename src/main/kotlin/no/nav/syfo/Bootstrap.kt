@@ -24,8 +24,9 @@ fun main() {
         .build()
 
     val credentials = getObjectMapper().readValue<VaultCredentials>(Paths.get(CREDENTIALS_PATH).toFile())
-    val httpClient = ClientFactory.createHttpClient(env)
-    val accessTokenService = AccessTokenService(AccessTokenClient(env.aadAccessTokenUrl, env.clientId, credentials.clientsecret, httpClient))
+    val httpClient = ClientFactory.createHttpClient()
+    val httpClientProxy = ClientFactory.createHttpClientProxy()
+    val accessTokenService = AccessTokenService(AccessTokenClient(env.aadAccessTokenUrl, env.clientId, credentials.clientsecret, httpClientProxy))
     val stsClient = ClientFactory.createStsOidcClient(credentials)
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)

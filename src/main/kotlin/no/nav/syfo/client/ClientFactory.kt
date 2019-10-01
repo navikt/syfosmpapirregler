@@ -6,6 +6,7 @@ import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.util.KtorExperimentalAPI
+import java.net.ProxySelector
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultCredentials
 import no.nav.syfo.accesstoken.service.AccessTokenService
@@ -16,6 +17,7 @@ import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
 import no.nav.syfo.ws.createPort
 import no.nav.tjeneste.pip.diskresjonskode.DiskresjonskodePortType
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 
 class ClientFactory {
     @KtorExperimentalAPI
@@ -42,14 +44,30 @@ class ClientFactory {
             return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword)
         }
 
-        fun createHttpClient(env: Environment): HttpClient {
+        fun createHttpClient(): HttpClient {
+            return HttpClient(Apache, getHttpClientConfig())
+        }
+
+        private fun getHttpClientConfig(): HttpClientConfig<ApacheEngineConfig>.() -> Unit {
             val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
                 install(JsonFeature) {
                     serializer = getSerializer()
                 }
                 expectSuccess = false
             }
-            return HttpClient(Apache, config)
+            return config
+        }
+
+        fun createHttpClientProxy(): HttpClient {
+            val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+                getHttpClientConfig()
+                engine {
+                    customizeClient {
+                        setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+                    }
+                }
+            }
+            return HttpClient(Apache, proxyConfig)
         }
 
         fun createNorskHelsenettClient(
