@@ -5,12 +5,15 @@ import no.nav.syfo.client.norskhelsenett.Godkjenning
 import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateSykemelding
+import no.nav.syfo.getGyldigBehandler
+import no.nav.syfo.getUgyldigBehandler
 import no.nav.syfo.rules.RuleData
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 class HPRRuleChainTest : Spek({
+
     describe("1402 Behandler er ikke gyldig i HPR på konsultasjonstidspunktet") {
         it("Should not trigger rule") {
             HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(
@@ -144,32 +147,4 @@ private fun getBehandler(
         )
     )
 
-private fun getRuleData(behandler: Behandler) = RuleData(generateSykemelding(), behandler)
-
-fun getGyldigBehandler(): Behandler {
-    return Behandler(
-        listOf(
-            Godkjenning(
-                autorisasjon = Kode(
-                    true,
-                    1,
-                    "LE"
-                )
-            )
-        )
-    )
-}
-
-fun getUgyldigBehandler(): Behandler {
-    return Behandler(
-        listOf(
-            Godkjenning(
-                autorisasjon = Kode(
-                    false,
-                    2,
-                    "LE"
-                )
-            )
-        )
-    )
-}
+private fun getRuleData(behandler: Behandler): RuleData<Behandler> = RuleData(generateSykemelding(), behandler)

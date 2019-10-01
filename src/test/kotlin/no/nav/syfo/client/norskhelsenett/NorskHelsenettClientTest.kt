@@ -25,7 +25,7 @@ import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-private val fnr = "26047792540"
+private val fnr = "12345647981"
 
 @InternalAPI
 @KtorExperimentalAPI

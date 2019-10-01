@@ -12,8 +12,10 @@ val nimbusdsVersion = "7.5.1"
 val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
-val javaxJaxwsApiVersion = "2.2.1"
 val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
+val javaxJaxwsApiVersion = "2.2.1"
+val jaxwsToolsVersion = "2.3.1"
+val jaxbApiVersion = "2.4.0-b180830.0359"
 
 plugins {
     java
@@ -45,6 +47,7 @@ dependencies {
     implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
@@ -55,11 +58,15 @@ dependencies {
     implementation ("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
     implementation ("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
     implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
+    implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
+
     testImplementation ("io.mockk:mockk:$mockkVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
@@ -83,6 +90,7 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
+
     withType<Test> {
         useJUnitPlatform {
             includeEngines("spek2")

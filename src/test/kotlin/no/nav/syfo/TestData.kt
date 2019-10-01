@@ -3,6 +3,8 @@ package no.nav.syfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.syfo.client.norskhelsenett.Godkjenning
+import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.client.syketilfelle.model.Syketilfelle
 import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.AktivitetIkkeMulig
@@ -21,6 +23,7 @@ import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.sm.Diagnosekoder
 
@@ -33,7 +36,7 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         fellesformat = "felles",
         legekontorHerId = "1",
         legekontorOrgName = "legekontor",
-        legekontorOrgNr = "12345",
+        legekontorOrgNr = "123456789",
         legekontorReshId = "123",
         mottattDato = LocalDateTime.of(2019, 1, 1, 0, 0),
         msgId = UUID.randomUUID().toString(),
@@ -81,7 +84,7 @@ fun generatePerioder(): List<Periode> {
     return listOf(Periode(
         LocalDate.of(2019, 1, 1),
         LocalDate.of(2019, 1, 4),
-        null,
+        AktivitetIkkeMulig(null, null),
         null,
         null,
         null,
@@ -129,7 +132,7 @@ fun generateArbeidsgiver(): Arbeidsgiver {
 
 fun generateMedisinskVurdering(): MedisinskVurdering {
     return MedisinskVurdering(
-        hovedDiagnose = null,
+        hovedDiagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose(),
         biDiagnoser = emptyList(),
         svangerskap = false,
         yrkesskadeDato = null,
@@ -173,4 +176,37 @@ fun generateSyketilfeller(): List<Syketilfelle> {
 fun generateSyketilfelle(): Syketilfelle {
     return Syketilfelle("123", "123", LocalDateTime.now(), "tags", "resosourceId",
         LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1))
+}
+
+fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
+    return no.nav.syfo.client.norskhelsenett.Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    true,
+                    7704,
+                    "17"
+                ),
+                helsepersonellkategori = Kode(
+                    true,
+                    7702,
+                    HelsepersonellKategori.LEGE.verdi
+                )
+            )
+        )
+    )
+}
+
+fun getUgyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
+    return no.nav.syfo.client.norskhelsenett.Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    false,
+                    2,
+                    "LE"
+                )
+            )
+        )
+    )
 }

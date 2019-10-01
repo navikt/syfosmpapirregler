@@ -22,10 +22,17 @@ class ClientFactory {
     companion object {
         fun createDiskresjonsKodeService(env: Environment, credentials: VaultCredentials): DiskresjonskodeService {
             val diskresjonskodePortType: DiskresjonskodePortType = createPort(env.diskresjonskodeEndpointUrl) {
-                port { withSTS(credentials.serviceuserUsername, credentials.serviceuserPassword, env.securityTokenServiceURL) }
+                port {
+                    withSTS(
+                        credentials.serviceuserUsername,
+                        credentials.serviceuserPassword,
+                        env.securityTokenServiceURL
+                    )
+                }
             }
             return DiskresjonskodeService(diskresjonskodePortType)
         }
+
         fun createSyketilfelleClient(env: Environment): SyketilfelleClient {
             return createSyketilfelleClient(env)
         }
@@ -34,6 +41,7 @@ class ClientFactory {
         fun createStsOidcClient(credentials: VaultCredentials): StsOidcClient {
             return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword)
         }
+
         fun createHttpClient(env: Environment): HttpClient {
             val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
                 install(JsonFeature) {
@@ -44,8 +52,17 @@ class ClientFactory {
             return HttpClient(Apache, config)
         }
 
-        fun createNorskHelsenettClient(env: Environment, accessTokenService: AccessTokenService, httpClient: HttpClient): NorskHelsenettClient {
-            return NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenService, env.helsenettproxyId, httpClient)
+        fun createNorskHelsenettClient(
+            env: Environment,
+            accessTokenService: AccessTokenService,
+            httpClient: HttpClient
+        ): NorskHelsenettClient {
+            return NorskHelsenettClient(
+                env.norskHelsenettEndpointURL,
+                accessTokenService,
+                env.helsenettproxyId,
+                httpClient
+            )
         }
 
         fun createLegeSuspensjonClient(

@@ -46,7 +46,8 @@ enum class HPRRuleChain(
         1407,
         Status.MANUAL_PROCESSING,
         "Den som skrev sykmeldingen manglet autorisasjon.",
-        "Behandler finnes i HPR men er ikke lege, kiropraktor, manuellterapeut, fysioterapeut eller tannlege", { (_, behandler) ->
+        "Behandler finnes i HPR men er ikke lege, kiropraktor, manuellterapeut, fysioterapeut eller tannlege",
+        { (_, behandler) ->
             !behandler.godkjenninger.any {
                 it.helsepersonellkategori?.aktiv != null &&
                         it.autorisasjon?.aktiv == true && it.helsepersonellkategori.verdi != null &&
@@ -68,5 +69,6 @@ fun harAktivHelsepersonellAutorisasjonsSom(behandler: Behandler, helsepersonerVe
         godkjenning.helsepersonellkategori?.aktiv != null &&
                 godkjenning.autorisasjon?.aktiv == true && godkjenning.helsepersonellkategori.verdi != null &&
                 godkjenning.helsepersonellkategori.let {
-                    it.aktiv && it.verdi in helsepersonerVerdi }
+                    it.aktiv && it.verdi in helsepersonerVerdi
+                }
     }

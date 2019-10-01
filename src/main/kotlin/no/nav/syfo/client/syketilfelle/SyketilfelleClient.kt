@@ -12,11 +12,16 @@ import no.nav.syfo.client.syketilfelle.model.Syketilfelle
 import no.nav.syfo.helpers.retry
 
 @KtorExperimentalAPI
-class SyketilfelleClient(private val endpointUrl: String, private val stsClient: StsOidcClient, private val httpClient: HttpClient) {
+class SyketilfelleClient(
+    private val endpointUrl: String,
+    private val stsClient: StsOidcClient,
+    private val httpClient: HttpClient
+) {
 
     suspend fun fetchErNytttilfelle(syketilfelleList: List<Syketilfelle>, aktorId: String): Boolean = retry(
         "ernytttilfelle",
-        retryIntervals = arrayOf(500000L, 10000L)) {
+        retryIntervals = arrayOf(500L, 1000L)
+    ) {
         httpClient.post<Boolean>("$endpointUrl/oppfolgingstilfelle/ernytttilfelle/$aktorId") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
