@@ -60,7 +60,7 @@ class ClientFactory {
 
         fun createHttpClientProxy(): HttpClient {
             val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-                getHttpClientConfig()
+                getHttpClientConfig()()
                 engine {
                     customizeClient {
                         setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
