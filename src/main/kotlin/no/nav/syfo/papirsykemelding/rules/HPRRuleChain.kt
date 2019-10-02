@@ -6,6 +6,7 @@ import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.rules.Description
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.RuleData
+import no.nav.syfo.sm.toICPC2
 
 enum class HPRRuleChain(
     override val ruleId: Int?,
@@ -14,6 +15,27 @@ enum class HPRRuleChain(
     override val messageForSender: String,
     override val predicate: (RuleData<Behandler>) -> Boolean
 ) : Rule<RuleData<Behandler>> {
+
+    @Description("Hvis kiropraktor eller fysioterapeut med autorisasjon har angitt annen diagnose enn kapitel L (muskel og skjelettsykdommer)skal meldingen til manuell behandling")
+    BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
+        1143,
+        Status.MANUAL_PROCESSING,
+        "Behandler er kiropraktor eller fysioterapeut med autorisasjon har angitt annen diagnose enn kapitel L (muskel og skjelettsykdommer)",
+        "Behandler er kiropraktor eller fysioterapeut med autorisasjon har angitt annen diagnose enn kapitel L (muskel og skjelettsykdommer)",
+        { (sykmelding, behandler) ->
+            sykmelding.medisinskVurdering.hovedDiagnose?.toICPC2()?.firstOrNull()?.code?.startsWith("L") == false &&
+                    !harAktivHelsepersonellAutorisasjonsSom(
+                        behandler, listOf(
+                            HelsepersonellKategori.LEGE.verdi,
+                            HelsepersonellKategori.TANNLEGE.verdi
+                        )
+                    ) && harAktivHelsepersonellAutorisasjonsSom(
+                behandler, listOf(
+                    HelsepersonellKategori.KIROPRAKTOR.verdi,
+                    HelsepersonellKategori.FYSIOTERAPAEUT.verdi
+                )
+            )
+        }),
 
     @Description("Behandler er ikke gyldig i HPR på konsultasjonstidspunkt")
     BEHANDLER_IKKE_GYLDIG_I_HPR(
@@ -31,13 +53,13 @@ enum class HPRRuleChain(
         1403,
         Status.MANUAL_PROCESSING,
         "Den som skrev sykmeldingen manglet autorisasjon.",
-        "Behandler har ikke gyldig autorisasjon i HPR", { (_, behandler) ->
+        "Behandler har ikke til gyldig autorisasjon i HPR", { (_, behandler) ->
             !behandler.godkjenninger.any {
                 it.autorisasjon?.aktiv != null &&
                         it.autorisasjon.aktiv &&
                         it.autorisasjon.oid == 7704 &&
                         it.autorisasjon.verdi != null &&
-                        it.autorisasjon.verdi in arrayOf("1", "17", "4", "3", "2", "14", "18")
+                        it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
             }
         }),
 
@@ -61,6 +83,29 @@ enum class HPRRuleChain(
                             )
                         )
             }
+        }),
+
+    @Description("Hvis en sykmelding fra kiropraktor eller fysioterapeut overstiger 12 uker regnet fra første sykefraværsdag skal meldingen avvises")
+    BEHANDLER_MT_FT_KI_OVER_12_UKER(
+        1519,
+        Status.MANUAL_PROCESSING,
+        "Den som skrev sykmeldingen mangler autorisasjon.",
+        "Behandler er manuellterapeut/kiropraktor eller fysioterapeut overstiger 12 uker regnet fra første sykefraværsdag",
+        { (sykmelding, behandler) ->
+            sykmelding.perioder.any { (it.fom..it.tom).daysBetween() > 84 } &&
+                    !harAktivHelsepersonellAutorisasjonsSom(
+                        behandler, listOf(
+                            HelsepersonellKategori.LEGE.verdi,
+                            HelsepersonellKategori.TANNLEGE.verdi
+                        )
+                    ) &&
+                    harAktivHelsepersonellAutorisasjonsSom(
+                        behandler, listOf(
+                            HelsepersonellKategori.KIROPRAKTOR.verdi,
+                            HelsepersonellKategori.MANUELLTERAPEUT.verdi,
+                            HelsepersonellKategori.FYSIOTERAPAEUT.verdi
+                        )
+                    )
         }),
 }
 

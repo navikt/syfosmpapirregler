@@ -18,6 +18,8 @@ val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
 val javaxJaxwsApiVersion = "2.2.1"
 val jaxwsToolsVersion = "2.3.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
+val cxfVersion = "3.2.7"
+val commonsTextVersion = "1.4"
 
 plugins {
     java
@@ -50,6 +52,11 @@ dependencies {
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation ("org.apache.commons:commons-text:$commonsTextVersion")
+    implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")

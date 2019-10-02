@@ -1,18 +1,65 @@
 package no.nav.syfo.papirsykemelding.rules
 
+import java.time.LocalDate
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.Godkjenning
 import no.nav.syfo.client.norskhelsenett.Kode
+import no.nav.syfo.generatePeriode
 import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.getUgyldigBehandler
 import no.nav.syfo.rules.RuleData
+import no.nav.syfo.sm.Diagnosekoder
+import no.nav.syfo.toDiagnose
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 class HPRRuleChainTest : Spek({
+
+    describe("1143 BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L") {
+        it("Should not trigger rule") {
+            val behandler = getBehandler(
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    verdi = "KI",
+                    oid = 9060
+                )
+            )
+            HPRRuleChain.BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
+                RuleData(
+                    generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
+                        .filter { it.code.startsWith("L") }
+                        .findFirst()
+                        .get()
+                        .toDiagnose()),
+                    behandler
+                )
+            ) shouldEqual false
+        }
+
+        it("Should trigger rule") {
+            val behandler = getBehandler(
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    verdi = "FT",
+                    oid = 9060
+                )
+            )
+
+            HPRRuleChain.BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
+                RuleData(
+                    generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
+                        .filter { !it.code.startsWith("L") }
+                        .findFirst()
+                        .get()
+                        .toDiagnose()),
+                    behandler
+                )
+            ) shouldEqual true
+        }
+    }
 
     describe("1402 Behandler er ikke gyldig i HPR på konsultasjonstidspunktet") {
         it("Should not trigger rule") {
@@ -35,7 +82,7 @@ class HPRRuleChainTest : Spek({
 
     describe("1403 Behandler har ikke gyldig autorisasjon i HPR") {
         it("Should not trigger rule for kodeverdi") {
-            val validAuthorizations: List<String> = listOf("1", "17", "4", "3", "2", "14", "18")
+            val validAuthorizations: List<String> = listOf("1", "17", "4", "2", "14", "18")
             for (verdi in validAuthorizations) {
                 val behandler = getBehandler(autorisasjon = Kode(true, 7704, verdi))
                 HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
@@ -126,6 +173,57 @@ class HPRRuleChainTest : Spek({
                     behandler
                 )
             ) shouldEqual true
+        }
+    }
+
+    describe("1519 BEHANDLER_MT_FT_KI_OVER_12_UKER") {
+
+        it("Should not trigger rule when lege") {
+            val behandler = getBehandler(
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    verdi = "LE",
+                    oid = 9060
+                )
+            )
+            val fomDate = LocalDate.of(2019, 1, 1)
+            val sykemelding = generateSykemelding(listOf(generatePeriode(
+                fom = fomDate,
+                tom = fomDate.plusWeeks(12).plusDays(1)
+            )))
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+        }
+
+        it("Should not trigger rule") {
+            val behandler = getBehandler(
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    verdi = "KI",
+                    oid = 9060
+                )
+            )
+            val fomDate = LocalDate.of(2019, 1, 1)
+            val sykemelding = generateSykemelding(listOf(generatePeriode(
+                fom = fomDate,
+                tom = fomDate.plusWeeks(12)
+            )))
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+        }
+
+        it("Should trigger rule") {
+            val behandler = getBehandler(
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    verdi = "KI",
+                    oid = 9060
+                )
+            )
+            val fomDate = LocalDate.of(2019, 1, 1)
+            val sykemelding = generateSykemelding(listOf(generatePeriode(
+                fom = fomDate,
+                tom = fomDate.plusWeeks(12).plusDays(1)
+            )))
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual true
         }
     }
 })

@@ -13,10 +13,17 @@ import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import no.nav.syfo.helpers.retry
 
 @KtorExperimentalAPI
-class LegeSuspensjonClient(private val endpointUrl: String, private val credentials: VaultCredentials, private val stsClient: StsOidcClient, private val httpClient: HttpClient) {
+class LegeSuspensjonClient(
+    private val endpointUrl: String,
+    private val credentials: VaultCredentials,
+    private val stsClient: StsOidcClient,
+    private val httpClient: HttpClient
+) {
 
-    suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry("lege_suspansjon",
-        retryIntervals = arrayOf(500L, 1000L)) {
+    suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry(
+        "lege_suspansjon",
+        retryIntervals = arrayOf(500L, 1000L)
+    ) {
 
         httpClient.get<Suspendert>("$endpointUrl/api/v1/suspensjon/status") {
             accept(ContentType.Application.Json)

@@ -31,6 +31,7 @@ val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
 
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
+
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
         fellesformat = "",
@@ -54,12 +55,13 @@ fun generateSykemelding(
     perioder: List<Periode> = generatePerioder(),
     tidspunkt: LocalDateTime = behandletTidspunkt,
     signaturDateTime: LocalDateTime = signaturDato,
-    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient()
+    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
+    diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()
 ): Sykmelding {
     return Sykmelding("1",
         "1",
         "2",
-        generateMedisinskVurdering(),
+        generateMedisinskVurdering(diagnose = diagnose),
         false,
         generateArbeidsgiver(),
         perioder,
@@ -130,9 +132,9 @@ fun generateArbeidsgiver(): Arbeidsgiver {
     return Arbeidsgiver(HarArbeidsgiver.EN_ARBEIDSGIVER, null, null, null)
 }
 
-fun generateMedisinskVurdering(): MedisinskVurdering {
+fun generateMedisinskVurdering(diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()): MedisinskVurdering {
     return MedisinskVurdering(
-        hovedDiagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose(),
+        hovedDiagnose = diagnose,
         biDiagnoser = emptyList(),
         svangerskap = false,
         yrkesskadeDato = null,

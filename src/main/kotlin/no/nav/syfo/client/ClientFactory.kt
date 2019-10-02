@@ -35,7 +35,11 @@ class ClientFactory {
             return DiskresjonskodeService(diskresjonskodePortType)
         }
 
-        fun createSyketilfelleClient(env: Environment, oidcClient: StsOidcClient, httpClient: HttpClient): SyketilfelleClient {
+        fun createSyketilfelleClient(
+            env: Environment,
+            oidcClient: StsOidcClient,
+            httpClient: HttpClient
+        ): SyketilfelleClient {
             return SyketilfelleClient(env.syketilfelleEndpointURL, oidcClient, httpClient)
         }
 
