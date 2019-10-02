@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val coroutinesVersion = "1.2.2"
-val ktorVersion = "1.2.3"
+val coroutinesVersion = "1.3.2"
+val ktorVersion = "1.2.5"
 val prometheusVersion = "0.5.0"
 val spekVersion = "2.0.6"
 val kluentVersion = "1.39"
@@ -25,7 +25,7 @@ val javaxActivationVersion = "1.1.1"
 
 plugins {
     java
-    kotlin("jvm") version "1.3.41"
+    kotlin("jvm") version "1.3.50"
     id("com.github.johnrengelman.shadow") version "5.1.0"
     id("org.jmailen.kotlinter") version "2.1.0"
     id("com.diffplug.gradle.spotless") version "3.24.0"
