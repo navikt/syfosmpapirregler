@@ -17,7 +17,11 @@ import no.nav.syfo.application.authentication.setupAuth
 import no.nav.syfo.papirsykemelding.api.registerPapirsykemeldingsRegler
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 
-class ApplicationServer(private val env: Environment, private val jwkProvider: JwkProvider, private val papirsykemeldingRegelService: PapirsykemeldingRegelService) {
+class ApplicationServer(
+    private val env: Environment,
+    private val jwkProvider: JwkProvider,
+    private val papirsykemeldingRegelService: PapirsykemeldingRegelService
+) {
     private val applicationState = ApplicationState()
     fun start() {
         val applicationServer = embeddedServer(Netty, env.applicationPort) {

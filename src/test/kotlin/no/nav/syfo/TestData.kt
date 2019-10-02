@@ -3,6 +3,9 @@ package no.nav.syfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.syfo.client.norskhelsenett.Godkjenning
+import no.nav.syfo.client.norskhelsenett.Kode
+import no.nav.syfo.client.syketilfelle.model.Syketilfelle
 import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.Arbeidsgiver
@@ -20,6 +23,7 @@ import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.sm.Diagnosekoder
 
@@ -27,13 +31,14 @@ val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
 
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
+
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
-        fellesformat = "felles",
-        legekontorHerId = "1",
-        legekontorOrgName = "legekontor",
-        legekontorOrgNr = "12345",
-        legekontorReshId = "123",
+        fellesformat = "",
+        legekontorHerId = null,
+        legekontorOrgName = "",
+        legekontorOrgNr = null,
+        legekontorReshId = null,
         mottattDato = LocalDateTime.of(2019, 1, 1, 0, 0),
         msgId = UUID.randomUUID().toString(),
         navLogId = UUID.randomUUID().toString(),
@@ -50,12 +55,13 @@ fun generateSykemelding(
     perioder: List<Periode> = generatePerioder(),
     tidspunkt: LocalDateTime = behandletTidspunkt,
     signaturDateTime: LocalDateTime = signaturDato,
-    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient()
+    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
+    diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()
 ): Sykmelding {
     return Sykmelding("1",
         "1",
         "2",
-        generateMedisinskVurdering(),
+        generateMedisinskVurdering(diagnose = diagnose),
         false,
         generateArbeidsgiver(),
         perioder,
@@ -80,7 +86,7 @@ fun generatePerioder(): List<Periode> {
     return listOf(Periode(
         LocalDate.of(2019, 1, 1),
         LocalDate.of(2019, 1, 4),
-        null,
+        AktivitetIkkeMulig(null, null),
         null,
         null,
         null,
@@ -126,9 +132,9 @@ fun generateArbeidsgiver(): Arbeidsgiver {
     return Arbeidsgiver(HarArbeidsgiver.EN_ARBEIDSGIVER, null, null, null)
 }
 
-fun generateMedisinskVurdering(): MedisinskVurdering {
+fun generateMedisinskVurdering(diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()): MedisinskVurdering {
     return MedisinskVurdering(
-        hovedDiagnose = null,
+        hovedDiagnose = diagnose,
         biDiagnoser = emptyList(),
         svangerskap = false,
         yrkesskadeDato = null,
@@ -164,3 +170,45 @@ fun generateGradert(
     reisetilskudd = reisetilskudd,
     grad = grad
 )
+
+fun generateSyketilfeller(): List<Syketilfelle> {
+    return listOf(generateSyketilfelle())
+}
+
+fun generateSyketilfelle(): Syketilfelle {
+    return Syketilfelle("123", "123", LocalDateTime.now(), "tags", "resosourceId",
+        LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1))
+}
+
+fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
+    return no.nav.syfo.client.norskhelsenett.Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    true,
+                    7704,
+                    "17"
+                ),
+                helsepersonellkategori = Kode(
+                    true,
+                    7702,
+                    HelsepersonellKategori.LEGE.verdi
+                )
+            )
+        )
+    )
+}
+
+fun getUgyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
+    return no.nav.syfo.client.norskhelsenett.Behandler(
+        listOf(
+            Godkjenning(
+                autorisasjon = Kode(
+                    false,
+                    2,
+                    "LE"
+                )
+            )
+        )
+    )
+}

@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val coroutinesVersion = "1.2.2"
-val ktorVersion = "1.2.3"
+val coroutinesVersion = "1.3.2"
+val ktorVersion = "1.2.5"
 val prometheusVersion = "0.5.0"
 val spekVersion = "2.0.6"
 val kluentVersion = "1.39"
@@ -18,10 +18,14 @@ val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
 val javaxJaxwsApiVersion = "2.2.1"
 val jaxwsToolsVersion = "2.3.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
+val cxfVersion = "3.2.7"
+val commonsTextVersion = "1.4"
+val saajVersion = "1.4.0"
+val javaxActivationVersion = "1.1.1"
 
 plugins {
     java
-    kotlin("jvm") version "1.3.41"
+    kotlin("jvm") version "1.3.50"
     id("com.github.johnrengelman.shadow") version "5.1.0"
     id("org.jmailen.kotlinter") version "2.1.0"
     id("com.diffplug.gradle.spotless") version "3.24.0"
@@ -49,6 +53,12 @@ dependencies {
     implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation ("org.apache.commons:commons-text:$commonsTextVersion")
+    implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
     implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
@@ -63,10 +73,13 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
     implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
+    implementation("javax.activation:activation:$javaxActivationVersion")
+
     implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
+    implementation("com.sun.xml.messaging.saaj:saaj-impl:$saajVersion")
 
     testImplementation ("io.mockk:mockk:$mockkVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
@@ -91,12 +104,14 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
+
     withType<ShadowJar> {
         transform(ServiceFileTransformer::class.java) {
             setPath("META-INF/cxf")
             include("bus-extensions.txt")
         }
     }
+
     withType<Test> {
         useJUnitPlatform {
             includeEngines("spek2")

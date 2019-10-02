@@ -14,10 +14,10 @@ enum class PostDiskresjonskodeRuleChain(
 ) : Rule<RuleData<String>> {
     @Description("Pasient er registrert med sperrekode 6, sperret adresse, strengt fortrolig. Kode 6 overstyrer oppfølgingsregler. Melding går ikke til Arena.")
     PASIENTEN_HAR_KODE_6(
-            1305,
-            Status.MANUAL_PROCESSING,
-            "Pasient er registrert med sperrekode 6, sperret adresse, strengt fortrolig",
-            "Pasient er registrert med sperrekode 6, sperret adresse, strengt fortrolig", { (_, diskresjonskode) ->
-        diskresjonskode == "6"
-    })
+        1305,
+        Status.MANUAL_PROCESSING,
+        "Pasient er registrert med sperrekode 6, sperret adresse, strengt fortrolig",
+        "Pasient er registrert med sperrekode 6, sperret adresse, strengt fortrolig", { (_, diskresjonskode) ->
+            diskresjonskode == "6"
+        })
 }
