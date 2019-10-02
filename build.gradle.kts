@@ -35,12 +35,13 @@ group = "no.nav.syfo"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
+    mavenCentral()
+    jcenter()
     maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://kotlin.bintray.com/kotlinx")
     maven (url = "https://oss.sonatype.org/content/groups/staging/")
-    mavenCentral()
-    jcenter()
+
 }
 
 dependencies {
