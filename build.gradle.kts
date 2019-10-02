@@ -21,6 +21,7 @@ val jaxbApiVersion = "2.4.0-b180830.0359"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val saajVersion = "1.4.0"
+val javaxActivationVersion = "1.1.1"
 
 plugins {
     java
@@ -72,6 +73,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
     implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
+    implementation("javax.activation:activation:$javaxActivationVersion")
 
     implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
