@@ -18,7 +18,7 @@ import org.spekframework.spek2.style.specification.describe
 
 class HPRRuleChainTest : Spek({
 
-    describe("1143 BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L") {
+    describe("1143 BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L") {
         it("Should not trigger rule") {
             val behandler = getBehandler(
                 helsepersonellkategori = Kode(
@@ -27,7 +27,7 @@ class HPRRuleChainTest : Spek({
                     oid = 9060
                 )
             )
-            HPRRuleChain.BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
+            HPRRuleChain.BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
                 RuleData(
                     generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
                         .filter { it.code.startsWith("L") }
@@ -48,7 +48,7 @@ class HPRRuleChainTest : Spek({
                 )
             )
 
-            HPRRuleChain.BEHANDLER_KI_FT_MT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
+            HPRRuleChain.BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
                 RuleData(
                     generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
                         .filter { !it.code.startsWith("L") }
@@ -128,9 +128,9 @@ class HPRRuleChainTest : Spek({
             ) shouldEqual true
         }
     }
-    describe("1407 Behandler finnes i HPR men er ikke lege, kiropraktor, manuellterapeut, fysioterapeut eller tannlege") {
+    describe("1407 Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut eller tannlege") {
         it("Should not trigger rule") {
-            val behandlerTyper = listOf("LE", "KI", "MT", "FT", "TL")
+            val behandlerTyper = listOf("LE", "KI", "FT", "TL")
             for (type in behandlerTyper) {
                 val behandler = getBehandler(
                     helsepersonellkategori = Kode(
@@ -139,7 +139,7 @@ class HPRRuleChainTest : Spek({
                         oid = 9060
                     )
                 )
-                HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(
+                HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
                     getRuleData(
                         behandler
                     )
@@ -154,7 +154,7 @@ class HPRRuleChainTest : Spek({
                     oid = 9060
                 )
             )
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
                 getRuleData(
                     behandler
                 )
@@ -168,7 +168,7 @@ class HPRRuleChainTest : Spek({
                     oid = 9060
                 )
             )
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
                 getRuleData(
                     behandler
                 )
@@ -176,7 +176,7 @@ class HPRRuleChainTest : Spek({
         }
     }
 
-    describe("1519 BEHANDLER_MT_FT_KI_OVER_12_UKER") {
+    describe("1519 BEHANDLER_FT_KI_OVER_12_UKER") {
 
         it("Should not trigger rule when lege") {
             val behandler = getBehandler(
@@ -191,7 +191,7 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12).plusDays(1)
             )))
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
         }
 
         it("Should not trigger rule") {
@@ -207,7 +207,7 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12)
             )))
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
         }
 
         it("Should trigger rule") {
@@ -223,7 +223,7 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12).plusDays(1)
             )))
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual true
         }
     }
 })
