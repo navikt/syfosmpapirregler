@@ -11,7 +11,7 @@ val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
-val smCommonVersion = "2019.09.03-11-07-64032e3b6381665e9f9c0914cef626331399e66d"
+val smCommonVersion = "2019.09.25-05-44-08e26429f4e37cd57d99ba4d39fc74099a078b97"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
 val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
@@ -41,6 +41,7 @@ repositories {
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://kotlin.bintray.com/kotlinx")
     maven (url = "https://oss.sonatype.org/content/groups/staging/")
+
 
 }
 

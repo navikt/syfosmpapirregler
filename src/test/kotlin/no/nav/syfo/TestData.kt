@@ -149,10 +149,10 @@ fun getValidResult(): ValidationResult {
 
 fun getInvalidResult(): ValidationResult {
     return ValidationResult(
-        Status.INVALID, listOf(
+        Status.MANUAL_PROCESSING, listOf(
             RuleInfo("Ingen perioder",
                 "Ingen perioder registrert",
-                "Ingen perioder registrert")
+                "Ingen perioder registrert", Status.MANUAL_PROCESSING)
         ))
 }
 
@@ -160,7 +160,7 @@ fun getDiskresjonskodeRule(): ValidationResult {
     return ValidationResult(Status.MANUAL_PROCESSING, listOf(RuleInfo(
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.name,
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender,
-        PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender)))
+        PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender, Status.MANUAL_PROCESSING)))
 }
 
 fun generateGradert(
