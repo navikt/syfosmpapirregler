@@ -55,5 +55,5 @@ spec:
       value: https://wasapp-q1.adeo.no/tpsws/Diskresjonskode
     - name: AADACCESSTOKEN_URL
       value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
-    - nane: HELSENETTPROXY_ID
+    - name: HELSENETTPROXY_ID
       value: c18eba24-f676-47db-9a97-3c66e9304aee
