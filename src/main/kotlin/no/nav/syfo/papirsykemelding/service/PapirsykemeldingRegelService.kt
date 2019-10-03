@@ -27,6 +27,7 @@ import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.papirsykemelding.rules.RuleMetadataAndForstegangsSykemelding
 import no.nav.syfo.papirsykemelding.rules.SyketilfelleRuleChain
 import no.nav.syfo.papirsykemelding.rules.ValideringRuleChain
+import no.nav.syfo.rules.RULE_HIT_COUNTER
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.executeFlow
 import org.slf4j.Logger
@@ -72,17 +73,7 @@ class PapirsykemeldingRegelService(
         ruleMetadata: RuleMetadata,
         loggingMeta: LoggingMeta
     ): ValidationResult = with(GlobalScope) {
-        val behandler = getBehandlerAsync(receivedSykmelding).await() ?: return ValidationResult(
-            status = Status.MANUAL_PROCESSING,
-            ruleHits = listOf(
-                RuleInfo(
-                    ruleName = "BEHANDLER_NOT_IN_HPR",
-                    messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
-                    messageForUser = "Behandler er ikke register i HPR",
-                    ruleStatus = Status.MANUAL_PROCESSING
-                )
-            )
-        )
+        val behandler = getBehandlerAsync(receivedSykmelding).await() ?: return getAndRegisterBehandlerNotInHPR()
 
         val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata)
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
@@ -103,6 +94,22 @@ class PapirsykemeldingRegelService(
         ).flatten()
         log.info("Rules hit {}, {}", results.map { it.name }, fields(loggingMeta))
         return validationResult(results)
+    }
+
+    private fun getAndRegisterBehandlerNotInHPR(): ValidationResult {
+
+        RULE_HIT_COUNTER.labels("BEHANDLER_NOT_IN_HPR").inc()
+        return ValidationResult(
+            status = Status.MANUAL_PROCESSING,
+            ruleHits = listOf(
+                RuleInfo(
+                    ruleName = "BEHANDLER_NOT_IN_HPR",
+                    messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
+                    messageForUser = "Behandler er ikke register i HPR",
+                    ruleStatus = Status.MANUAL_PROCESSING
+                )
+            )
+        )
     }
 
     private suspend fun getRuleMetadataAndForstegangsSykemelding(
