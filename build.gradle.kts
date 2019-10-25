@@ -32,7 +32,7 @@ plugins {
 }
 
 group = "no.nav.syfo"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -40,41 +40,38 @@ repositories {
     maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://kotlin.bintray.com/kotlinx")
-    maven (url = "https://oss.sonatype.org/content/groups/staging/")
-
-
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation ("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation ("io.ktor:ktor-jackson:$ktorVersion")
-    implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
-    implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
-    implementation ("io.ktor:ktor-jackson:$ktorVersion")
-    implementation ("io.ktor:ktor-auth:$ktorVersion")
-    implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
+    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-auth:$ktorVersion")
+    implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
-    implementation ("org.apache.commons:commons-text:$commonsTextVersion")
-    implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
-    implementation ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("org.apache.commons:commons-text:$commonsTextVersion")
+    implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     implementation("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
-    implementation ("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
-    implementation ("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
-    implementation ("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
-    implementation ("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
-    implementation ("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
+    implementation("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
+    implementation("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
+    implementation("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
+    implementation("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
+    implementation("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
-    implementation ("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
+    implementation("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
     implementation("javax.activation:activation:$javaxActivationVersion")
 
     implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
@@ -83,10 +80,10 @@ dependencies {
     }
     implementation("com.sun.xml.messaging.saaj:saaj-impl:$saajVersion")
 
-    testImplementation ("io.mockk:mockk:$mockkVersion")
-    testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
-    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation("com.devskiller:jfairy:$jfairyVersion")
     testRuntimeOnly("org.spekframework.spek2:spek-runtime-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
