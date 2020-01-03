@@ -30,7 +30,7 @@ import no.nav.syfo.sm.Diagnosekoder
 val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
 
-fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
+fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(

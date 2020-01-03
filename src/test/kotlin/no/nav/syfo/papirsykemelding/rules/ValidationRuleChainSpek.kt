@@ -227,7 +227,8 @@ object ValidationRuleChainSpek : Spek({
                 MedisinskVurdering(
                     hovedDiagnose = Diagnose(
                         system = "2.16.578.1.12.4.1.1.7170",
-                        kode = "A62"
+                        kode = "A62",
+                        tekst = "vondt i hodet"
                     ),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
@@ -296,7 +297,7 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09"),
+                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09", tekst = "Svetteproblemer"),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -330,7 +331,7 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09"),
+                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09", tekst = "Svetteproblemer"),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -398,7 +399,7 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09"),
+                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09", tekst = "Problem jus/poli"),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -433,7 +434,7 @@ object ValidationRuleChainSpek : Spek({
                 "2",
                 MedisinskVurdering(
                     hovedDiagnose = null,
-                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09")),
+                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09", tekst = "Problem jus/poli")),
                     svangerskap = false,
                     yrkesskadeDato = null,
                     annenFraversArsak = null,
@@ -467,7 +468,7 @@ object ValidationRuleChainSpek : Spek({
                 "2",
                 MedisinskVurdering(
                     hovedDiagnose = null,
-                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7170", kode = "L92")),
+                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7170", kode = "L92", tekst = "Skuldersyndrom")),
                     svangerskap = false,
                     yrkesskadeDato = null,
                     annenFraversArsak = null,
