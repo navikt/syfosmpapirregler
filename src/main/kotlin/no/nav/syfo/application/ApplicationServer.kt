@@ -12,6 +12,7 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.KtorExperimentalAPI
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.authentication.setupAuth
@@ -19,6 +20,7 @@ import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.papirsykemelding.api.registerPapirsykemeldingsRegler
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 
+@KtorExperimentalAPI
 class ApplicationServer(
     private val env: Environment,
     private val jwkProvider: JwkProvider,

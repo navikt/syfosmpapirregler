@@ -30,7 +30,7 @@ import no.nav.syfo.sm.Diagnosekoder
 val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
 
-fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code)
+fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
@@ -161,6 +161,20 @@ fun getDiskresjonskodeRule(): ValidationResult {
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.name,
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender,
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender, Status.MANUAL_PROCESSING)))
+}
+
+fun getBehandlerNotInHPRRule(): ValidationResult {
+    return ValidationResult(
+        status = Status.MANUAL_PROCESSING,
+        ruleHits = listOf(
+            RuleInfo(
+                ruleName = "BEHANLDER_IKKE_I_HPR",
+                messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
+                messageForUser = "Behandler er ikke register i HPR",
+                ruleStatus = Status.MANUAL_PROCESSING
+            )
+        )
+    )
 }
 
 fun generateGradert(

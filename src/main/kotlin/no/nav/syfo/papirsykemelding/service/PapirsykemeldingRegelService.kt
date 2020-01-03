@@ -98,12 +98,12 @@ class PapirsykemeldingRegelService(
 
     private fun getAndRegisterBehandlerNotInHPR(): ValidationResult {
 
-        RULE_HIT_COUNTER.labels("BEHANDLER_NOT_IN_HPR").inc()
+        RULE_HIT_COUNTER.labels("BEHANLDER_IKKE_I_HPR").inc()
         return ValidationResult(
             status = Status.MANUAL_PROCESSING,
             ruleHits = listOf(
                 RuleInfo(
-                    ruleName = "BEHANDLER_NOT_IN_HPR",
+                    ruleName = "BEHANLDER_IKKE_I_HPR",
                     messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
                     messageForUser = "Behandler er ikke register i HPR",
                     ruleStatus = Status.MANUAL_PROCESSING

@@ -4,9 +4,9 @@ metadata:
   name: syfosmpapirregler
   namespace: default
   labels:
-    team: {{team}}
+    team: teamsykefravr
 spec:
-  image: "docker.pkg.github.com/navikt/syfosmpapirregler:{{tag}}"
+  image: {{ image }}
   replicas:
     min: 2
     max: 4

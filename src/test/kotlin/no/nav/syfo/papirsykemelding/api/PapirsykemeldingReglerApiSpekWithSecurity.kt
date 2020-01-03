@@ -15,8 +15,9 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
+import io.ktor.util.KtorExperimentalAPI
 import io.mockk.mockk
-import java.nio.file.Path
+import java.io.File
 import no.nav.syfo.Environment
 import no.nav.syfo.application.authentication.setupAuth
 import no.nav.syfo.generateReceivedSykemelding
@@ -28,6 +29,7 @@ import org.amshove.kluent.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@KtorExperimentalAPI
 class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
     io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
@@ -42,7 +44,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
             helsenettproxyId = "",
             aadAccessTokenUrl = "")
         val path = "src/test/resources/jwkset.json"
-        val uri = Path.of(path).toUri().toURL()
+        val uri = File(path).toURI().toURL()
         val jwkProvider = JwkProviderBuilder(uri).build()
         receiver.application.install(ContentNegotiation) {
             jackson {

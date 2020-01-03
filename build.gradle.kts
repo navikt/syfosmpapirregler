@@ -2,16 +2,19 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+group = "no.nav.syfo"
+version = "1.0.0"
+
 val coroutinesVersion = "1.3.2"
-val ktorVersion = "1.2.5"
+val ktorVersion = "1.2.6"
 val prometheusVersion = "0.5.0"
-val spekVersion = "2.0.6"
+val spekVersion = "2.0.8"
 val kluentVersion = "1.39"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
-val smCommonVersion = "2019.09.25-05-44-08e26429f4e37cd57d99ba4d39fc74099a078b97"
+val smCommonVersion = "1.7bf5e6f"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
 val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
@@ -25,14 +28,14 @@ val javaxActivationVersion = "1.1.1"
 
 plugins {
     java
-    kotlin("jvm") version "1.3.50"
-    id("com.github.johnrengelman.shadow") version "5.1.0"
-    id("org.jmailen.kotlinter") version "2.1.0"
+    kotlin("jvm") version "1.3.61"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.jmailen.kotlinter") version "2.2.0"
     id("com.diffplug.gradle.spotless") version "3.24.0"
 }
 
-group = "no.nav.syfo"
-version = "1.0.0"
+val githubUser: String by project
+val githubPassword: String by project
 
 repositories {
     mavenCentral()
@@ -40,6 +43,13 @@ repositories {
     maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://kotlin.bintray.com/kotlinx")
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
 }
 
 dependencies {
@@ -62,15 +72,15 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     implementation("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-models:$smCommonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-rules:$smCommonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-rest-sts:$smCommonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-diagnosis-codes:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-rules:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-rest-sts:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
     implementation("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
     implementation("javax.activation:activation:$javaxActivationVersion")
 
