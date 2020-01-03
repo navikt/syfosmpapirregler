@@ -19,7 +19,7 @@ class AccessTokenServiceTest : Spek({
     val accessTokenClient = mockkClass(AccessTokenClient::class)
     var accessTokenService = AccessTokenService(accessTokenClient)
     describe("Testing AccessTokenService") {
-        beforeEach {
+        beforeEachTest {
             clearMocks(accessTokenClient)
             accessTokenService = AccessTokenService(accessTokenClient)
         }

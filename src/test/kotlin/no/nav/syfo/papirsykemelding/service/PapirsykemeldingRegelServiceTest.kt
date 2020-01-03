@@ -15,6 +15,7 @@ import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateReceivedSykemelding
+import no.nav.syfo.getBehandlerNotInHPRRule
 import no.nav.syfo.getDiskresjonskodeRule
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.model.Status
@@ -76,6 +77,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
             coEvery { norskHelsenettClient.finnBehandler(any(), any()) } returns null
             runBlocking {
                 val result = service.validateSykemelding(generateReceivedSykemelding())
+                result shouldEqual getBehandlerNotInHPRRule()
                 verify(exactly = 1) { ruleHitCounter.labels(any()) }
                 verify(exactly = 1) { ruleHitCounter.labels("MANUAL_PROCESSING") }
                 verify(exactly = 1) { ruleHitCounterChild.inc() }

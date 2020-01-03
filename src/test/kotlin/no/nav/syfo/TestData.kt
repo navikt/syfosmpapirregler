@@ -163,6 +163,20 @@ fun getDiskresjonskodeRule(): ValidationResult {
         PostDiskresjonskodeRuleChain.PASIENTEN_HAR_KODE_6.messageForSender, Status.MANUAL_PROCESSING)))
 }
 
+fun getBehandlerNotInHPRRule(): ValidationResult {
+    return ValidationResult(
+        status = Status.MANUAL_PROCESSING,
+        ruleHits = listOf(
+            RuleInfo(
+                ruleName = "BEHANDLER_NOT_IN_HPR",
+                messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
+                messageForUser = "Behandler er ikke register i HPR",
+                ruleStatus = Status.MANUAL_PROCESSING
+            )
+        )
+    )
+}
+
 fun generateGradert(
     reisetilskudd: Boolean = false,
     grad: Int = 50

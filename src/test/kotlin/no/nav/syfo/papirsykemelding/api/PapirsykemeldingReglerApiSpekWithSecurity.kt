@@ -15,6 +15,7 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
+import io.ktor.util.KtorExperimentalAPI
 import io.mockk.mockk
 import java.nio.file.Path
 import no.nav.syfo.Environment
@@ -28,6 +29,7 @@ import org.amshove.kluent.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@KtorExperimentalAPI
 class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
     io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()

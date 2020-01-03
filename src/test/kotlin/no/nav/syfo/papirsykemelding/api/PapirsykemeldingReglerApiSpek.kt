@@ -13,6 +13,7 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
+import io.ktor.util.KtorExperimentalAPI
 import io.mockk.mockk
 import no.nav.syfo.generateReceivedSykemelding
 import no.nav.syfo.getInvalidResult
@@ -23,6 +24,7 @@ import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@KtorExperimentalAPI
 class PapirsykemeldingReglerApiSpek : Spek({
 
     describe("Validate papirsykemelding") {
