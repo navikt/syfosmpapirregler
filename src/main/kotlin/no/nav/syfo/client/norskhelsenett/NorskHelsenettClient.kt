@@ -5,7 +5,7 @@ import io.ktor.client.call.receive
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -30,7 +30,7 @@ class NorskHelsenettClient(
         retryIntervals = arrayOf(500L, 1000L)
     ) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
-        val httpResponse = httpClient.get<HttpResponse>("$endpointUrl/api/behandler") {
+        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/behandler") {
             accept(ContentType.Application.Json)
             val accessToken = accessTokenClient.getAccessToken(resourceId)
             headers {
@@ -38,7 +38,7 @@ class NorskHelsenettClient(
                 append("Nav-CallId", msgId)
                 append("behandlerFnr", behandlerFnr)
             }
-        }
+        }.execute()
 
         if (httpResponse.status == InternalServerError) {
             log.error("Syfohelsenettproxy svarte med feilmelding for msgId {}", msgId)

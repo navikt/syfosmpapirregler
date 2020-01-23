@@ -1,14 +1,30 @@
 package no.nav.syfo.client.syketilfelle
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.client.HttpClient
-import io.ktor.client.call.HttpClientCall
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.features.ContentNegotiation
+import io.ktor.http.HttpStatusCode
+import io.ktor.jackson.jackson
+import io.ktor.response.respond
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
-import io.mockk.clearMocks
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockkClass
 import io.mockk.mockkStatic
-import java.io.IOException
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.client.OidcToken
@@ -20,37 +36,58 @@ import org.spekframework.spek2.style.specification.describe
 
 @KtorExperimentalAPI
 class SyketilfelleClientTest : Spek({
-    val stsOidcClient = mockkClass(StsOidcClient::class)
-    val httpClientCall = mockkClass(HttpClientCall::class)
-    val httpClient = mockkClass(HttpClient::class)
-    val syketilfelleClient = SyketilfelleClient("url", stsOidcClient, httpClient)
 
-    mockkStatic("kotlinx.coroutines.DelayKt")
-    coEvery { delay(any()) } returns Unit
-    coEvery { stsOidcClient.oidcToken() } returns OidcToken("token", "Bearer", 200L)
+    val aktorId = "123"
 
-    beforeEachTest {
-        clearMocks(httpClient)
-        coEvery { httpClient.execute(any()) } returns httpClientCall
+    val httpClient = HttpClient(Apache) {
+        install(JsonFeature) {
+            serializer = JacksonSerializer {
+                registerKotlinModule()
+                registerModule(JavaTimeModule())
+                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            }
+        }
     }
+
+    val mockHttpServerPort = ServerSocket(0).use { it.localPort }
+    val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
+    val mockServer = embeddedServer(Netty, mockHttpServerPort) {
+        install(ContentNegotiation) {
+            jackson {}
+        }
+        routing {
+            post("/oppfolgingstilfelle/ernytttilfelle/$aktorId") {
+                when {
+                    call.request.headers["Authorization"] == "Bearer token" -> call.respond(true)
+                    call.request.headers["Authorization"] == "Bearer 132" -> call.respond(false)
+                    else -> call.respond(HttpStatusCode.InternalServerError, "Noe gikk galt")
+                }
+            }
+        }
+    }.start()
+
+    val stsOidcClient = mockkClass(StsOidcClient::class)
+    val syketilfelleClient = SyketilfelleClient(mockHttpServerUrl, stsOidcClient, httpClient)
 
     describe("Test SyketilfelleClient") {
 
         it("Should get syketilfelle") {
-            coEvery { httpClientCall.receive(any()) } returns true
             runBlocking {
-                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), "123")
+            coEvery { stsOidcClient.oidcToken() } returns OidcToken("token", "Bearer", 200L)
+                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), aktorId)
                 erNyttSyketilfelle shouldEqual true
+                mockServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
             }
         }
 
         it("should retry") {
-            coEvery { httpClient.execute(any()) } throws IOException("Exception") andThen httpClientCall
-            coEvery { httpClientCall.receive(any()) } returns false
+            coEvery { stsOidcClient.oidcToken() } returns OidcToken("132", "Bearer", 200L)
+
             runBlocking {
-                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), "213")
+                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), aktorId)
                 erNyttSyketilfelle shouldEqual false
-                coVerify(exactly = 2) { httpClient.execute(any()) }
+                mockServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
             }
         }
     }

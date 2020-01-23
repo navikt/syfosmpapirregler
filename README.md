@@ -12,7 +12,7 @@ This project contains just the rules for validating whether or not a user is sup
 
 #### Requirements
 
-* JDK 11
+* JDK 12
 
 ## Getting started
 ### Getting github-package-registry packages NAV-IT
@@ -68,6 +68,7 @@ Creating a docker image should be as simple as `docker build -t syfosmpapirregle
 * Andreas Nilsen, `andreas.nilsen@nav.no`
 * Sebastian Knudsen, `sebastian.knudsen@nav.no`
 * Tia Firing, `tia.firing@nav.no`
+* Jonas Henie, `jonas.henie@nav.no`
 
 ### For NAV employees
 We are available at the Slack channel #team-sykmelding
