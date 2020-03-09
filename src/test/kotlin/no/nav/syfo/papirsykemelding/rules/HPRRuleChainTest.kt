@@ -18,49 +18,6 @@ import org.spekframework.spek2.style.specification.describe
 
 class HPRRuleChainTest : Spek({
 
-    describe("1143 BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L") {
-        it("Should not trigger rule") {
-            val behandler = getBehandler(
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    verdi = "KI",
-                    oid = 9060
-                )
-            )
-            HPRRuleChain.BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
-                RuleData(
-                    generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
-                        .filter { it.code.startsWith("L") }
-                        .findFirst()
-                        .get()
-                        .toDiagnose()),
-                    behandler
-                )
-            ) shouldEqual false
-        }
-
-        it("Should trigger rule") {
-            val behandler = getBehandler(
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    verdi = "FT",
-                    oid = 9060
-                )
-            )
-
-            HPRRuleChain.BEHANDLER_KI_FT_BENYTTER_ANNEN_DIAGNOSEKODE_ENN_L(
-                RuleData(
-                    generateSykemelding(diagnose = Diagnosekoder.icpc2.values.stream()
-                        .filter { !it.code.startsWith("L") }
-                        .findFirst()
-                        .get()
-                        .toDiagnose()),
-                    behandler
-                )
-            ) shouldEqual true
-        }
-    }
-
     describe("1402 Behandler er ikke gyldig i HPR på konsultasjonstidspunktet") {
         it("Should not trigger rule") {
             HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(
