@@ -10,8 +10,6 @@ import no.nav.syfo.generateSykemelding
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.getUgyldigBehandler
 import no.nav.syfo.rules.RuleData
-import no.nav.syfo.sm.Diagnosekoder
-import no.nav.syfo.toDiagnose
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
