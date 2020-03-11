@@ -9,7 +9,6 @@ import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.RuleData
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.sm.isICPC2
-import no.nav.syfo.sm.toICPC2
 import no.nav.syfo.validation.extractBornDate
 
 enum class ValideringRuleChain(
@@ -54,7 +53,8 @@ enum class ValideringRuleChain(
         Status.MANUAL_PROCESSING,
         "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
         "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (sykemelding, _) ->
-            sykemelding.medisinskVurdering.hovedDiagnose?.toICPC2()?.firstOrNull()?.code?.startsWith("Z") == true
+            sykemelding.medisinskVurdering.hovedDiagnose != null &&
+                    sykemelding.medisinskVurdering.hovedDiagnose!!.isICPC2() && sykemelding.medisinskVurdering.hovedDiagnose!!.kode?.startsWith("Z")
         }),
 
     @Description("Hvis hoveddiagnose mangler og det ikke er angitt annen lovfestet fraværsgrunn, avvises meldingen")

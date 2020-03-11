@@ -25,10 +25,11 @@ val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val saajVersion = "1.4.0"
 val javaxActivationVersion = "1.1.1"
+val smCommonDiagnosisCodesVersion = "1.f898112"
 
 plugins {
     java
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("org.jmailen.kotlinter") version "2.2.0"
     id("com.diffplug.gradle.spotless") version "3.24.0"
@@ -76,7 +77,7 @@ dependencies {
     implementation("no.nav.helse:syfosm-common-rules:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-rest-sts:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonDiagnosisCodesVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
