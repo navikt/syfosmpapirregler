@@ -93,9 +93,9 @@ enum class PeriodLogicRuleChain(
         1209,
         Status.MANUAL_PROCESSING,
         "Sykmeldingen er datert mer enn 30 dager fram i tid.",
-        "Hvis sykmeldingen er fremdatert mer enn 30 dager etter konsultasjonsdato/signaturdato avvises meldingen.",
+        "Hvis sykmeldingen er fremdatert mer enn 30 dager etter behandletDato",
         { (sykemelding, ruleMetadata) ->
-            sykemelding.perioder.sortedFOMDate().first().atStartOfDay() > ruleMetadata.signatureDate.plusDays(30)
+            sykemelding.perioder.sortedFOMDate().first().atStartOfDay() > ruleMetadata.behandletTidspunkt.plusDays(30)
         }),
 
     @Description("Hvis sykmeldingens sluttdato er mer enn ett år frem i tid, avvises meldingen.")
@@ -105,7 +105,9 @@ enum class PeriodLogicRuleChain(
         "Den kan ikke ha en varighet på over ett år.",
         "Hvis sykmeldingens sluttdato er mer enn ett år frem i tid, avvises meldingen.",
         { (sykemelding, _) ->
-            sykemelding.perioder.sortedTOMDate().last().atStartOfDay() > sykemelding.behandletTidspunkt.plusYears(1)
+            val firstFomDate = sykemelding.perioder.sortedFOMDate().first().atStartOfDay().toLocalDate()
+            val lastTomDate = sykemelding.perioder.sortedTOMDate().last().atStartOfDay().toLocalDate()
+            (firstFomDate..lastTomDate).daysBetween() > 365
         }),
 
     @Description("Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen")
@@ -115,7 +117,7 @@ enum class PeriodLogicRuleChain(
         "Behandlingsdatoen må rettes.",
         "Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen",
         { (sykemelding, ruleMetadata) ->
-            sykemelding.behandletTidspunkt > ruleMetadata.receivedDate.plusHours(2)
+            sykemelding.behandletTidspunkt > ruleMetadata.receivedDate.plusDays(1)
         }),
 
     @Description("Hvis avventende sykmelding er funnet og det finnes en eller flere perioder")
@@ -125,8 +127,8 @@ enum class PeriodLogicRuleChain(
         "En avventende sykmelding kan bare inneholde én periode.",
         "Hvis avventende sykmelding er funnet og det finnes en eller flere perioder. ",
         { (sykemelding, _) ->
-            val numberOfPendingPeriods = sykemelding.perioder.count { it.avventendeInnspillTilArbeidsgiver != null }
-            numberOfPendingPeriods != 0 && sykemelding.perioder.isNotEmpty()
+            sykemelding.perioder.count { it.avventendeInnspillTilArbeidsgiver != null } != 0 &&
+                    sykemelding.perioder.size > 1
         }),
 
     @Description("Hvis innspill til arbeidsgiver om tilrettelegging i pkt 4.1.3 ikke er utfylt ved avventende sykmelding avvises meldingen")

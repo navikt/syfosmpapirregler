@@ -24,6 +24,7 @@ object PeriodLogicRuleChainSpek : Spek({
         RuleMetadata(
             signatureDate,
             receivedDate,
+            LocalDateTime.now(),
             patientPersonNumber,
             "1",
             "123456789",
