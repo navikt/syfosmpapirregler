@@ -73,7 +73,7 @@ class PapirsykemeldingRegelService(
         ruleMetadata: RuleMetadata,
         loggingMeta: LoggingMeta
     ): ValidationResult = with(GlobalScope) {
-        val behandler = getBehandlerAsync(receivedSykmelding).await() ?: return getAndRegisterBehandlerNotInHPR()
+        val behandler = getBehandlerAsync(receivedSykmelding, loggingMeta).await() ?: return getAndRegisterBehandlerNotInHPR()
 
         val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata)
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
@@ -118,11 +118,15 @@ class PapirsykemeldingRegelService(
     ): RuleMetadataAndForstegangsSykemelding =
         RuleMetadataAndForstegangsSykemelding(ruleMetadata, erNyttSyketilfelleAync.await())
 
-    private fun GlobalScope.getBehandlerAsync(receivedSykmelding: ReceivedSykmelding): Deferred<Behandler?> {
+    private fun GlobalScope.getBehandlerAsync(
+        receivedSykmelding: ReceivedSykmelding,
+        loggingMeta: LoggingMeta
+    ): Deferred<Behandler?> {
         return async {
             norskHelsenettClient.finnBehandler(
                 behandlerFnr = receivedSykmelding.personNrLege,
-                msgId = receivedSykmelding.msgId
+                msgId = receivedSykmelding.msgId,
+                loggingMeta = loggingMeta
             )
         }
     }
