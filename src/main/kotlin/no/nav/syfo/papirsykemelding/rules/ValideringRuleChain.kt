@@ -54,7 +54,7 @@ enum class ValideringRuleChain(
         "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
         "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (sykemelding, _) ->
             sykemelding.medisinskVurdering.hovedDiagnose != null &&
-                    sykemelding.medisinskVurdering.hovedDiagnose!!.isICPC2() && sykemelding.medisinskVurdering.hovedDiagnose!!.kode?.startsWith("Z")
+                    sykemelding.medisinskVurdering.hovedDiagnose!!.isICPC2() && sykemelding.medisinskVurdering.hovedDiagnose!!.kode.startsWith("Z")
         }),
 
     @Description("Hvis hoveddiagnose mangler og det ikke er angitt annen lovfestet fraværsgrunn, avvises meldingen")

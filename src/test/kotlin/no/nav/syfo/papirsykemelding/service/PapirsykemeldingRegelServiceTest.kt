@@ -46,7 +46,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
         every { ruleHitCounter.labels(any()) } returns ruleHitCounterChild
         every { ruleHitCounterChild.inc() } returns Unit
         coEvery { diskresjonskodeService.hentDiskresjonskode(any()) } returns "1"
-        coEvery { norskHelsenettClient.finnBehandler(any(), any()) } returns getGyldigBehandler()
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns getGyldigBehandler()
         coEvery { syketilfelleClient.fetchErNytttilfelle(any(), any()) } returns true
         coEvery { legeSuspensjonsClient.checkTherapist(any(), any(), any()) } returns Suspendert(false)
     }
@@ -74,7 +74,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
         }
 
         it("Should not validate sykemelding when behandler is null") {
-            coEvery { norskHelsenettClient.finnBehandler(any(), any()) } returns null
+            coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns null
             runBlocking {
                 val result = service.validateSykemelding(generateReceivedSykemelding())
                 result shouldEqual getBehandlerNotInHPRRule()
