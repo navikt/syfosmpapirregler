@@ -43,13 +43,17 @@ class AccessTokenClientTest : Spek({
 
     val mockHttpServerPort = ServerSocket(0).use { it.localPort }
     val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
+    val respone = AadAccessToken("token1", Instant.now().plusSeconds(200))
     val mockServer = embeddedServer(Netty, mockHttpServerPort) {
         install(ContentNegotiation) {
-            jackson {}
+            jackson {
+                registerKotlinModule()
+                registerModule(JavaTimeModule())
+            }
         }
         routing {
             post("/accessTokenClient") {
-                call.respond(AadAccessToken("token1", Instant.now().plusSeconds(300L)))
+                call.respond(respone)
             }
         }
     }.start()
