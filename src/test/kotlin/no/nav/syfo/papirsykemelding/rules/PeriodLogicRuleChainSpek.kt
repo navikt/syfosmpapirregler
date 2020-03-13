@@ -24,6 +24,7 @@ object PeriodLogicRuleChainSpek : Spek({
         RuleMetadata(
             signatureDate,
             receivedDate,
+            LocalDateTime.now(),
             patientPersonNumber,
             "1",
             "123456789",
@@ -174,7 +175,7 @@ object PeriodLogicRuleChainSpek : Spek({
             val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(
                             fom = LocalDate.now(),
-                            tom = LocalDate.now().plusYears(1)
+                            tom = LocalDate.now().plusDays(366)
                     )
             ),
                 tidspunkt = LocalDateTime.now().minusDays(1)
@@ -198,7 +199,7 @@ object PeriodLogicRuleChainSpek : Spek({
 
         it("Should check rule BEHANDLINGSDATO_ETTER_MOTTATTDATO, should trigger rule") {
             val sykemelding = generateSykemelding(
-                tidspunkt = LocalDateTime.now().plusHours(3)
+                tidspunkt = LocalDateTime.now().plusDays(1).plusHours(1)
             )
 
             PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(sykemelding)) shouldEqual true

@@ -45,6 +45,7 @@ object ValidationRuleChainSpek : Spek({
         RuleMetadata(
             signatureDate,
             receivedDate,
+            LocalDateTime.now(),
             patientPersonNumber,
             rulesetVersion,
             legekontorOrgNr,

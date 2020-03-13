@@ -1,19 +1,26 @@
 package no.nav.syfo.accesstoken.client
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.client.HttpClient
-import io.ktor.client.call.HttpClientCall
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.features.ClientRequestException
-import io.ktor.client.request.HttpRequest
-import io.ktor.client.response.DefaultHttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.Url
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.features.ContentNegotiation
+import io.ktor.jackson.jackson
+import io.ktor.response.respond
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.util.InternalAPI
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockkClass
+import java.net.ServerSocket
 import java.time.Instant
-import kotlin.test.assertFailsWith
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.accesstoken.model.AadAccessToken
 import org.amshove.kluent.shouldEqual
@@ -23,33 +30,45 @@ import org.spekframework.spek2.style.specification.describe
 @InternalAPI
 class AccessTokenClientTest : Spek({
 
-    val httpClientCall = mockkClass(HttpClientCall::class)
-    val httpClient = mockkClass(HttpClient::class)
+    val httpClient = HttpClient(Apache) {
+        install(JsonFeature) {
+            serializer = JacksonSerializer {
+                registerKotlinModule()
+                registerModule(JavaTimeModule())
+                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            }
+        }
+    }
 
-    val accessTokenClient = AccessTokenClient("url", "1", "2", httpClient)
+    val mockHttpServerPort = ServerSocket(0).use { it.localPort }
+    val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
+    val respone = AadAccessToken("token1", Instant.now().plusSeconds(200))
+    val mockServer = embeddedServer(Netty, mockHttpServerPort) {
+        install(ContentNegotiation) {
+            jackson {
+                registerKotlinModule()
+                registerModule(JavaTimeModule())
+            }
+        }
+        routing {
+            post("/accessTokenClient") {
+                call.respond(respone)
+            }
+        }
+    }.start()
 
-    beforeEachTest {
-        coEvery { httpClient.execute(any()) } returns httpClientCall
+    val accessTokenClient = AccessTokenClient("$mockHttpServerUrl/accessTokenClient", "1", "2", httpClient)
+
+    afterGroup {
+        mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
 
     describe("Testing AccessTokenClient") {
         it("Should get valid token") {
-            coEvery { httpClientCall.receive(any()) } returns AadAccessToken("token1", Instant.now().plusSeconds(200))
             runBlocking {
                 val token = accessTokenClient.hentAccessToken("resource1")
                 token.access_token shouldEqual "token1"
-            }
-        }
-        it("Should get 401 when inncorrect secret") {
-            val mockRequest = mockkClass(HttpRequest::class)
-            coEvery { httpClientCall.request } returns mockRequest
-            every { mockRequest.url } returns Url("test")
-            coEvery { httpClient.execute(any()) } throws ClientRequestException(DefaultHttpResponse(httpClientCall, respond("401 Unautorized", HttpStatusCode.Unauthorized)))
-
-            runBlocking {
-                assertFailsWith<ClientRequestException>() {
-                    accessTokenClient.hentAccessToken("resouce1")
-                }
             }
         }
     }
