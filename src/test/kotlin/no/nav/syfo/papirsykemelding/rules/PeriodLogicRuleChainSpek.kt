@@ -197,21 +197,6 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(sykemelding)) shouldEqual false
         }
 
-        it("Should check rule BEHANDLINGSDATO_ETTER_MOTTATTDATO, should trigger rule") {
-            val sykemelding = generateSykemelding(
-                tidspunkt = LocalDateTime.now().plusDays(1).plusHours(1)
-            )
-
-            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(sykemelding)) shouldEqual true
-        }
-
-        it("Should check rule BEHANDLINGSDATO_ETTER_MOTTATTDATO, should NOT trigger rule") {
-            val sykemelding = generateSykemelding(
-                tidspunkt = LocalDateTime.now().plusHours(2)
-            )
-            PeriodLogicRuleChain.BEHANDLINGSDATO_ETTER_MOTTATTDATO(ruleData(sykemelding)) shouldEqual false
-        }
-
         it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should trigger rule") {
             val sykemelding = generateSykemelding(perioder = listOf(
                     generatePeriode(

@@ -110,16 +110,6 @@ enum class PeriodLogicRuleChain(
             (firstFomDate..lastTomDate).daysBetween() > 365
         }),
 
-    @Description("Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen")
-    BEHANDLINGSDATO_ETTER_MOTTATTDATO(
-        1123,
-        Status.MANUAL_PROCESSING,
-        "Behandlingsdatoen må rettes.",
-        "Hvis behandletdato er etter dato for mottak av meldingen avvises meldingen",
-        { (sykemelding, ruleMetadata) ->
-            sykemelding.behandletTidspunkt > ruleMetadata.receivedDate.plusDays(1)
-        }),
-
     @Description("Hvis avventende sykmelding er funnet og det finnes en eller flere perioder")
     AVVENTENDE_SYKMELDING_KOMBINERT(
         9999,
