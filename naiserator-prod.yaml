@@ -40,7 +40,7 @@ spec:
     - "https://syfosmpapirregler.nais.adeo.no"
   env:
     - name: ALLOWED_APP_IDS
-      value: 9d4d6e11-1717-44f7-b76c-1a671847bb32
+      value: 9d4d6e11-1717-44f7-b76c-1a671847bb32, 88adf8ed-fed1-4022-bbc6-da222e4795eb
     - name: JWT_ISSUER
       value: https://sts.windows.net/62366534-1ec3-4962-8869-9b5535279d0b/
     - name: CLIENT_ID
