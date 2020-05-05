@@ -25,7 +25,7 @@ val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val saajVersion = "1.4.0"
 val javaxActivationVersion = "1.1.1"
-val smCommonDiagnosisCodesVersion = "1.f898112"
+val smCommonDiagnosisCodesVersion = "1.68817ee"
 
 plugins {
     java
