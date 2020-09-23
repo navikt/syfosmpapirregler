@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import no.nav.syfo.generateGradert
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
+import no.nav.syfo.model.Periode
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.rules.RuleData
@@ -152,21 +153,41 @@ object PeriodLogicRuleChainSpek : Spek({
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should trigger rule") {
-            val startDateTime = LocalDateTime.now().minusYears(3)
-            val sykemelding = generateSykemelding(
-                    tidspunkt = startDateTime.minusDays(1),
-                    perioder = listOf(generatePeriode(fom = LocalDate.now()))
+            val healthInformation = generateSykemelding(
+                perioder = listOf(
+                    Periode(
+                        fom = LocalDate.now().minusYears(3).minusDays(14),
+                        tom =  LocalDate.now().minusYears(3),
+                        aktivitetIkkeMulig = null,
+                        avventendeInnspillTilArbeidsgiver = null,
+                        behandlingsdager = 1,
+                        gradert = null,
+                        reisetilskudd = false
+                    )
+                ),
+                tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(sykemelding)) shouldEqual true
+            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldEqual true
         }
 
-        it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should NOT trigger rule") {
-            val sykemelding = generateSykemelding(
-                tidspunkt = LocalDateTime.now().minusYears(2)
+        it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should not trigger rule") {
+            val healthInformation = generateSykemelding(
+                perioder = listOf(
+                    Periode(
+                        fom = LocalDate.now().minusDays(14),
+                        tom = LocalDate.now(),
+                        aktivitetIkkeMulig = null,
+                        avventendeInnspillTilArbeidsgiver = null,
+                        behandlingsdager = 1,
+                        gradert = null,
+                        reisetilskudd = false
+                    )
+                ),
+                tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(sykemelding)) shouldEqual false
+            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldEqual false
         }
 
         it("Should check rule FREMDATERT, should trigger rule") {
