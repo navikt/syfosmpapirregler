@@ -31,7 +31,7 @@ class LegeSuspensjonClient(
         retryIntervals = arrayOf(500L, 1000L)
     ) {
 
-       val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
+        val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
 
         val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/v1/suspensjon/status") {
             accept(ContentType.Application.Json)
@@ -46,7 +46,7 @@ class LegeSuspensjonClient(
             parameter("oppslagsdato", oppslagsdato)
         }.execute()
 
-        when(httpResponse.status) {
+        when (httpResponse.status) {
             HttpStatusCode.OK -> {
                 log.info("Hentet supensjonstatus for ediloggId {}", ediloggid)
                 httpResponse.call.response.receive<Suspendert>()

@@ -84,8 +84,7 @@ enum class PeriodLogicRuleChain(
         "Startdatoen er mer enn tre år tilbake.",
         "Sykmeldinges fom-dato er mer enn 3 år tilbake i tid.",
         { (sykemelding, _) ->
-            sykemelding.perioder.sortedFOMDate().first().atStartOfDay().minusYears(3)
-                .isAfter(sykemelding.behandletTidspunkt)
+            sykemelding.perioder.sortedFOMDate().first().atStartOfDay().isBefore(LocalDate.now().minusYears(3).atStartOfDay())
         }),
 
     @Description("Hvis sykmeldingen er fremdatert mer enn 30 dager etter konsultasjonsdato/signaturdato avvises meldingen.")
