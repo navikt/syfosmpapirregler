@@ -429,6 +429,40 @@ object ValidationRuleChainSpek : Spek({
             ValideringRuleChain.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(ruleData(sykemelding)) shouldEqual true
         }
 
+        it("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, null hovedDiagnose should not trigger") {
+            val sykemelding = Sykmelding("1",
+                "1",
+                "2",
+                MedisinskVurdering(
+                    hovedDiagnose = null,
+                    biDiagnoser = emptyList(),
+                    svangerskap = false,
+                    yrkesskadeDato = null,
+                    annenFraversArsak = null,
+                    yrkesskade = false
+                ),
+                false,
+                generateArbeidsgiver(),
+                generatePerioder(),
+                generatePrognose(),
+                emptyMap(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                generateKontaktMedPasient(),
+                behandletTidspunkt,
+                generateBehandler(),
+                AvsenderSystem("test", "1"),
+                null,
+                signaturDato,
+                null
+            )
+
+            ValideringRuleChain.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(ruleData(sykemelding)) shouldEqual false
+        }
+
         it("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, wrong kodeverk for biDiagnoser") {
             val sykemelding = Sykmelding("1",
                 "1",

@@ -68,12 +68,16 @@ enum class ValideringRuleChain(
                     sykemelding.medisinskVurdering.hovedDiagnose == null
         }),
 
-    @Description("Hvis kodeverk ikke er angitt eller korrekt for hoveddiagnose, avvises meldingen.")
+    @Description("Hvis feil kodeverk er angitt hoveddiagnose avvises meldingen.")
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
         1540,
         Status.MANUAL_PROCESSING,
         "Den må ha riktig kode for hoveddiagnose.",
         "Kodeverk for hoveddiagnose er feil eller mangler.", { (sykemelding, _) ->
+
+            if (sykemelding.medisinskVurdering.hovedDiagnose == null) {
+                false
+            } else {
             sykemelding.medisinskVurdering.hovedDiagnose?.system !in arrayOf(
                 Diagnosekoder.ICPC2_CODE,
                 Diagnosekoder.ICD10_CODE
@@ -85,7 +89,7 @@ enum class ValideringRuleChain(
                             Diagnosekoder.icd10.containsKey(diagnose.kode)
                         }
                     } != true
-        }),
+        }}),
 
     // Revurder regel når IT ikkje lenger skal brukes
     // Her mener jeg fremdeles at vi skal nulle ut bidiagnosen dersom den er feil - ikke avvise sykmeldingen!!
