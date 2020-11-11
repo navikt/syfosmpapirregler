@@ -73,7 +73,7 @@ enum class ValideringRuleChain(
         1540,
         Status.MANUAL_PROCESSING,
         "Den må ha riktig kode for hoveddiagnose.",
-        "Kodeverk for hoveddiagnose er feil eller mangler.", { (sykemelding, _) ->
+        "Kodeverk for hoveddiagnose er feil.", { (sykemelding, _) ->
 
             if (sykemelding.medisinskVurdering.hovedDiagnose == null) {
                 false
