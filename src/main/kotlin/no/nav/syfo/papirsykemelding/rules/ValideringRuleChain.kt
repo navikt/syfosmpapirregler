@@ -89,7 +89,7 @@ enum class ValideringRuleChain(
                             Diagnosekoder.icd10.containsKey(diagnose.kode)
                         }
                     } != true
-        }}),
+        } }),
 
     // Revurder regel når IT ikkje lenger skal brukes
     // Her mener jeg fremdeles at vi skal nulle ut bidiagnosen dersom den er feil - ikke avvise sykmeldingen!!

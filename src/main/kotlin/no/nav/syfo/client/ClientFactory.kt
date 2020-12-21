@@ -10,31 +10,17 @@ import java.net.ProxySelector
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultCredentials
 import no.nav.syfo.accesstoken.service.AccessTokenService
-import no.nav.syfo.client.diskresjonskode.DiskresjonskodeService
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
-import no.nav.syfo.ws.createPort
-import no.nav.tjeneste.pip.diskresjonskode.DiskresjonskodePortType
+import no.nav.syfo.pdl.PdlFactory
+import no.nav.syfo.pdl.service.PdlPersonService
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 
 class ClientFactory {
     @KtorExperimentalAPI
     companion object {
-        fun createDiskresjonsKodeService(env: Environment, credentials: VaultCredentials): DiskresjonskodeService {
-            val diskresjonskodePortType: DiskresjonskodePortType = createPort(env.diskresjonskodeEndpointUrl) {
-                port {
-                    withSTS(
-                        credentials.serviceuserUsername,
-                        credentials.serviceuserPassword,
-                        env.securityTokenServiceURL
-                    )
-                }
-            }
-            return DiskresjonskodeService(diskresjonskodePortType)
-        }
-
         fun createSyketilfelleClient(
             env: Environment,
             oidcClient: StsOidcClient,
@@ -94,6 +80,14 @@ class ClientFactory {
             httpClient: HttpClient
         ): LegeSuspensjonClient {
             return LegeSuspensjonClient(env.legeSuspensjonEndpointURL, credentials, stsClient, httpClient)
+        }
+
+        fun createPdlPersonService(
+            env: Environment,
+            stsClient: StsOidcClient,
+            httpClient: HttpClient
+        ): PdlPersonService {
+            return PdlFactory.getPdlService(env, stsClient, httpClient)
         }
     }
 }

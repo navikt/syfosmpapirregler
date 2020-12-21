@@ -13,8 +13,12 @@ import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.client.ClientFactory
 import no.nav.syfo.common.getObjectMapper
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-val CREDENTIALS_PATH = "/var/run/secrets/nais.io/vault/credentials.json"
+const val CREDENTIALS_PATH = "/var/run/secrets/nais.io/vault/credentials.json"
+
+val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 
 @KtorExperimentalAPI
 fun main() {
@@ -43,10 +47,10 @@ fun main() {
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, stsClient, httpClient)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenService, httpClient)
-    val diskresjonskodeService = ClientFactory.createDiskresjonsKodeService(env, credentials)
+    val pdlPersonService = ClientFactory.createPdlPersonService(env, stsClient, httpClient)
 
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
-        diskresjonskodeService = diskresjonskodeService,
+        pdlPersonService = pdlPersonService,
         legeSuspensjonClient = legeSuspensjonClient,
         norskHelsenettClient = norskHelsenettClient,
         syketilfelleClient = syketilfelleClient

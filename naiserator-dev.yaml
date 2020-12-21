@@ -51,9 +51,9 @@ spec:
       vaule: https://pep-gw-q1.oera-q.local:9443/samhandler/helse/helsepersonell/v1
     - name: LEGE_SUSPENSJON_ENDPOINT_URL
       value: http://btsys
-    - name: DISKRESJONSKODE_ENDPOINT_URL
-      value: https://wasapp-q1.adeo.no/tpsws/Diskresjonskode
     - name: AADACCESSTOKEN_URL
       value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
     - name: HELSENETTPROXY_ID
       value: c18eba24-f676-47db-9a97-3c66e9304aee
+    - name: PDL_GRAPHQL_PATH
+      value: https://pdl-api.nais.preprod.local/graphql
