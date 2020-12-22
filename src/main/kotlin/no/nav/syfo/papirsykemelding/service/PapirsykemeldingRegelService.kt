@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.application.metrics.RULE_HIT_STATUS_COUNTER
-import no.nav.syfo.client.diskresjonskode.DiskresjonskodeService
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
@@ -27,6 +26,7 @@ import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.papirsykemelding.rules.RuleMetadataAndForstegangsSykemelding
 import no.nav.syfo.papirsykemelding.rules.SyketilfelleRuleChain
 import no.nav.syfo.papirsykemelding.rules.ValideringRuleChain
+import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.rules.RULE_HIT_COUNTER
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.executeFlow
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory
 @KtorExperimentalAPI
 class PapirsykemeldingRegelService(
     private val ruleHitStatusCounter: Counter = RULE_HIT_STATUS_COUNTER,
-    private val diskresjonskodeService: DiskresjonskodeService,
+    private val pdlPersonService: PdlPersonService,
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val syketilfelleClient: SyketilfelleClient,
     private val norskHelsenettClient: NorskHelsenettClient
@@ -76,7 +76,7 @@ class PapirsykemeldingRegelService(
     ): ValidationResult = with(GlobalScope) {
         val behandler = getBehandlerAsync(receivedSykmelding, loggingMeta).await() ?: return getAndRegisterBehandlerNotInHPR()
 
-        val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata)
+        val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata, loggingMeta)
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
         val erNyttSyketilfelleAync = getErNyttSyketilfelleAsync(receivedSykmelding)
 
@@ -154,8 +154,8 @@ class PapirsykemeldingRegelService(
         }
     }
 
-    private fun GlobalScope.hentDiskresjonskodeAsync(ruleMetadata: RuleMetadata) =
-        async { diskresjonskodeService.hentDiskresjonskode(ruleMetadata.patientPersonNumber) }
+    private fun GlobalScope.hentDiskresjonskodeAsync(ruleMetadata: RuleMetadata, loggingMeta: LoggingMeta) =
+        async { pdlPersonService.hentDiskresjonskode(ruleMetadata.patientPersonNumber, loggingMeta) }
 
     private fun validationResult(results: List<Rule<Any>>): ValidationResult = ValidationResult(
         status = results

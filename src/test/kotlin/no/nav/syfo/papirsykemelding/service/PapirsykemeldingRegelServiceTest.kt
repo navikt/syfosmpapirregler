@@ -7,7 +7,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.prometheus.client.Counter
 import kotlinx.coroutines.runBlocking
-import no.nav.syfo.client.diskresjonskode.DiskresjonskodeService
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
@@ -20,6 +19,7 @@ import no.nav.syfo.getDiskresjonskodeRule
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.pdl.service.PdlPersonService
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -29,13 +29,13 @@ class PapirsykemeldingRegelServiceTest : Spek({
 
     val ruleHitCounter = mockk<Counter>()
     val ruleHitCounterChild = mockk<Counter.Child>()
-    val diskresjonskodeService = mockk<DiskresjonskodeService>()
+    val pdlPersonService = mockk<PdlPersonService>()
     val legeSuspensjonsClient = mockk<LegeSuspensjonClient>()
     val syketilfelleClient = mockk<SyketilfelleClient>()
     val norskHelsenettClient = mockk<NorskHelsenettClient>()
     val service = PapirsykemeldingRegelService(
         ruleHitCounter,
-        diskresjonskodeService,
+        pdlPersonService,
         legeSuspensjonsClient,
         syketilfelleClient,
         norskHelsenettClient
@@ -45,7 +45,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
         io.mockk.clearMocks(ruleHitCounter, ruleHitCounterChild)
         every { ruleHitCounter.labels(any()) } returns ruleHitCounterChild
         every { ruleHitCounterChild.inc() } returns Unit
-        coEvery { diskresjonskodeService.hentDiskresjonskode(any()) } returns "1"
+        coEvery { pdlPersonService.hentDiskresjonskode(any(), any()) } returns ""
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns getGyldigBehandler()
         coEvery { syketilfelleClient.fetchErNytttilfelle(any(), any()) } returns true
         coEvery { legeSuspensjonsClient.checkTherapist(any(), any(), any()) } returns Suspendert(false)
@@ -64,7 +64,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
 
         it("Should validate papirsykemelding to be not valid") {
             runBlocking {
-                coEvery { diskresjonskodeService.hentDiskresjonskode(any()) } returns "6"
+                coEvery { pdlPersonService.hentDiskresjonskode(any(), any()) } returns "6"
                 val result = service.validateSykemelding(generateReceivedSykemelding(generatePerioder()))
                 result shouldEqual getDiskresjonskodeRule()
                 verify(exactly = 1) { ruleHitCounter.labels(any()) }

@@ -17,7 +17,6 @@ val nimbusdsVersion = "7.5.1"
 val smCommonVersion = "1.f898112"
 val jacksonVersion = "2.9.8"
 val jfairyVersion = "0.6.2"
-val diskresjonskodeV1Version= "1.2019.07.11-06.47-b55f47790a9d"
 val javaxJaxwsApiVersion = "2.2.1"
 val jaxwsToolsVersion = "2.3.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
@@ -82,7 +81,6 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
     implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
-    implementation("no.nav.tjenestespesifikasjoner:diskresjonskodev1-tjenestespesifikasjon:$diskresjonskodeV1Version")
     implementation("javax.activation:activation:$javaxActivationVersion")
 
     implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
