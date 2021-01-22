@@ -47,7 +47,8 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         rulesetVersion = null,
         sykmelding = generateSykemelding(perioder),
         tlfPasient = null,
-        tssid = null
+        tssid = null,
+        merknader = null
     )
 }
 
