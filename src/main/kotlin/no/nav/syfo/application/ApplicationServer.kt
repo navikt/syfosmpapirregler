@@ -1,6 +1,7 @@
 package no.nav.syfo.application
 
 import com.auth0.jwk.JwkProvider
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.ApplicationCallPipeline
@@ -42,6 +43,7 @@ class ApplicationServer(
                 jackson {
                     registerModule(JavaTimeModule())
                     registerKotlinModule()
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 }
             }
             intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
