@@ -35,7 +35,6 @@ import org.spekframework.spek2.style.specification.describe
 @KtorExperimentalAPI
 class SyketilfelleClientTest : Spek({
 
-    val fnr = "1"
     val accessTokenService = mockk<AccessTokenService>()
     val httpClient = HttpClient(Apache) {
         install(JsonFeature) {

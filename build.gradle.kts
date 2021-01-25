@@ -5,17 +5,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.3.3"
-val ktorVersion = "1.3.1"
-val prometheusVersion = "0.5.0"
-val spekVersion = "2.0.8"
-val kluentVersion = "1.39"
+val coroutinesVersion = "1.3.9"
+val ktorVersion = "1.4.1"
+val prometheusVersion = "0.6.0"
+val spekVersion = "2.0.9"
+val kluentVersion = "1.51"
 val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "5.1"
+val logstashEncoderVersion = "6.1"
 val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
-val smCommonVersion = "1.f898112"
-val jacksonVersion = "2.9.8"
+val smCommonVersion = "1.f409e4d"
+val jacksonVersion = "2.10.2"
 val jfairyVersion = "0.6.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val jaxwsToolsVersion = "2.3.1"
@@ -24,7 +24,6 @@ val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val saajVersion = "1.4.0"
 val javaxActivationVersion = "1.1.1"
-val smCommonDiagnosisCodesVersion = "1.68817ee"
 
 plugins {
     java
@@ -76,7 +75,7 @@ dependencies {
     implementation("no.nav.helse:syfosm-common-rules:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-rest-sts:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonDiagnosisCodesVersion")
+    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
