@@ -1,94 +1,166 @@
 package no.nav.syfo.client.syketilfelle
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.application.call
-import io.ktor.application.install
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.features.ContentNegotiation
-import io.ktor.jackson.jackson
-import io.ktor.response.respond
-import io.ktor.routing.post
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.mockkClass
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.runBlocking
-import no.nav.syfo.accesstoken.service.AccessTokenService
+import java.time.LocalDate
 import no.nav.syfo.client.OidcToken
 import no.nav.syfo.client.StsOidcClient
-import no.nav.syfo.generateSyketilfeller
+import no.nav.syfo.model.AktivitetIkkeMulig
+import no.nav.syfo.model.MedisinskArsak
+import no.nav.syfo.model.Periode
+import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 @KtorExperimentalAPI
 class SyketilfelleClientTest : Spek({
+    val loggingMeta = LoggingMeta("", "", "", "")
+    val oppfolgingsdato = LocalDate.of(2021, 1, 3)
+    val stsOidcClient = mockk<StsOidcClient>()
+    val httpClient = mockk<HttpClient>(relaxed = true)
 
-    val accessTokenService = mockk<AccessTokenService>()
-    val httpClient = HttpClient(Apache) {
-        install(JsonFeature) {
-            serializer = JacksonSerializer {
-                registerKotlinModule()
-                registerModule(JavaTimeModule())
-                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }
-    }
-
-    val stsOidcClient = mockkClass(StsOidcClient::class)
-    val mockHttpServerPort = ServerSocket(0).use { it.localPort }
-    val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
-    val mockServer = embeddedServer(Netty, mockHttpServerPort) {
-        install(ContentNegotiation) {
-            jackson {}
-        }
-        routing {
-            post("/oppfolgingstilfelle/ernytttilfelle/123") {
-                call.respond(true)
-            }
-            post("/oppfolgingstilfelle/ernytttilfelle/213") {
-                call.respond(false)
-            }
-        }
-    }.start()
-
-    val syketilfelleClient = SyketilfelleClient(mockHttpServerUrl, stsOidcClient, httpClient)
-
-    afterGroup {
-        mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
-    }
+    val syketilfelleClient = SyketilfelleClient("http://syfosyketilfelle", stsOidcClient, httpClient)
 
     beforeGroup {
-        coEvery { accessTokenService.getAccessToken(any()) } returns "token"
-        coEvery { stsOidcClient.oidcToken() } returns OidcToken("oidcToken", "tokentype", 100L)
+        coEvery { stsOidcClient.oidcToken() } returns OidcToken("token", "type", 1L)
     }
 
-    describe("Test SyketilfelleClient") {
+    describe("SyketilfelleClient - startdato") {
+        it("Startdato er null hvis ingen sykeforløp") {
+            val startdato = syketilfelleClient.finnStartdato(
+                emptyList(),
+                listOf(lagPeriode(fom = LocalDate.of(2020, 10, 1), tom = LocalDate.of(2020, 10, 20))),
+                loggingMeta
+            )
 
-        it("Should get syketilfelle true") {
-            runBlocking {
-                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), "123")
-                erNyttSyketilfelle shouldEqual true
-            }
+            startdato shouldEqual null
         }
+        it("Startdato er null hvis ingen perioder") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 10)
+                    )
+                ),
+                emptyList(),
+                loggingMeta
+            )
 
-        it("Should get syketilfelle false") {
-            runBlocking {
-                val erNyttSyketilfelle = syketilfelleClient.fetchErNytttilfelle(generateSyketilfeller(), "213")
-                erNyttSyketilfelle shouldEqual false
-            }
+            startdato shouldEqual null
+        }
+        it("Startdato er null hvis tom i tidligere sykeforløp er mer enn 16 dager før første fom i sykmelding") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 10)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2021, 1, 27), tom = LocalDate.of(2021, 2, 10))),
+                loggingMeta
+            )
+
+            startdato shouldEqual null
+        }
+        it("Startdato er satt hvis tom i tidligere sykeforløp er mindre enn 16 dager før første fom i sykmelding") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 10)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2021, 1, 26), tom = LocalDate.of(2021, 2, 10))),
+                loggingMeta
+            )
+
+            startdato shouldEqual oppfolgingsdato
+        }
+        it("Startdato er null hvis fom i tidligere sykeforløp er mer enn 16 dager før siste tom i sykmelding") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 10)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2020, 12, 1), tom = LocalDate.of(2020, 12, 17))),
+                loggingMeta
+            )
+
+            startdato shouldEqual null
+        }
+        it("Startdato er satt hvis fom i tidligere sykeforløp er mindre enn 16 dager før siste tom i sykmelding") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 10)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2020, 12, 1), tom = LocalDate.of(2020, 12, 18))),
+                loggingMeta
+            )
+
+            startdato shouldEqual oppfolgingsdato
+        }
+        it("Startdato er satt sykmelding overlapper med tidligere sykeforløp") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(
+                        oppfolgingsdato,
+                        fom = LocalDate.of(2021, 1, 3),
+                        tom = LocalDate.of(2021, 1, 17)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2021, 1, 15), tom = LocalDate.of(2021, 2, 10))),
+                loggingMeta
+            )
+
+            startdato shouldEqual oppfolgingsdato
+        }
+        it("Velger riktig startdato hvis flere sykeforløp og tom i tidligere sykeforløp er mindre enn 16 dager før første fom i sykmelding") {
+            val startdato = syketilfelleClient.finnStartdato(
+                listOf(
+                    lagSykeforloep(oppfolgingsdato, fom = LocalDate.of(2021, 1, 3), tom = LocalDate.of(2021, 1, 10)),
+                    lagSykeforloep(
+                        oppfolgingsdato.minusWeeks(8),
+                        fom = LocalDate.of(2020, 11, 3),
+                        tom = LocalDate.of(2020, 11, 25)
+                    )
+                ),
+                listOf(lagPeriode(fom = LocalDate.of(2021, 1, 26), tom = LocalDate.of(2021, 2, 10))),
+                loggingMeta
+            )
+
+            startdato shouldEqual oppfolgingsdato
         }
     }
 })
+
+private fun lagSykeforloep(oppfolgingsdato: LocalDate, fom: LocalDate, tom: LocalDate) =
+    Sykeforloep(
+        oppfolgingsdato,
+        listOf(SimpleSykmelding("321", fom, tom))
+    )
+
+private fun lagPeriode(fom: LocalDate, tom: LocalDate): Periode =
+    Periode(
+        fom = fom,
+        tom = tom,
+        aktivitetIkkeMulig = AktivitetIkkeMulig(
+            medisinskArsak = MedisinskArsak(null, emptyList()),
+            arbeidsrelatertArsak = null
+        ),
+        avventendeInnspillTilArbeidsgiver = null,
+        gradert = null, behandlingsdager = null, reisetilskudd = false
+    )

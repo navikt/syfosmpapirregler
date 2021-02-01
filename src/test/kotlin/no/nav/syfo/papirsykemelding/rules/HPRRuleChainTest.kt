@@ -9,6 +9,7 @@ import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.getUgyldigBehandler
+import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.rules.RuleData
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
@@ -21,7 +22,7 @@ class HPRRuleChainTest : Spek({
             HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(
                 RuleData(
                     generateSykemelding(generatePerioder()),
-                    getGyldigBehandler()
+                    BehandlerOgStartdato(getGyldigBehandler(), null)
                 )
             ) shouldEqual false
         }
@@ -131,7 +132,7 @@ class HPRRuleChainTest : Spek({
         }
     }
 
-    describe("1519 BEHANDLER_FT_KI_OVER_12_UKER") {
+    describe("1519 BEHANDLER_MT_FT_KI_OVER_12_UKER") {
 
         it("Should not trigger rule when lege") {
             val behandler = getBehandler(
@@ -146,7 +147,7 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12).plusDays(1)
             )))
-            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldEqual false
         }
 
         it("Should not trigger rule") {
@@ -162,7 +163,7 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12)
             )))
-            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldEqual false
         }
 
         it("Should trigger rule") {
@@ -178,7 +179,114 @@ class HPRRuleChainTest : Spek({
                 fom = fomDate,
                 tom = fomDate.plusWeeks(12).plusDays(1)
             )))
-            HPRRuleChain.BEHANDLER_FT_KI_OVER_12_UKER(RuleData(sykemelding, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldEqual true
+        }
+
+        it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ut fordi startdato for tidligere sykefravær gir varighet på mer enn 12 uker") {
+            val sykmelding = generateSykemelding(perioder = listOf(
+                generatePeriode(
+                    fom = LocalDate.of(2019, 3, 1),
+                    tom = LocalDate.of(2019, 3, 27)
+                )
+            ))
+
+            val behandler = Behandler(listOf(Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.KIROPRAKTOR.verdi
+                )
+            )))
+
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykmelding, BehandlerOgStartdato(behandler, LocalDate.of(2019, 1, 1)))) shouldEqual true
+        }
+
+        it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi det er nytt sykefravær") {
+            val healthInformation = generateSykemelding(perioder = listOf(
+                generatePeriode(
+                    fom = LocalDate.of(2019, 3, 1),
+                    tom = LocalDate.of(2019, 3, 27)
+                )
+            ))
+
+            val behandler = Behandler(listOf(Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.KIROPRAKTOR.verdi
+                )
+            )))
+
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, null))) shouldEqual false
+        }
+
+        it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi behandler er Lege(LE) og Kiropraktor(KI)") {
+            val healthInformation = generateSykemelding(perioder = listOf(
+                generatePeriode(
+                    fom = LocalDate.of(2019, 3, 1),
+                    tom = LocalDate.of(2019, 3, 27)
+                )
+            ))
+
+            val behandler = Behandler(listOf(Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.KIROPRAKTOR.verdi
+                )
+            ), Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.LEGE.verdi
+                )
+            )))
+
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, LocalDate.of(2019, 1, 1)))) shouldEqual false
+        }
+
+        it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi startdato for tidligere sykefravær gir varighet på mindre enn 12 uker") {
+            val healthInformation = generateSykemelding(perioder = listOf(
+                generatePeriode(
+                    fom = LocalDate.of(2019, 3, 1),
+                    tom = LocalDate.of(2019, 3, 27)
+                )
+            ))
+
+            val behandler = Behandler(listOf(Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.KIROPRAKTOR.verdi
+                )
+            )))
+
+            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, LocalDate.of(2019, 2, 20)))) shouldEqual false
         }
     }
 })
@@ -200,4 +308,4 @@ private fun getBehandler(
         )
     )
 
-private fun getRuleData(behandler: Behandler): RuleData<Behandler> = RuleData(generateSykemelding(), behandler)
+private fun getRuleData(behandler: Behandler): RuleData<BehandlerOgStartdato> = RuleData(generateSykemelding(), BehandlerOgStartdato(behandler, null))
