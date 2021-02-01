@@ -47,7 +47,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
         every { ruleHitCounterChild.inc() } returns Unit
         coEvery { pdlPersonService.hentDiskresjonskode(any(), any()) } returns ""
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns getGyldigBehandler()
-        coEvery { syketilfelleClient.fetchErNytttilfelle(any(), any()) } returns true
+        coEvery { syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(any(), any(), any()) } returns null
         coEvery { legeSuspensjonsClient.checkTherapist(any(), any(), any()) } returns Suspendert(false)
     }
 

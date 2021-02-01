@@ -2,6 +2,7 @@ package no.nav.syfo.papirsykemelding.service
 
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.Counter
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -12,7 +13,6 @@ import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
-import no.nav.syfo.client.syketilfelle.model.intoSyketilfelle
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
@@ -78,8 +78,9 @@ class PapirsykemeldingRegelService(
 
         val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata, loggingMeta)
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
-        val erNyttSyketilfelleAync = getErNyttSyketilfelleAsync(receivedSykmelding)
+        val syketilfelleStartdatoAsync = getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
 
+        val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
         val results = listOf(
             ValideringRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
             PostDiskresjonskodeRuleChain.values().executeFlow(
@@ -90,7 +91,7 @@ class PapirsykemeldingRegelService(
             PeriodLogicRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
             SyketilfelleRuleChain.values().executeFlow(
                 receivedSykmelding.sykmelding,
-                getRuleMetadataAndForstegangsSykemelding(ruleMetadata, erNyttSyketilfelleAync)
+                getRuleMetadataAndForstegangsSykemelding(ruleMetadata = ruleMetadata, erNyttSyketilfelle = syketilfelleStartdato == null)
             )
         ).flatten()
         log.info("Rules hit {}, {}", results.map { it.name }, fields(loggingMeta))
@@ -113,11 +114,11 @@ class PapirsykemeldingRegelService(
         )
     }
 
-    private suspend fun getRuleMetadataAndForstegangsSykemelding(
+    private fun getRuleMetadataAndForstegangsSykemelding(
         ruleMetadata: RuleMetadata,
-        erNyttSyketilfelleAync: Deferred<Boolean>
+        erNyttSyketilfelle: Boolean
     ): RuleMetadataAndForstegangsSykemelding =
-        RuleMetadataAndForstegangsSykemelding(ruleMetadata, erNyttSyketilfelleAync.await())
+        RuleMetadataAndForstegangsSykemelding(ruleMetadata, erNyttSyketilfelle)
 
     private fun GlobalScope.getBehandlerAsync(
         receivedSykmelding: ReceivedSykmelding,
@@ -132,14 +133,9 @@ class PapirsykemeldingRegelService(
         }
     }
 
-    private fun GlobalScope.getErNyttSyketilfelleAsync(receivedSykmelding: ReceivedSykmelding): Deferred<Boolean> {
+    private fun GlobalScope.getErNyttSyketilfelleAsync(receivedSykmelding: ReceivedSykmelding, loggingMeta: LoggingMeta): Deferred<LocalDate?> {
         return async {
-            val syketilfelle = receivedSykmelding.sykmelding.perioder.intoSyketilfelle(
-                receivedSykmelding.sykmelding.pasientAktoerId, receivedSykmelding.mottattDato,
-                receivedSykmelding.msgId
-            )
-
-            syketilfelleClient.fetchErNytttilfelle(syketilfelle, receivedSykmelding.sykmelding.pasientAktoerId)
+            syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(receivedSykmelding.sykmelding.pasientAktoerId, receivedSykmelding.sykmelding.perioder, loggingMeta)
         }
     }
 
