@@ -19,6 +19,7 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.rules.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.rules.HPRRuleChain
 import no.nav.syfo.papirsykemelding.rules.LegesuspensjonRuleChain
 import no.nav.syfo.papirsykemelding.rules.PeriodLogicRuleChain
@@ -86,7 +87,7 @@ class PapirsykemeldingRegelService(
             PostDiskresjonskodeRuleChain.values().executeFlow(
                 receivedSykmelding.sykmelding, diskresjonskodeAsync.await()
             ),
-            HPRRuleChain.values().executeFlow(receivedSykmelding.sykmelding, behandler),
+            HPRRuleChain.values().executeFlow(receivedSykmelding.sykmelding, BehandlerOgStartdato(behandler, syketilfelleStartdato)),
             LegesuspensjonRuleChain.values().executeFlow(receivedSykmelding.sykmelding, doctorSuspendedAsync.await()),
             PeriodLogicRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
             SyketilfelleRuleChain.values().executeFlow(

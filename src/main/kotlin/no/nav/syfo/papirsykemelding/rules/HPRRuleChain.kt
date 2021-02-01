@@ -1,8 +1,11 @@
 package no.nav.syfo.papirsykemelding.rules
 
+import java.time.LocalDate
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.rules.Description
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.RuleData
@@ -12,16 +15,16 @@ enum class HPRRuleChain(
     override val status: Status,
     override val messageForUser: String,
     override val messageForSender: String,
-    override val predicate: (RuleData<Behandler>) -> Boolean
-) : Rule<RuleData<Behandler>> {
+    override val predicate: (RuleData<BehandlerOgStartdato>) -> Boolean
+) : Rule<RuleData<BehandlerOgStartdato>> {
 
     @Description("Behandler er ikke gyldig i HPR på konsultasjonstidspunkt")
     BEHANDLER_IKKE_GYLDIG_I_HPR(
         1402,
         Status.MANUAL_PROCESSING,
         "Den som skrev sykmeldingen manglet autorisasjon.",
-        "Behandler er ikke gyldig i HPR på konsultasjonstidspunkt", { (_, behandler) ->
-            !behandler.godkjenninger.any {
+        "Behandler er ikke gyldig i HPR på konsultasjonstidspunkt", { (_, behandlerOgStartdato) ->
+            !behandlerOgStartdato.behandler.godkjenninger.any {
                 it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv
             }
         }),
@@ -31,8 +34,8 @@ enum class HPRRuleChain(
         1403,
         Status.MANUAL_PROCESSING,
         "Den som skrev sykmeldingen manglet autorisasjon.",
-        "Behandler har ikke til gyldig autorisasjon i HPR", { (_, behandler) ->
-            !behandler.godkjenninger.any {
+        "Behandler har ikke til gyldig autorisasjon i HPR", { (_, behandlerOgStartdato) ->
+            !behandlerOgStartdato.behandler.godkjenninger.any {
                 it.autorisasjon?.aktiv != null &&
                         it.autorisasjon.aktiv &&
                         it.autorisasjon.oid == 7704 &&
@@ -47,12 +50,12 @@ enum class HPRRuleChain(
         Status.MANUAL_PROCESSING,
         "Den som skrev sykmeldingen manglet autorisasjon.",
         "Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut eller tannlege",
-        { (_, behandler) ->
-            !behandler.godkjenninger.any {
+        { (_, behandlerOgStartdato) ->
+            !behandlerOgStartdato.behandler.godkjenninger.any {
                 it.helsepersonellkategori?.aktiv != null &&
                         it.autorisasjon?.aktiv == true && it.helsepersonellkategori.verdi != null &&
                         harAktivHelsepersonellAutorisasjonsSom(
-                            behandler, listOf(
+                            behandlerOgStartdato.behandler, listOf(
                                 HelsepersonellKategori.LEGE.verdi,
                                 HelsepersonellKategori.KIROPRAKTOR.verdi,
                                 HelsepersonellKategori.TANNLEGE.verdi,
@@ -62,26 +65,22 @@ enum class HPRRuleChain(
             }
         }),
 
-    @Description("Hvis en sykmelding fra kiropraktor eller fysioterapeut overstiger 12 uker regnet fra første sykefraværsdag skal meldingen avvises")
-    BEHANDLER_FT_KI_OVER_12_UKER(
+    @Description("Behandler er manuellterapeuter, kiropraktorer og fysioterapeuter kan skrive sykmeldinger inntil 12 uker varighet")
+    BEHANDLER_MT_FT_KI_OVER_12_UKER(
         1519,
         Status.MANUAL_PROCESSING,
-        "Den som skrev sykmeldingen mangler autorisasjon.",
-        "Behandler er kiropraktor eller fysioterapeut overstiger 12 uker regnet fra første sykefraværsdag",
-        { (sykmelding, behandler) ->
-            sykmelding.perioder.any { (it.fom..it.tom).daysBetween() > 84 } &&
-                    !harAktivHelsepersonellAutorisasjonsSom(
-                        behandler, listOf(
-                            HelsepersonellKategori.LEGE.verdi,
-                            HelsepersonellKategori.TANNLEGE.verdi
-                        )
-                    ) &&
-                    harAktivHelsepersonellAutorisasjonsSom(
-                        behandler, listOf(
-                            HelsepersonellKategori.KIROPRAKTOR.verdi,
-                            HelsepersonellKategori.FYSIOTERAPAEUT.verdi
-                        )
-                    )
+        "Sykmeldingen din er avvist fordi den som sykmeldte deg ikke kan skrive en sykmelding som gjør at sykefraværet ditt overstiger 12 uker",
+        "Sykmeldingen kan ikke rettes, det må skrives en ny. Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
+                "Sykmeldingen er avvist fordi det totale sykefraværet overstiger 12 uker (du som KI/MT/FT kan ikke sykmelde utover 12 uker)", { (sykmelding, behandlerOgStartdato) ->
+            ((sykmelding.perioder.sortedFOMDate().first()..sykmelding.perioder.sortedTOMDate().last()).daysBetween() > 84 ||
+                    (behandlerOgStartdato.startdato != null && (behandlerOgStartdato.startdato..sykmelding.perioder.sortedTOMDate().last()).daysBetween() > 84)) &&
+                    !harAktivHelsepersonellAutorisasjonsSom(behandlerOgStartdato.behandler, listOf(
+                        HelsepersonellKategori.LEGE.verdi,
+                        HelsepersonellKategori.TANNLEGE.verdi)) &&
+                    harAktivHelsepersonellAutorisasjonsSom(behandlerOgStartdato.behandler, listOf(
+                        HelsepersonellKategori.KIROPRAKTOR.verdi,
+                        HelsepersonellKategori.MANUELLTERAPEUT.verdi,
+                        HelsepersonellKategori.FYSIOTERAPAEUT.verdi))
         }),
 }
 
@@ -93,3 +92,8 @@ fun harAktivHelsepersonellAutorisasjonsSom(behandler: Behandler, helsepersonerVe
                     it.aktiv && it.verdi in helsepersonerVerdi
                 }
     }
+
+data class BehandlerOgStartdato(
+    val behandler: Behandler,
+    val startdato: LocalDate?
+)
