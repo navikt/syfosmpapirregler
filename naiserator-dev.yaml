@@ -55,5 +55,3 @@ spec:
       value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
     - name: HELSENETTPROXY_ID
       value: c18eba24-f676-47db-9a97-3c66e9304aee
-    - name: PDL_GRAPHQL_PATH
-      value: https://pdl-api.nais.preprod.local/graphql
