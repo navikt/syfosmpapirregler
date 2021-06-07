@@ -47,10 +47,8 @@ fun main() {
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, stsClient, httpClient)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenService, httpClient)
-    val pdlPersonService = ClientFactory.createPdlPersonService(env, stsClient, httpClient)
 
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
-        pdlPersonService = pdlPersonService,
         legeSuspensjonClient = legeSuspensjonClient,
         norskHelsenettClient = norskHelsenettClient,
         syketilfelleClient = syketilfelleClient

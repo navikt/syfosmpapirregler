@@ -14,8 +14,6 @@ import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
-import no.nav.syfo.pdl.PdlFactory
-import no.nav.syfo.pdl.service.PdlPersonService
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 
 class ClientFactory {
@@ -80,14 +78,6 @@ class ClientFactory {
             httpClient: HttpClient
         ): LegeSuspensjonClient {
             return LegeSuspensjonClient(env.legeSuspensjonEndpointURL, credentials, stsClient, httpClient)
-        }
-
-        fun createPdlPersonService(
-            env: Environment,
-            stsClient: StsOidcClient,
-            httpClient: HttpClient
-        ): PdlPersonService {
-            return PdlFactory.getPdlService(env, stsClient, httpClient)
         }
     }
 }

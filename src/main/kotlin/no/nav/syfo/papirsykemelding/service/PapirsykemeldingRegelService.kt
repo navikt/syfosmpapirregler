@@ -23,11 +23,9 @@ import no.nav.syfo.papirsykemelding.rules.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.rules.HPRRuleChain
 import no.nav.syfo.papirsykemelding.rules.LegesuspensjonRuleChain
 import no.nav.syfo.papirsykemelding.rules.PeriodLogicRuleChain
-import no.nav.syfo.papirsykemelding.rules.PostDiskresjonskodeRuleChain
 import no.nav.syfo.papirsykemelding.rules.RuleMetadataAndForstegangsSykemelding
 import no.nav.syfo.papirsykemelding.rules.SyketilfelleRuleChain
 import no.nav.syfo.papirsykemelding.rules.ValideringRuleChain
-import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.rules.RULE_HIT_COUNTER
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.executeFlow
@@ -37,7 +35,6 @@ import org.slf4j.LoggerFactory
 @KtorExperimentalAPI
 class PapirsykemeldingRegelService(
     private val ruleHitStatusCounter: Counter = RULE_HIT_STATUS_COUNTER,
-    private val pdlPersonService: PdlPersonService,
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val syketilfelleClient: SyketilfelleClient,
     private val norskHelsenettClient: NorskHelsenettClient
@@ -77,16 +74,12 @@ class PapirsykemeldingRegelService(
     ): ValidationResult = with(GlobalScope) {
         val behandler = getBehandlerAsync(receivedSykmelding, loggingMeta).await() ?: return getAndRegisterBehandlerNotInHPR()
 
-        val diskresjonskodeAsync = hentDiskresjonskodeAsync(ruleMetadata, loggingMeta)
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
         val syketilfelleStartdatoAsync = getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
 
         val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
         val results = listOf(
             ValideringRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
-            PostDiskresjonskodeRuleChain.values().executeFlow(
-                receivedSykmelding.sykmelding, diskresjonskodeAsync.await()
-            ),
             HPRRuleChain.values().executeFlow(receivedSykmelding.sykmelding, BehandlerOgStartdato(behandler, syketilfelleStartdato)),
             LegesuspensjonRuleChain.values().executeFlow(receivedSykmelding.sykmelding, doctorSuspendedAsync.await()),
             PeriodLogicRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
@@ -150,9 +143,6 @@ class PapirsykemeldingRegelService(
             ).suspendert
         }
     }
-
-    private fun GlobalScope.hentDiskresjonskodeAsync(ruleMetadata: RuleMetadata, loggingMeta: LoggingMeta) =
-        async { pdlPersonService.hentDiskresjonskode(ruleMetadata.patientPersonNumber, loggingMeta) }
 
     private fun validationResult(results: List<Rule<Any>>): ValidationResult = ValidationResult(
         status = results

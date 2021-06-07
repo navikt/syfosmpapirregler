@@ -11,7 +11,6 @@ data class Environment(
     val legeSuspensjonEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_ENDPOINT_URL", "http://btsys"),
     val norskHelsenettEndpointURL: String = getEnvVar("HELSENETT_ENDPOINT_URL", "http://syfohelsenettproxy"),
     val syketilfelleEndpointURL: String = getEnvVar("SYKETILLFELLE_ENDPOINT_URL", "http://syfosyketilfelle.flex"),
-    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH"),
     val appIds: List<String> = getEnvVar("ALLOWED_APP_IDS", "")
         .split(",")
         .map { it.trim() }
