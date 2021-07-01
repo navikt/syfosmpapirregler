@@ -41,6 +41,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
             clientId = "1",
             securityTokenServiceURL = "",
             helsenettproxyId = "",
+            norskHelsenettEndpointURL = "url",
             aadAccessTokenUrl = "")
         val path = "src/test/resources/jwkset.json"
         val uri = File(path).toURI().toURL()
