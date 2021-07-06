@@ -28,8 +28,8 @@ class ClientFactory {
         }
 
         @KtorExperimentalAPI
-        fun createStsOidcClient(credentials: VaultCredentials): StsOidcClient {
-            return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword)
+        fun createStsOidcClient(credentials: VaultCredentials, env: Environment): StsOidcClient {
+            return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword, env.securityTokenServiceURL)
         }
 
         fun createHttpClient(): HttpClient {

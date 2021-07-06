@@ -39,7 +39,6 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
             jwtIssuer = "https://sts.issuer.net/myid",
             appIds = "2,3".split(","),
             clientId = "1",
-            securityTokenServiceURL = "",
             helsenettproxyId = "",
             norskHelsenettEndpointURL = "url",
             aadAccessTokenUrl = "")
