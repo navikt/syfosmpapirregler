@@ -2,9 +2,9 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: syfosmpapirregler
-  namespace: default
+  namespace: teamsykmelding
   labels:
-    team: teamsykefravr
+    team: teamsykmelding
 spec:
   image: {{ image }}
   replicas:
@@ -22,7 +22,7 @@ spec:
     path: /is_ready
     initialDelay: 30
     periodSeconds: 5
-    timeout: 5
+    timeout: 1
   prometheus:
     enabled: true
     path: /prometheus
@@ -35,6 +35,11 @@ spec:
       memory: 512Mi
   vault:
     enabled: true
+    paths:
+      - kvPath: serviceuser/data/dev/srvsyfosmpapirregler
+        mountPath: /secrets/serviceuser
+      - kvPath: /kv/preprod/fss/syfosmpapirregler/teamsykmelding
+        mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
   ingresses:
     - "https://syfosmpapirregler.nais.preprod.local"
@@ -45,12 +50,6 @@ spec:
       value: https://sts.windows.net/966ac572-f5b7-4bbe-aa88-c76419c0f851/
     - name: CLIENT_ID
       value: c35dd346-0d3d-4b68-b883-a324c0b1098d
-    - name: SECURITY_TOKEN_SERVICE_URL
-      value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
-    - name: HELSEPERSONELL_V1_ENDPOINT_URL
-      vaule: https://pep-gw-q1.oera-q.local:9443/samhandler/helse/helsepersonell/v1
-    - name: LEGE_SUSPENSJON_ENDPOINT_URL
-      value: http://btsys
     - name: AADACCESSTOKEN_URL
       value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
     - name: HELSENETTPROXY_ID
