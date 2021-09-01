@@ -33,6 +33,15 @@ spec:
     requests:
       cpu: 100m
       memory: 512Mi
+  azure:
+    application:
+      enabled: true
+      tenant: trygdeetaten.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: syfosmpapirmottak
+        - application: smregistrering-backend
   vault:
     enabled: true
     paths:
