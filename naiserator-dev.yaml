@@ -47,8 +47,6 @@ spec:
     paths:
       - kvPath: serviceuser/data/dev/srvsyfosmpapirregler
         mountPath: /secrets/serviceuser
-      - kvPath: /kv/preprod/fss/syfosmpapirregler/teamsykmelding
-        mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
   ingresses:
     - "https://syfosmpapirregler.nais.preprod.local"
@@ -59,9 +57,7 @@ spec:
       value: https://sts.windows.net/966ac572-f5b7-4bbe-aa88-c76419c0f851/
     - name: CLIENT_ID
       value: c35dd346-0d3d-4b68-b883-a324c0b1098d
-    - name: AADACCESSTOKEN_URL
-      value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
-    - name: HELSENETTPROXY_ID
-      value: c18eba24-f676-47db-9a97-3c66e9304aee
+    - name: HELSENETT_SCOPE
+      value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
     - name: HELSENETT_ENDPOINT_URL
       value: https://syfohelsenettproxy.nais.preprod.local

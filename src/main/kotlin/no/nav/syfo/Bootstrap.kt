@@ -5,11 +5,10 @@ import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import no.nav.syfo.accesstoken.client.AccessTokenClient
-import no.nav.syfo.accesstoken.service.AccessTokenService
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.ClientFactory
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import org.slf4j.Logger
@@ -31,18 +30,16 @@ fun main() {
 
     val httpClient = ClientFactory.createHttpClient()
     val httpClientProxy = ClientFactory.createHttpClientProxy()
-    val accessTokenService = AccessTokenService(
-        AccessTokenClient(
-            env.aadAccessTokenUrl,
-            env.clientId,
-            credentials.clientsecret,
+    val accessTokenClientV2 = AccessTokenClientV2(
+            env.aadAccessTokenV2Url,
+            env.clientIdV2,
+            env.clientSecretV2,
             httpClientProxy
-        )
     )
     val stsClient = ClientFactory.createStsOidcClient(credentials, env)
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, stsClient, httpClient)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
-    val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenService, httpClient)
+    val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenClientV2, httpClient)
 
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
         legeSuspensjonClient = legeSuspensjonClient,

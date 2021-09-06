@@ -1,3 +1,4 @@
+package no.nav.syfo.client.norskhelsenett
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -24,21 +25,18 @@ import io.mockk.mockk
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
-import no.nav.syfo.accesstoken.service.AccessTokenService
-import no.nav.syfo.client.norskhelsenett.Behandler
-import no.nav.syfo.client.norskhelsenett.Godkjenning
-import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-private val fnr = "12345647981"
+private const val fnr = "12345647981"
 
 @InternalAPI
 @KtorExperimentalAPI
 class NorskHelsenettClientTest : Spek({
-    val accessTokenService = mockk<AccessTokenService>()
+    val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     val httpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer {
@@ -58,7 +56,7 @@ class NorskHelsenettClientTest : Spek({
             jackson {}
         }
         routing {
-            get("/syfohelsenettproxy/api/behandler") {
+            get("/syfohelsenettproxy/api/v2/behandler") {
                 when {
                     call.request.headers["behandlerFnr"] == fnr -> call.respond(Behandler(listOf(Godkjenning())))
                     call.request.headers["behandlerFnr"] == "behandlerFinnesIkke" -> call.respond(HttpStatusCode.NotFound, "Behandler finnes ikke")
@@ -68,14 +66,14 @@ class NorskHelsenettClientTest : Spek({
         }
     }.start()
 
-    val norskHelsenettClient = NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenService, "resourceId", httpClient)
+    val norskHelsenettClient = NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
 
     afterGroup {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
 
     beforeGroup {
-        coEvery { accessTokenService.getAccessToken(any()) } returns "token"
+        coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
     describe("Test NorskHelsenettClient") {

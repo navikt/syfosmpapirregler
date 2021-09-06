@@ -13,7 +13,7 @@ import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.util.KtorExperimentalAPI
 import java.io.IOException
 import net.logstash.logback.argument.StructuredArguments
-import no.nav.syfo.accesstoken.service.AccessTokenService
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import org.slf4j.Logger
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 @KtorExperimentalAPI
 class NorskHelsenettClient(
     private val endpointUrl: String,
-    private val accessTokenClient: AccessTokenService,
+    private val accessTokenClient: AccessTokenClientV2,
     private val resourceId: String,
     private val httpClient: HttpClient
 ) {
@@ -33,9 +33,9 @@ class NorskHelsenettClient(
         retryIntervals = arrayOf(500L, 1000L, 1000L)
     ) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
-        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/behandler") {
+        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/v2/behandler") {
             accept(ContentType.Application.Json)
-            val accessToken = accessTokenClient.getAccessToken(resourceId)
+            val accessToken = accessTokenClient.getAccessTokenV2(resourceId)
             headers {
                 append("Authorization", "Bearer $accessToken")
                 append("Nav-CallId", msgId)

@@ -18,13 +18,11 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
-import io.mockk.mockk
 import io.mockk.mockkClass
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.VaultCredentials
-import no.nav.syfo.accesstoken.service.AccessTokenService
 import no.nav.syfo.client.OidcToken
 import no.nav.syfo.client.StsOidcClient
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
@@ -37,7 +35,6 @@ import org.spekframework.spek2.style.specification.describe
 class LegeSuspensjonClientTest : Spek({
 
     val fnr = "1"
-    val accessTokenService = mockk<AccessTokenService>()
     val httpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer {
@@ -50,7 +47,6 @@ class LegeSuspensjonClientTest : Spek({
     }
 
     val stsOidcClient = mockkClass(StsOidcClient::class)
-    val clientSecret = "secret"
     val mockHttpServerPort = ServerSocket(0).use { it.localPort }
     val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
     val mockServer = embeddedServer(Netty, mockHttpServerPort) {
@@ -70,7 +66,7 @@ class LegeSuspensjonClientTest : Spek({
 
     val legeSuspensjonClient = LegeSuspensjonClient(
         "$mockHttpServerUrl/legeSuspensjonClient",
-        VaultCredentials("username", "password", clientSecret),
+        VaultCredentials("username", "password"),
         stsOidcClient, httpClient
     )
     afterGroup {
@@ -78,7 +74,6 @@ class LegeSuspensjonClientTest : Spek({
     }
 
     beforeGroup {
-        coEvery { accessTokenService.getAccessToken(any()) } returns "token"
         coEvery { stsOidcClient.oidcToken() } returns OidcToken("oidcToken", "tokentype", 100L)
     }
 
