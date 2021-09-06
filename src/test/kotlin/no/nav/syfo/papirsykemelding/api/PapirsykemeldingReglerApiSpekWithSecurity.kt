@@ -1,30 +1,28 @@
 package no.nav.syfo.papirsykemelding.api
 
-import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.application.install
 import io.ktor.auth.authenticate
-import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
+import io.mockk.coEvery
 import io.mockk.mockk
-import java.io.File
-import no.nav.syfo.Environment
-import no.nav.syfo.application.authentication.setupAuth
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
+import no.nav.syfo.fakeJWTApi
 import no.nav.syfo.generateReceivedSykemelding
 import no.nav.syfo.genereateJWT
 import no.nav.syfo.getStringValue
 import no.nav.syfo.getValidResult
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
+import no.nav.syfo.setUpAuth
+import no.nav.syfo.setUpTestApplication
 import org.amshove.kluent.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -32,38 +30,25 @@ import org.spekframework.spek2.style.specification.describe
 @KtorExperimentalAPI
 class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
-    io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
-    fun withTestApplicationForApi(receiver: TestApplicationEngine, block: TestApplicationEngine.() -> Unit) {
-        receiver.start()
-        val environment = Environment(8080,
-            jwtIssuer = "https://sts.issuer.net/myid",
-            appIds = "2,3".split(","),
-            clientId = "1",
-            helsenettproxyScope = "",
-            norskHelsenettEndpointURL = "url",
-            aadAccessTokenV2Url = "",
-            clientIdV2 = "",
-            clientSecretV2 = ""
-        )
-        val path = "src/test/resources/jwkset.json"
-        val uri = File(path).toURI().toURL()
-        val jwkProvider = JwkProviderBuilder(uri).build()
-        receiver.application.install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                registerKotlinModule()
-            }
-        }
-        receiver.application.setupAuth(environment, jwkProvider)
-        receiver.application.routing { authenticate { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) } }
+    coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
 
-        return receiver.block()
+    val randomPort = ServerSocket(0).use { it.localPort }
+    val fakeApi = fakeJWTApi(randomPort)
+    afterGroup {
+        fakeApi.stop(TimeUnit.SECONDS.toMillis(0), TimeUnit.SECONDS.toMillis(0))
     }
 
     describe("Validate papirsykemelding with authentication") {
-        withTestApplicationForApi(TestApplicationEngine()) {
+        with(TestApplicationEngine()) {
+            setUpTestApplication()
+            setUpAuth("http://localhost:$randomPort/fake.jwt", listOf("consumerClientId"))
+            application.routing {
+                route("/v2") {
+                    authenticate("servicebrukerAADv2") { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
+                }
+            }
             it("Should return 401 Unauthorized") {
-                with(handleRequest(HttpMethod.Post, "/v1/rules/validate") {
+                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                     addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                     setBody(getStringValue(generateReceivedSykemelding()))
                 }) {
@@ -72,25 +57,25 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
             }
 
             it("should return 200 OK") {
-                with(handleRequest(HttpMethod.Post, "/v1/rules/validate") {
+                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                     addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                     setBody(getStringValue(generateReceivedSykemelding()))
                     addHeader(
                         "Authorization",
-                        "Bearer ${genereateJWT("2", "1")}"
+                        "Bearer ${genereateJWT(audience = "regel-clientId-v2")}"
                     )
                 }) {
                     response.status() shouldBe HttpStatusCode.OK
                 }
             }
 
-            it("Should return 401 Unauthorized when appId not allowed") {
-                with(handleRequest(HttpMethod.Post, "/v1/rules/validate") {
+            it("Should return 401 Unauthorized when wrong audience") {
+                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                     addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                     setBody(getStringValue(generateReceivedSykemelding()))
                     addHeader(
                         "Authorization",
-                        "Bearer ${genereateJWT("5", "1")}"
+                        "Bearer ${genereateJWT(audience = "my random app")}"
                     )
                 }) {
                     response.status() shouldBe HttpStatusCode.Unauthorized

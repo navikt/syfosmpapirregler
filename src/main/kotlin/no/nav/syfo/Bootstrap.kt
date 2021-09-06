@@ -27,6 +27,10 @@ fun main() {
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
+    val jwkProviderAadV2 = JwkProviderBuilder(URL(env.jwkKeysUrlV2))
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
 
     val httpClient = ClientFactory.createHttpClient()
     val httpClientProxy = ClientFactory.createHttpClientProxy()
@@ -47,10 +51,11 @@ fun main() {
         syketilfelleClient = syketilfelleClient
     )
     val applicationEngine = createApplicationEngine(
-        papirsykemeldingRegelService,
-        jwkProvider,
-        env,
-        applicationState
+        papirsykemeldingRegelService = papirsykemeldingRegelService,
+        jwkProvider = jwkProvider,
+        env = env,
+        applicationState = applicationState,
+        jwkProviderAadV2 = jwkProviderAadV2
     )
 
     val applicationServer = ApplicationServer(applicationEngine, applicationState)

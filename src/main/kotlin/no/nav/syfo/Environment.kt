@@ -17,6 +17,8 @@ data class Environment(
     val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
     val clientSecretV2: String = getEnvVar("AZURE_APP_CLIENT_SECRET"),
     val helsenettproxyScope: String = getEnvVar("HELSENETT_SCOPE"),
+    val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
+    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
     val appIds: List<String> = getEnvVar("ALLOWED_APP_IDS", "")
         .split(",")
         .map { it.trim() }

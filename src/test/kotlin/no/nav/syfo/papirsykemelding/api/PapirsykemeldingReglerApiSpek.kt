@@ -42,7 +42,7 @@ class PapirsykemeldingReglerApiSpek : Spek({
             application.routing { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
 
             it("Should validate papirsykemelding") {
-                with(handleRequest(HttpMethod.Post, "/v1/rules/validate") {
+                with(handleRequest(HttpMethod.Post, "/rules/validate") {
                     addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                     setBody(
                         getStringValue(
@@ -54,7 +54,7 @@ class PapirsykemeldingReglerApiSpek : Spek({
                 }
             }
             it("Should not validate papirsykemelding") {
-                with(handleRequest(HttpMethod.Post, "/v1/rules/validate") {
+                with(handleRequest(HttpMethod.Post, "/rules/validate") {
                     addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                     io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getInvalidResult()
                     setBody(getStringValue(generateReceivedSykemelding()))
