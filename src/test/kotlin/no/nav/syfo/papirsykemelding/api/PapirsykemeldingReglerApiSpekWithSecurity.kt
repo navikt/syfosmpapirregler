@@ -41,7 +41,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     describe("Validate papirsykemelding with authentication") {
         with(TestApplicationEngine()) {
             setUpTestApplication()
-            setUpAuth("http://localhost:$randomPort/fake.jwt", listOf("consumerClientId"))
+            setUpAuth("http://localhost:$randomPort/fake.jwt")
             application.routing {
                 route("/v2") {
                     authenticate("servicebrukerAADv2") { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }

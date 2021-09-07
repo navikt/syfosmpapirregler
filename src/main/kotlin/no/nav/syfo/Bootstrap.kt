@@ -23,10 +23,6 @@ fun main() {
     val applicationState = ApplicationState()
     DefaultExports.initialize()
 
-    val jwkProvider = JwkProviderBuilder(URL(env.jwkKeysUrl))
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
     val jwkProviderAadV2 = JwkProviderBuilder(URL(env.jwkKeysUrlV2))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -52,7 +48,6 @@ fun main() {
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,
-        jwkProvider = jwkProvider,
         env = env,
         applicationState = applicationState,
         jwkProviderAadV2 = jwkProviderAadV2

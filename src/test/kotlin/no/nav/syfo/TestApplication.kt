@@ -34,20 +34,14 @@ fun TestApplicationEngine.setUpTestApplication() {
     }
 }
 
-val testAuthorizedUsers = listOf("smpapirmottak")
-
-fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url", audience: List<String> = testAuthorizedUsers): Environment {
+fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
     val env = Environment(
-        jwkKeysUrl = jwkKeysUrl,
-        appIds = audience,
         helsenettproxyScope = "",
         norskHelsenettEndpointURL = "url",
         aadAccessTokenV2Url = "",
-        jwtIssuer = "https://sts.issuer.net/myid",
-        clientId = "regel-clientId",
         clientIdV2 = "regel-clientId-v2",
         clientSecretV2 = "",
-        jwkKeysUrlV2 = "https://keys.url",
+        jwkKeysUrlV2 = jwkKeysUrl,
         jwtIssuerV2 = "https://sts.issuer.net/myidV2"
     )
 
@@ -55,6 +49,6 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url", audience: List<S
     val uri = Paths.get(path).toUri().toURL()
     val jwkProvider = JwkProviderBuilder(uri).build()
 
-    application.setupAuth(env, jwkProvider, jwkProvider)
+    application.setupAuth(env, jwkProvider)
     return env
 }
