@@ -9,7 +9,6 @@ import io.ktor.util.KtorExperimentalAPI
 import java.net.ProxySelector
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultCredentials
-import no.nav.syfo.accesstoken.service.AccessTokenService
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
@@ -60,13 +59,13 @@ class ClientFactory {
 
         fun createNorskHelsenettClient(
             env: Environment,
-            accessTokenService: AccessTokenService,
+            accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient
         ): NorskHelsenettClient {
             return NorskHelsenettClient(
                 env.norskHelsenettEndpointURL,
-                accessTokenService,
-                env.helsenettproxyId,
+                accessTokenClientV2,
+                env.helsenettproxyScope,
                 httpClient
             )
         }
