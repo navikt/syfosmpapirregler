@@ -30,7 +30,6 @@ import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 @KtorExperimentalAPI
 fun createApplicationEngine(
     papirsykemeldingRegelService: PapirsykemeldingRegelService,
-    jwkProvider: JwkProvider,
     env: Environment,
     applicationState: ApplicationState,
     jwkProviderAadV2: JwkProvider
@@ -38,16 +37,10 @@ fun createApplicationEngine(
     embeddedServer(Netty, env.applicationPort) {
         setupAuth(
             environment = env,
-            jwkProvider = jwkProvider,
             jwkProviderAadV2 = jwkProviderAadV2
         )
         routing {
             registerNaisApi(applicationState)
-            route("/api/v1") {
-                authenticate(("servicebrukerAADv1")) {
-                    registerPapirsykemeldingsRegler(papirsykemeldingRegelService)
-                }
-            }
             route("/api/v2") {
                 authenticate("servicebrukerAADv2") {
                     registerPapirsykemeldingsRegler(papirsykemeldingRegelService)

@@ -51,12 +51,6 @@ spec:
   ingresses:
     - "https://syfosmpapirregler.nais.preprod.local"
   env:
-    - name: ALLOWED_APP_IDS
-      value: a99ce657-bce8-4f11-8dd6-5624038f4820,6e2c2c7d-9bc1-45f9-a76c-9d32b489268a
-    - name: JWT_ISSUER
-      value: https://sts.windows.net/966ac572-f5b7-4bbe-aa88-c76419c0f851/
-    - name: CLIENT_ID
-      value: c35dd346-0d3d-4b68-b883-a324c0b1098d
     - name: HELSENETT_SCOPE
       value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
     - name: HELSENETT_ENDPOINT_URL

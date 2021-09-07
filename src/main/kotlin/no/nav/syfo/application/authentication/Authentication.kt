@@ -17,23 +17,9 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler.authenticat
 
 fun Application.setupAuth(
     environment: Environment,
-    jwkProvider: JwkProvider,
     jwkProviderAadV2: JwkProvider
 ) {
     install(Authentication) {
-        jwt("servicebrukerAADv1") {
-            verifier(jwkProvider, environment.jwtIssuer)
-            validate { credentials ->
-                val appId: String = credentials.payload.getClaim("appid").asString()
-                log.info("authorization attempt for $appId")
-                if (appId in environment.appIds && environment.clientId in credentials.payload.audience) {
-                    log.info("authorization ok")
-                    return@validate JWTPrincipal(credentials.payload)
-                }
-                log.info("authorization failed")
-                return@validate null
-            }
-        }
         jwt(name = "servicebrukerAADv2") {
             verifier(jwkProviderAadV2, environment.jwtIssuerV2)
             validate { credentials ->
