@@ -1,8 +1,5 @@
 package no.nav.syfo
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.UUID
 import no.nav.syfo.client.norskhelsenett.Godkjenning
 import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.model.Adresse
@@ -24,6 +21,9 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.sm.Diagnosekoder
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
 
 val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
 val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
@@ -46,7 +46,10 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         sykmelding = generateSykemelding(perioder),
         tlfPasient = null,
         tssid = null,
-        merknader = null
+        merknader = null,
+        legeHelsepersonellkategori = null,
+        legeHprNr = null,
+        partnerreferanse = null
     )
 }
 
@@ -57,7 +60,8 @@ fun generateSykemelding(
     kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
     diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()
 ): Sykmelding {
-    return Sykmelding("1",
+    return Sykmelding(
+        "1",
         "1",
         "2",
         generateMedisinskVurdering(diagnose = diagnose),
@@ -78,19 +82,21 @@ fun generateSykemelding(
         null,
         signaturDateTime,
         null
-        )
+    )
 }
 
 fun generatePerioder(): List<Periode> {
-    return listOf(Periode(
-        LocalDate.of(2019, 1, 1),
-        LocalDate.of(2019, 1, 4),
-        AktivitetIkkeMulig(null, null),
-        null,
-        null,
-        null,
-        false
-    ))
+    return listOf(
+        Periode(
+            LocalDate.of(2019, 1, 1),
+            LocalDate.of(2019, 1, 4),
+            AktivitetIkkeMulig(null, null),
+            null,
+            null,
+            null,
+            false
+        )
+    )
 }
 fun generatePeriode(
     fom: LocalDate = LocalDate.now(),
@@ -111,8 +117,10 @@ fun generatePeriode(
 )
 
 fun generateBehandler(): Behandler {
-    return Behandler("test", null, "Tester", "1",
-        "12054475942", null, null, generateAdresse(), null)
+    return Behandler(
+        "test", null, "Tester", "1",
+        "12054475942", null, null, generateAdresse(), null
+    )
 }
 
 fun generateAdresse(): Adresse {
@@ -148,11 +156,15 @@ fun getValidResult(): ValidationResult {
 
 fun getInvalidResult(): ValidationResult {
     return ValidationResult(
-        Status.MANUAL_PROCESSING, listOf(
-            RuleInfo("Ingen perioder",
+        Status.MANUAL_PROCESSING,
+        listOf(
+            RuleInfo(
+                "Ingen perioder",
                 "Ingen perioder registrert",
-                "Ingen perioder registrert", Status.MANUAL_PROCESSING)
-        ))
+                "Ingen perioder registrert", Status.MANUAL_PROCESSING
+            )
+        )
+    )
 }
 
 fun getBehandlerNotInHPRRule(): ValidationResult {

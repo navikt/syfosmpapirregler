@@ -10,16 +10,14 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
-import io.ktor.util.KtorExperimentalAPI
-import java.io.IOException
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.IOException
 
-@KtorExperimentalAPI
 class NorskHelsenettClient(
     private val endpointUrl: String,
     private val accessTokenClient: AccessTokenClientV2,

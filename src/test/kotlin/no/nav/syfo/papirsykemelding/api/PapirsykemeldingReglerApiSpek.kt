@@ -13,18 +13,18 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
-import io.ktor.util.KtorExperimentalAPI
 import io.mockk.mockk
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.generateReceivedSykemelding
 import no.nav.syfo.getInvalidResult
 import no.nav.syfo.getStringValue
 import no.nav.syfo.getValidResult
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 class PapirsykemeldingReglerApiSpek : Spek({
 
     describe("Validate papirsykemelding") {
@@ -42,25 +42,30 @@ class PapirsykemeldingReglerApiSpek : Spek({
             application.routing { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
 
             it("Should validate papirsykemelding") {
-                with(handleRequest(HttpMethod.Post, "/rules/validate") {
-                    addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    setBody(
-                        getStringValue(
-                            generateReceivedSykemelding()
-                        ))
-                }) {
-                    response.content shouldEqual getStringValue(getValidResult())
-                    response.status() shouldEqual HttpStatusCode.OK
+                with(
+                    handleRequest(HttpMethod.Post, "/rules/validate") {
+                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        setBody(
+                            getStringValue(
+                                generateReceivedSykemelding()
+                            )
+                        )
+                    }
+                ) {
+                    response.content shouldBeEqualTo getStringValue(getValidResult())
+                    response.status() shouldBeEqualTo HttpStatusCode.OK
                 }
             }
             it("Should not validate papirsykemelding") {
-                with(handleRequest(HttpMethod.Post, "/rules/validate") {
-                    addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getInvalidResult()
-                    setBody(getStringValue(generateReceivedSykemelding()))
-                }) {
-                    response.content shouldEqual getStringValue(getInvalidResult())
-                    response.status() shouldEqual HttpStatusCode.OK
+                with(
+                    handleRequest(HttpMethod.Post, "/rules/validate") {
+                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getInvalidResult()
+                        setBody(getStringValue(generateReceivedSykemelding()))
+                    }
+                ) {
+                    response.content shouldBeEqualTo getStringValue(getInvalidResult())
+                    response.status() shouldBeEqualTo HttpStatusCode.OK
                 }
             }
         }

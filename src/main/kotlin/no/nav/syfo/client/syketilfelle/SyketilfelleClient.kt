@@ -5,8 +5,6 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.http.ContentType
-import io.ktor.util.KtorExperimentalAPI
-import java.time.LocalDate
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.client.StsOidcClient
 import no.nav.syfo.log
@@ -14,8 +12,8 @@ import no.nav.syfo.model.Periode
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
+import java.time.LocalDate
 
-@KtorExperimentalAPI
 class SyketilfelleClient(
     private val endpointUrl: String,
     private val stsClient: StsOidcClient,

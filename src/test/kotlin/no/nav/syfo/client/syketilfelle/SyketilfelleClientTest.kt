@@ -1,21 +1,19 @@
 package no.nav.syfo.client.syketilfelle
 
 import io.ktor.client.HttpClient
-import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import java.time.LocalDate
 import no.nav.syfo.client.OidcToken
 import no.nav.syfo.client.StsOidcClient
 import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.MedisinskArsak
 import no.nav.syfo.model.Periode
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.time.LocalDate
 
-@KtorExperimentalAPI
 class SyketilfelleClientTest : Spek({
     val loggingMeta = LoggingMeta("", "", "", "")
     val oppfolgingsdato = LocalDate.of(2021, 1, 3)
@@ -36,7 +34,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual null
+            startdato shouldBeEqualTo null
         }
         it("Startdato er null hvis ingen perioder") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -51,7 +49,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual null
+            startdato shouldBeEqualTo null
         }
         it("Startdato er null hvis tom i tidligere sykeforløp er mer enn 16 dager før første fom i sykmelding") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -66,7 +64,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual null
+            startdato shouldBeEqualTo null
         }
         it("Startdato er satt hvis tom i tidligere sykeforløp er mindre enn 16 dager før første fom i sykmelding") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -81,7 +79,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual oppfolgingsdato
+            startdato shouldBeEqualTo oppfolgingsdato
         }
         it("Startdato er null hvis fom i tidligere sykeforløp er mer enn 16 dager før siste tom i sykmelding") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -96,7 +94,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual null
+            startdato shouldBeEqualTo null
         }
         it("Startdato er satt hvis fom i tidligere sykeforløp er mindre enn 16 dager før siste tom i sykmelding") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -111,7 +109,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual oppfolgingsdato
+            startdato shouldBeEqualTo oppfolgingsdato
         }
         it("Startdato er satt sykmelding overlapper med tidligere sykeforløp") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -126,7 +124,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual oppfolgingsdato
+            startdato shouldBeEqualTo oppfolgingsdato
         }
         it("Velger riktig startdato hvis flere sykeforløp og tom i tidligere sykeforløp er mindre enn 16 dager før første fom i sykmelding") {
             val startdato = syketilfelleClient.finnStartdato(
@@ -142,7 +140,7 @@ class SyketilfelleClientTest : Spek({
                 loggingMeta
             )
 
-            startdato shouldEqual oppfolgingsdato
+            startdato shouldBeEqualTo oppfolgingsdato
         }
     }
 })

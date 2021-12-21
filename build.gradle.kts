@@ -5,32 +5,31 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.3.9"
-val ktorVersion = "1.4.1"
-val prometheusVersion = "0.6.0"
-val spekVersion = "2.0.9"
-val kluentVersion = "1.51"
-val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "6.1"
-val mockkVersion = "1.9.3"
-val nimbusdsVersion = "7.5.1"
-val smCommonVersion = "1.f409e4d"
-val jacksonVersion = "2.10.2"
-val jfairyVersion = "0.6.2"
-val javaxJaxwsApiVersion = "2.2.1"
-val jaxwsToolsVersion = "2.3.1"
+val coroutinesVersion = "1.5.2"
+val ktorVersion = "1.6.7"
+val prometheusVersion = "0.13.0"
+val spekVersion = "2.0.17"
+val kluentVersion = "1.68"
+val logbackVersion = "1.2.8"
+val logstashEncoderVersion = "7.0.1"
+val mockkVersion = "1.12.1"
+val nimbusdsVersion = "9.15.2"
+val smCommonVersion = "1.a92720c"
+val jacksonVersion = "2.13.0"
+val jfairyVersion = "0.6.4"
+val javaxJaxwsApiVersion = "2.3.1"
+val jaxwsToolsVersion = "3.0.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
-val cxfVersion = "3.2.7"
-val commonsTextVersion = "1.4"
-val saajVersion = "1.4.0"
+val cxfVersion = "3.4.5"
+val commonsTextVersion = "1.9"
+val saajVersion = "2.0.1"
 val javaxActivationVersion = "1.1.1"
 
 plugins {
-    java
-    kotlin("jvm") version "1.3.70"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("org.jmailen.kotlinter") version "2.2.0"
-    id("com.diffplug.gradle.spotless") version "3.24.0"
+    kotlin("jvm") version "1.6.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jmailen.kotlinter") version "3.6.0"
+    id("com.diffplug.spotless") version "5.16.0"
 }
 
 val githubUser: String by project
@@ -38,10 +37,6 @@ val githubPassword: String by project
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven(url = "https://dl.bintray.com/kotlin/ktor")
-    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
-    maven(url = "https://kotlin.bintray.com/kotlinx")
     maven {
         url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
         credentials {
@@ -109,7 +104,7 @@ tasks {
         manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
     }
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "12"
+        kotlinOptions.jvmTarget = "17"
     }
 
     withType<ShadowJar> {

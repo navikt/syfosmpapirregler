@@ -26,7 +26,8 @@ enum class ValideringRuleChain(
         "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
         "Pasienten er under 13 år. Sykmelding kan ikke benyttes.", { (sykemelding, metadata) ->
             sykemelding.perioder.sortedTOMDate().last() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
-        }),
+        }
+    ),
 
     @Description("Hele sykmeldingsperioden er etter at bruker har fylt 70 år. Dersom bruker fyller 70 år i perioden skal sykmelding gå gjennom på vanlig måte.")
     PASIENT_ELDRE_ENN_70(
@@ -35,7 +36,8 @@ enum class ValideringRuleChain(
         "Sykmelding kan ikke benyttes etter at du har fylt 70 år",
         "Pasienten er over 70 år. Sykmelding kan ikke benyttes.", { (sykemelding, metadata) ->
             sykemelding.perioder.sortedFOMDate().first() > extractBornDate(metadata.patientPersonNumber).plusYears(70)
-        }),
+        }
+    ),
 
     @Description("Ukjent houved diagnosekode type")
     UKJENT_DIAGNOSEKODETYPE(
@@ -44,8 +46,9 @@ enum class ValideringRuleChain(
         "Den må ha en kjent diagnosekode.",
         "Ukjent diagnosekode er benyttet. ", { (sykemelding, _) ->
             sykemelding.medisinskVurdering.hovedDiagnose != null &&
-                    sykemelding.medisinskVurdering.hovedDiagnose?.system !in Diagnosekoder
-        }),
+                sykemelding.medisinskVurdering.hovedDiagnose?.system !in Diagnosekoder
+        }
+    ),
 
     @Description("Hvis hoveddiagnose er Z-diagnose (ICPC-2), avvises meldingen.")
     ICPC_2_Z_DIAGNOSE(
@@ -54,8 +57,9 @@ enum class ValideringRuleChain(
         "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
         "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.", { (sykemelding, _) ->
             sykemelding.medisinskVurdering.hovedDiagnose != null &&
-                    sykemelding.medisinskVurdering.hovedDiagnose!!.isICPC2() && sykemelding.medisinskVurdering.hovedDiagnose!!.kode.startsWith("Z")
-        }),
+                sykemelding.medisinskVurdering.hovedDiagnose!!.isICPC2() && sykemelding.medisinskVurdering.hovedDiagnose!!.kode.startsWith("Z")
+        }
+    ),
 
     @Description("Hvis hoveddiagnose mangler og det ikke er angitt annen lovfestet fraværsgrunn, avvises meldingen")
     HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(
@@ -65,8 +69,9 @@ enum class ValideringRuleChain(
         "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
         { (sykemelding, _) ->
             sykemelding.medisinskVurdering.annenFraversArsak == null &&
-                    sykemelding.medisinskVurdering.hovedDiagnose == null
-        }),
+                sykemelding.medisinskVurdering.hovedDiagnose == null
+        }
+    ),
 
     @Description("Hvis feil kodeverk er angitt hoveddiagnose avvises meldingen.")
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
@@ -78,18 +83,20 @@ enum class ValideringRuleChain(
             if (sykemelding.medisinskVurdering.hovedDiagnose == null) {
                 false
             } else {
-            sykemelding.medisinskVurdering.hovedDiagnose?.system !in arrayOf(
-                Diagnosekoder.ICPC2_CODE,
-                Diagnosekoder.ICD10_CODE
-            ) ||
+                sykemelding.medisinskVurdering.hovedDiagnose?.system !in arrayOf(
+                    Diagnosekoder.ICPC2_CODE,
+                    Diagnosekoder.ICD10_CODE
+                ) ||
                     sykemelding.medisinskVurdering.hovedDiagnose?.let { diagnose ->
-                        if (diagnose.isICPC2()) {
-                            Diagnosekoder.icpc2.containsKey(diagnose.kode)
-                        } else {
-                            Diagnosekoder.icd10.containsKey(diagnose.kode)
-                        }
-                    } != true
-        } }),
+                    if (diagnose.isICPC2()) {
+                        Diagnosekoder.icpc2.containsKey(diagnose.kode)
+                    } else {
+                        Diagnosekoder.icd10.containsKey(diagnose.kode)
+                    }
+                } != true
+            }
+        }
+    ),
 
     // Revurder regel når IT ikkje lenger skal brukes
     // Her mener jeg fremdeles at vi skal nulle ut bidiagnosen dersom den er feil - ikke avvise sykmeldingen!!
@@ -105,7 +112,8 @@ enum class ValideringRuleChain(
                     Diagnosekoder.icd10.containsKey(diagnose.kode)
                 }
             }
-        }),
+        }
+    ),
 
     @Description("Organisasjonsnummeret som er oppgitt er ikke 9 tegn.")
     UGYLDIG_ORGNR_LENGDE(
@@ -114,5 +122,6 @@ enum class ValideringRuleChain(
         "Den må ha riktig organisasjonsnummer.",
         "Feil format på organisasjonsnummer. Dette skal være 9 sifre..", { (_, metadata) ->
             metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9
-        }),
+        }
+    ),
 }

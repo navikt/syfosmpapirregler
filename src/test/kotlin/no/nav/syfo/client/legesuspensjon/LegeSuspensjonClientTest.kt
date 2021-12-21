@@ -16,22 +16,20 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.mockkClass
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.VaultCredentials
 import no.nav.syfo.client.OidcToken
 import no.nav.syfo.client.StsOidcClient
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 
-@KtorExperimentalAPI
 class LegeSuspensjonClientTest : Spek({
 
     val fnr = "1"
@@ -81,13 +79,13 @@ class LegeSuspensjonClientTest : Spek({
         it("Should get valid suspensjon == true") {
             runBlocking {
                 val suspensjon = legeSuspensjonClient.checkTherapist(fnr, "2", "2019-01-01")
-                suspensjon shouldEqual Suspendert(true)
+                suspensjon shouldBeEqualTo Suspendert(true)
             }
         }
         it("Should get suspensjon == false") {
             runBlocking {
                 val suspensjon = legeSuspensjonClient.checkTherapist("2", "3", "2019-01-01")
-                suspensjon shouldEqual Suspendert(false)
+                suspensjon shouldBeEqualTo Suspendert(false)
             }
         }
     }

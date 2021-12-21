@@ -10,11 +10,9 @@ import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
-import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.fakeJWTApi
 import no.nav.syfo.generateReceivedSykemelding
 import no.nav.syfo.genereateJWT
@@ -26,8 +24,10 @@ import no.nav.syfo.setUpTestApplication
 import org.amshove.kluent.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
     coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
@@ -48,36 +48,42 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
                 }
             }
             it("Should return 401 Unauthorized") {
-                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
-                    addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    setBody(getStringValue(generateReceivedSykemelding()))
-                }) {
+                with(
+                    handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        setBody(getStringValue(generateReceivedSykemelding()))
+                    }
+                ) {
                     response.status() shouldBe HttpStatusCode.Unauthorized
                 }
             }
 
             it("should return 200 OK") {
-                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
-                    addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    setBody(getStringValue(generateReceivedSykemelding()))
-                    addHeader(
-                        "Authorization",
-                        "Bearer ${genereateJWT(audience = "regel-clientId-v2")}"
-                    )
-                }) {
+                with(
+                    handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        setBody(getStringValue(generateReceivedSykemelding()))
+                        addHeader(
+                            "Authorization",
+                            "Bearer ${genereateJWT(audience = "regel-clientId-v2")}"
+                        )
+                    }
+                ) {
                     response.status() shouldBe HttpStatusCode.OK
                 }
             }
 
             it("Should return 401 Unauthorized when wrong audience") {
-                with(handleRequest(HttpMethod.Post, "/v2/rules/validate") {
-                    addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    setBody(getStringValue(generateReceivedSykemelding()))
-                    addHeader(
-                        "Authorization",
-                        "Bearer ${genereateJWT(audience = "my random app")}"
-                    )
-                }) {
+                with(
+                    handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        setBody(getStringValue(generateReceivedSykemelding()))
+                        addHeader(
+                            "Authorization",
+                            "Bearer ${genereateJWT(audience = "my random app")}"
+                        )
+                    }
+                ) {
                     response.status() shouldBe HttpStatusCode.Unauthorized
                 }
             }

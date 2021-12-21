@@ -1,8 +1,5 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import no.nav.syfo.generateKontaktMedPasient
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
@@ -10,9 +7,12 @@ import no.nav.syfo.model.KontaktMedPasient
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.rules.RuleData
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 object SyketilfelleRuleChainSpek : Spek({
 
@@ -44,7 +44,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = true
+                    ),
+                    erNyttSyketilfelle = true
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE(
@@ -52,7 +53,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual true
+            ) shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO, should NOT trigger rule") {
@@ -75,7 +76,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE(
@@ -83,7 +85,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should trigger rule") {
@@ -107,7 +109,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = true
+                    ),
+                    erNyttSyketilfelle = true
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING(
@@ -115,7 +118,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual true
+            ) shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should NOT trigger rule") {
@@ -138,7 +141,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING(
@@ -146,7 +150,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should trigger rule") {
@@ -169,7 +173,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_FORLENGELSE_OVER_1_MND(
@@ -177,7 +182,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual true
+            ) shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
@@ -200,7 +205,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_FORLENGELSE_OVER_1_MND(
@@ -208,7 +214,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
@@ -236,7 +242,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_FORLENGELSE_OVER_1_MND(
@@ -244,7 +251,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should trigger rule") {
@@ -270,7 +277,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = true
+                    ),
+                    erNyttSyketilfelle = true
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING(
@@ -278,7 +286,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual true
+            ) shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should NOT trigger rule") {
@@ -304,7 +312,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = true
+                    ),
+                    erNyttSyketilfelle = true
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING(
@@ -312,7 +321,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, should trigger rule") {
@@ -338,7 +347,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE(
@@ -346,7 +356,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual true
+            ) shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
@@ -372,7 +382,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE(
@@ -380,7 +391,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
@@ -403,7 +414,8 @@ object SyketilfelleRuleChainSpek : Spek({
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
                         tssid = "1355435"
-                    ), erNyttSyketilfelle = false
+                    ),
+                    erNyttSyketilfelle = false
                 )
 
             SyketilfelleRuleChain.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE(
@@ -411,7 +423,7 @@ object SyketilfelleRuleChainSpek : Spek({
                     healthInformation,
                     ruleMetadataAndForstegangsSykemelding
                 )
-            ) shouldEqual false
+            ) shouldBeEqualTo false
         }
     }
 })
