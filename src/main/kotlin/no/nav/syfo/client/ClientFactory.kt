@@ -4,19 +4,20 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
+import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.features.json.JsonFeature
-import io.ktor.util.KtorExperimentalAPI
-import java.net.ProxySelector
+import io.ktor.network.sockets.SocketTimeoutException
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultCredentials
+import no.nav.syfo.application.exceptions.ServiceUnavailableException
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import java.net.ProxySelector
 
 class ClientFactory {
-    @KtorExperimentalAPI
     companion object {
         fun createSyketilfelleClient(
             env: Environment,
@@ -26,7 +27,6 @@ class ClientFactory {
             return SyketilfelleClient(env.syketilfelleEndpointURL, oidcClient, httpClient)
         }
 
-        @KtorExperimentalAPI
         fun createStsOidcClient(credentials: VaultCredentials, env: Environment): StsOidcClient {
             return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword, env.securityTokenServiceURL)
         }
@@ -39,6 +39,13 @@ class ClientFactory {
             val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
                 install(JsonFeature) {
                     serializer = getSerializer()
+                }
+                HttpResponseValidator {
+                    handleResponseException { exception ->
+                        when (exception) {
+                            is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
+                        }
+                    }
                 }
                 expectSuccess = false
             }

@@ -25,8 +25,8 @@ fun validatePersonDNumberMod11(personNumber: String): Boolean {
     val checksum2Final = if (checksum2 == 0) 0 else 11 - checksum2
 
     return checksum1Final != 10 &&
-            personNumber[9] - '0' == checksum1Final &&
-            personNumber[10] - '0' == checksum2Final
+        personNumber[9] - '0' == checksum1Final &&
+        personNumber[10] - '0' == checksum2Final
 }
 
 private fun validatePersonAndPersonDNumberRange(personNumber: String): Boolean {

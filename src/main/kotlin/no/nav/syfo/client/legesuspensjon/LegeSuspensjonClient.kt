@@ -9,7 +9,6 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.KtorExperimentalAPI
 import io.ktor.utils.io.errors.IOException
 import no.nav.syfo.VaultCredentials
 import no.nav.syfo.client.StsOidcClient
@@ -18,7 +17,6 @@ import no.nav.syfo.helpers.retry
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-@KtorExperimentalAPI
 class LegeSuspensjonClient(
     private val endpointUrl: String,
     private val credentials: VaultCredentials,

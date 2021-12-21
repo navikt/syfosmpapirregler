@@ -18,7 +18,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.authentication.setupAuth
@@ -27,7 +27,7 @@ import no.nav.syfo.log
 import no.nav.syfo.papirsykemelding.api.registerPapirsykemeldingsRegler
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 fun createApplicationEngine(
     papirsykemeldingRegelService: PapirsykemeldingRegelService,
     env: Environment,

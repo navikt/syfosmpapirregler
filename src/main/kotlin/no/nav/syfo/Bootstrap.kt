@@ -1,10 +1,8 @@
 package no.nav.syfo
 
 import com.auth0.jwk.JwkProviderBuilder
-import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
-import java.net.URL
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -13,10 +11,12 @@ import no.nav.syfo.client.ClientFactory
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 fun main() {
     val env = Environment()
     val credentials = VaultCredentials()
@@ -31,10 +31,10 @@ fun main() {
     val httpClient = ClientFactory.createHttpClient()
     val httpClientProxy = ClientFactory.createHttpClientProxy()
     val accessTokenClientV2 = AccessTokenClientV2(
-            env.aadAccessTokenV2Url,
-            env.clientIdV2,
-            env.clientSecretV2,
-            httpClientProxy
+        env.aadAccessTokenV2Url,
+        env.clientIdV2,
+        env.clientSecretV2,
+        httpClientProxy
     )
     val stsClient = ClientFactory.createStsOidcClient(credentials, env)
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, stsClient, httpClient)

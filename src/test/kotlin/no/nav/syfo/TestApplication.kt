@@ -12,8 +12,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.server.testing.TestApplicationEngine
-import java.nio.file.Paths
 import no.nav.syfo.application.authentication.setupAuth
+import java.nio.file.Paths
 
 fun TestApplicationEngine.setUpTestApplication() {
     start(true)

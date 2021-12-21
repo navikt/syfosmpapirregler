@@ -4,7 +4,7 @@ import no.nav.syfo.generatePerioder
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.rules.RuleData
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -20,14 +20,14 @@ object LegesuspensjonRuleChainSpek : Spek({
             val sykemelding = generateSykemelding(generatePerioder())
             val suspended = true
 
-            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldEqual true
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldBeEqualTo true
         }
 
         it("Should check rule BEHANDLER_SUSPENDERT, should NOT trigger rule") {
             val sykemelding = generateSykemelding(generatePerioder())
             val suspended = false
 
-            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldEqual false
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(sykemelding, suspended)) shouldBeEqualTo false
         }
     }
 })

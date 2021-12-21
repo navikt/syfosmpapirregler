@@ -1,10 +1,8 @@
 package no.nav.syfo.papirsykemelding.service
 
-import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.Counter
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import net.logstash.logback.argument.StructuredArguments.fields
@@ -31,8 +29,10 @@ import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.executeFlow
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 class PapirsykemeldingRegelService(
     private val ruleHitStatusCounter: Counter = RULE_HIT_STATUS_COUNTER,
     private val legeSuspensjonClient: LegeSuspensjonClient,

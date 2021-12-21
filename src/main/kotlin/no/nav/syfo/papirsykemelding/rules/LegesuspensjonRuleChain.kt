@@ -19,5 +19,6 @@ enum class LegesuspensjonRuleChain(
         "Den som sykmeldte deg har mistet retten til å skrive sykmeldinger.",
         "Behandler er suspendert av NAV på konsultasjonstidspunkt", { (_, suspended) ->
             suspended
-        })
+        }
+    )
 }

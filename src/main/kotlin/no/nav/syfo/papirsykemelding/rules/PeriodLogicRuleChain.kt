@@ -1,8 +1,5 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import no.nav.syfo.model.Periode
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
@@ -11,6 +8,9 @@ import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.rules.Description
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.RuleData
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 enum class PeriodLogicRuleChain(
     override val ruleId: Int?,
@@ -28,7 +28,8 @@ enum class PeriodLogicRuleChain(
         "Hvis ingen perioder er oppgitt skal sykmeldingen avvises.",
         { (sykmelding, _) ->
             sykmelding.perioder.isNullOrEmpty()
-        }),
+        }
+    ),
 
     @Description("Hvis tildato for en periode ligger før fradato avvises meldingen og hvilken periode det gjelder oppgis.")
     FRADATO_ETTER_TILDATO(
@@ -38,7 +39,8 @@ enum class PeriodLogicRuleChain(
         "Hvis tildato for en periode ligger før fradato avvises meldingen og hvilken periode det gjelder oppgis.",
         { (sykmelding, _) ->
             sykmelding.perioder.any { it.fom.isAfter(it.tom) }
-        }),
+        }
+    ),
 
     @Description("Hvis en eller flere perioder er overlappende avvises meldingen og hvilken periode det gjelder oppgis.")
     OVERLAPPENDE_PERIODER(
@@ -54,7 +56,8 @@ enum class PeriodLogicRuleChain(
                         periodA.fom in periodB.range() || periodA.tom in periodB.range()
                     }
             }
-        }),
+        }
+    ),
 
     @Description("Hvis det finnes opphold mellom perioder i sykmeldingen avvises meldingen.")
     OPPHOLD_MELLOM_PERIODER(
@@ -75,7 +78,8 @@ enum class PeriodLogicRuleChain(
                 }
             }
             gapBetweenPeriods
-        }),
+        }
+    ),
 
     @Description("Sykmeldinges fom-dato er mer enn 3 år tilbake i tid.")
     TILBAKEDATERT_MER_ENN_3_AR(
@@ -85,7 +89,8 @@ enum class PeriodLogicRuleChain(
         "Sykmeldinges fom-dato er mer enn 3 år tilbake i tid.",
         { (sykemelding, _) ->
             sykemelding.perioder.sortedFOMDate().first().atStartOfDay().isBefore(LocalDate.now().minusYears(3).atStartOfDay())
-        }),
+        }
+    ),
 
     @Description("Hvis sykmeldingen er fremdatert mer enn 30 dager etter konsultasjonsdato/signaturdato avvises meldingen.")
     FREMDATERT(
@@ -95,7 +100,8 @@ enum class PeriodLogicRuleChain(
         "Hvis sykmeldingen er fremdatert mer enn 30 dager etter behandletDato",
         { (sykemelding, ruleMetadata) ->
             sykemelding.perioder.sortedFOMDate().first().atStartOfDay() > ruleMetadata.behandletTidspunkt.plusDays(30)
-        }),
+        }
+    ),
 
     @Description("Hvis sykmeldingens sluttdato er mer enn ett år frem i tid, avvises meldingen.")
     VARIGHET_OVER_ETT_AAR(
@@ -107,7 +113,8 @@ enum class PeriodLogicRuleChain(
             val firstFomDate = sykemelding.perioder.sortedFOMDate().first().atStartOfDay().toLocalDate()
             val lastTomDate = sykemelding.perioder.sortedTOMDate().last().atStartOfDay().toLocalDate()
             (firstFomDate..lastTomDate).daysBetween() > 365
-        }),
+        }
+    ),
 
     @Description("Hvis avventende sykmelding er funnet og det finnes en eller flere perioder")
     AVVENTENDE_SYKMELDING_KOMBINERT(
@@ -117,8 +124,9 @@ enum class PeriodLogicRuleChain(
         "Hvis avventende sykmelding er funnet og det finnes en eller flere perioder. ",
         { (sykemelding, _) ->
             sykemelding.perioder.count { it.avventendeInnspillTilArbeidsgiver != null } != 0 &&
-                    sykemelding.perioder.size > 1
-        }),
+                sykemelding.perioder.size > 1
+        }
+    ),
 
     @Description("Hvis innspill til arbeidsgiver om tilrettelegging i pkt 4.1.3 ikke er utfylt ved avventende sykmelding avvises meldingen")
     MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(
@@ -129,7 +137,8 @@ enum class PeriodLogicRuleChain(
         { (sykemelding, _) ->
             sykemelding.perioder
                 .any { it.avventendeInnspillTilArbeidsgiver != null && it.avventendeInnspillTilArbeidsgiver?.trim().isNullOrEmpty() }
-        }),
+        }
+    ),
 
     @Description("Hvis avventende sykmelding benyttes utover i arbeidsgiverperioden på 16 kalenderdager, avvises meldingen.")
     AVVENTENDE_SYKMELDING_OVER_16_DAGER(
@@ -141,7 +150,8 @@ enum class PeriodLogicRuleChain(
             sykemelding.perioder
                 .filter { it.avventendeInnspillTilArbeidsgiver != null }
                 .any { (it.fom..it.tom).daysBetween() > 16 }
-        }),
+        }
+    ),
 
     @Description("Hvis antall dager oppgitt for behandlingsdager periode er for høyt i forhold til periodens lengde avvises meldingen. Mer enn en dag per uke er for høyt. 1 dag per påbegynt uke.")
     FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(
@@ -153,7 +163,8 @@ enum class PeriodLogicRuleChain(
             sykemelding.perioder.any {
                 it.behandlingsdager != null && it.behandlingsdager!! > it.range().startedWeeksBetween()
             }
-        }),
+        }
+    ),
 
     @Description("Hvis sykmeldingsgrad er mindre enn 20% for gradert sykmelding, avvises meldingen")
     GRADERT_SYKMELDING_UNDER_20_PROSENT(
@@ -165,7 +176,8 @@ enum class PeriodLogicRuleChain(
             sykemelding.perioder.any {
                 it.gradert != null && it.gradert!!.grad < 20
             }
-        }),
+        }
+    ),
 
     @Description("Hvis sykmeldingsgrad er høyere enn 99% for delvis sykmelding avvises meldingen")
     GRADERT_SYKMELDING_OVER_99_PROSENT(
@@ -175,7 +187,8 @@ enum class PeriodLogicRuleChain(
         "Hvis sykmeldingsgrad er høyere enn 99% for delvis sykmelding avvises meldingen",
         { (sykemelding, _) ->
             sykemelding.perioder.mapNotNull { it.gradert }.any { it.grad > 99 }
-        }),
+        }
+    ),
 }
 
 fun workdaysBetween(a: LocalDate, b: LocalDate): Int = (1 until ChronoUnit.DAYS.between(a, b))

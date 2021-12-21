@@ -5,7 +5,7 @@ import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
-import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 fun Route.registerPapirsykemeldingsRegler(papirsykemeldingRegelService: PapirsykemeldingRegelService) {
     post("/rules/validate") {
         log.info("Got an request to validate papirregler")

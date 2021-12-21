@@ -19,25 +19,24 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.InternalAPI
-import io.ktor.util.KtorExperimentalAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 
 private const val fnr = "12345647981"
 
 @InternalAPI
-@KtorExperimentalAPI
 class NorskHelsenettClientTest : Spek({
     val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     val httpClient = HttpClient(Apache) {
+        expectSuccess = false
         install(JsonFeature) {
             serializer = JacksonSerializer {
                 registerKotlinModule()
@@ -80,14 +79,14 @@ class NorskHelsenettClientTest : Spek({
         it("Should get behandler ") {
             runBlocking {
                 val behandler = norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta)
-                behandler shouldEqual Behandler(listOf(Godkjenning()))
+                behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
             }
         }
 
         it("Should get null when 404") {
             runBlocking {
                 val behandler = norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta)
-                behandler shouldEqual null
+                behandler shouldBeEqualTo null
             }
         }
     }
