@@ -25,8 +25,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-val behandletTidspunkt = LocalDateTime.of(2019, 1, 1, 0, 0)
-val signaturDato = LocalDateTime.of(2019, 1, 1, 0, 0)
+val behandletTidspunkt = LocalDateTime.now()
+val signaturDato = LocalDateTime.now()
 
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 
@@ -37,7 +37,7 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         legekontorOrgName = "",
         legekontorOrgNr = null,
         legekontorReshId = null,
-        mottattDato = LocalDateTime.of(2019, 1, 1, 0, 0),
+        mottattDato = LocalDateTime.now(),
         msgId = UUID.randomUUID().toString(),
         navLogId = UUID.randomUUID().toString(),
         personNrLege = "12054475942",
@@ -88,8 +88,8 @@ fun generateSykemelding(
 fun generatePerioder(): List<Periode> {
     return listOf(
         Periode(
-            LocalDate.of(2019, 1, 1),
-            LocalDate.of(2019, 1, 4),
+            LocalDate.now(),
+            LocalDate.now().plusDays(3),
             AktivitetIkkeMulig(null, null),
             null,
             null,
