@@ -42,7 +42,9 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
         clientIdV2 = "regel-clientId-v2",
         clientSecretV2 = "",
         jwkKeysUrlV2 = jwkKeysUrl,
-        jwtIssuerV2 = "https://sts.issuer.net/myidV2"
+        jwtIssuerV2 = "https://sts.issuer.net/myidV2",
+        syketilfelleScope = "syketilfelle",
+        syketilfelleEndpointURL = "https://syketilfelle"
     )
 
     val path = "src/test/resources/jwkset.json"

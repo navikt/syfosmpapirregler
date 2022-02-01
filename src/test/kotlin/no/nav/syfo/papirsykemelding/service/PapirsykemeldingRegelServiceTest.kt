@@ -21,6 +21,7 @@ import no.nav.syfo.model.ValidationResult
 import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.time.LocalDate
 
 @DelicateCoroutinesApi
 class PapirsykemeldingRegelServiceTest : Spek({
@@ -68,14 +69,14 @@ class PapirsykemeldingRegelServiceTest : Spek({
             }
         }
 
-        it("Should not validate sykmelding") {
+        it("Should not validate fremdatert sykmelding") {
             runBlocking {
                 val result = service.validateSykemelding(
                     generateReceivedSykemelding(
                         listOf(
                             generatePeriode(
-                                avventendeInnspillTilArbeidsgiver = "JA",
-                                reisetilskudd = true
+                                fom = LocalDate.now().plusYears(4),
+                                tom = LocalDate.now().plusYears(4).plusDays(3)
                             )
                         )
                     )

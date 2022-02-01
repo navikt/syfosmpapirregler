@@ -55,3 +55,7 @@ spec:
       value: api://prod-fss.teamsykmelding.syfohelsenettproxy/.default
     - name: HELSENETT_ENDPOINT_URL
       value: https://syfohelsenettproxy.nais.adeo.no
+    - name: SYKETILLFELLE_ENDPOINT_URL
+      value: https://flex-syketilfelle.intern.nav.no
+    - name: SYKETILLFELLE_SCOPE
+      value: api://prod-gcp.flex.flex-syketilfelle/.default

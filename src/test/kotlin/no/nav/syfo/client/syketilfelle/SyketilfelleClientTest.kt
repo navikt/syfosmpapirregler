@@ -3,8 +3,7 @@ package no.nav.syfo.client.syketilfelle
 import io.ktor.client.HttpClient
 import io.mockk.coEvery
 import io.mockk.mockk
-import no.nav.syfo.client.OidcToken
-import no.nav.syfo.client.StsOidcClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.MedisinskArsak
 import no.nav.syfo.model.Periode
@@ -17,13 +16,13 @@ import java.time.LocalDate
 class SyketilfelleClientTest : Spek({
     val loggingMeta = LoggingMeta("", "", "", "")
     val oppfolgingsdato = LocalDate.of(2021, 1, 3)
-    val stsOidcClient = mockk<StsOidcClient>()
+    val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     val httpClient = mockk<HttpClient>(relaxed = true)
 
-    val syketilfelleClient = SyketilfelleClient("http://syfosyketilfelle", stsOidcClient, httpClient)
+    val syketilfelleClient = SyketilfelleClient("http://syfosyketilfelle", accessTokenClientV2, "syketilfelle", httpClient)
 
     beforeGroup {
-        coEvery { stsOidcClient.oidcToken() } returns OidcToken("token", "type", 1L)
+        coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
     describe("SyketilfelleClient - startdato") {

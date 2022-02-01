@@ -6,7 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.http.ContentType
 import net.logstash.logback.argument.StructuredArguments
-import no.nav.syfo.client.StsOidcClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.log
 import no.nav.syfo.model.Periode
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
@@ -16,13 +16,14 @@ import java.time.LocalDate
 
 class SyketilfelleClient(
     private val endpointUrl: String,
-    private val stsClient: StsOidcClient,
+    private val accessTokenClient: AccessTokenClientV2,
+    private val resourceId: String,
     private val httpClient: HttpClient
 ) {
 
-    suspend fun finnStartdatoForSammenhengendeSyketilfelle(aktorId: String, periodeliste: List<Periode>, loggingMeta: LoggingMeta): LocalDate? {
+    suspend fun finnStartdatoForSammenhengendeSyketilfelle(fnr: String, periodeliste: List<Periode>, loggingMeta: LoggingMeta): LocalDate? {
         log.info("Sjekker om nytt syketilfelle mot syfosyketilfelle {}", StructuredArguments.fields(loggingMeta))
-        val sykeforloep = hentSykeforloep(aktorId)
+        val sykeforloep = hentSykeforloep(fnr)
 
         return finnStartdato(sykeforloep, periodeliste, loggingMeta)
     }
@@ -51,12 +52,13 @@ class SyketilfelleClient(
         return false
     }
 
-    private suspend fun hentSykeforloep(aktorId: String): List<Sykeforloep> =
-        httpClient.get<List<Sykeforloep>>("$endpointUrl/sparenaproxy/$aktorId/sykeforloep") {
+    private suspend fun hentSykeforloep(fnr: String): List<Sykeforloep> =
+        httpClient.get<List<Sykeforloep>>("$endpointUrl/api/v1/sykeforloep?inkluderPapirsykmelding=true") {
             accept(ContentType.Application.Json)
-            val oidcToken = stsClient.oidcToken()
+            val accessToken = accessTokenClient.getAccessTokenV2(resourceId)
             headers {
-                append("Authorization", "Bearer ${oidcToken.access_token}")
+                append("Authorization", "Bearer $accessToken")
+                append("fnr", fnr)
             }
         }
 }
