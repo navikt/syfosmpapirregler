@@ -37,7 +37,7 @@ fun main() {
         httpClientProxy
     )
     val stsClient = ClientFactory.createStsOidcClient(credentials, env)
-    val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, stsClient, httpClient)
+    val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, accessTokenClientV2, httpClient)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenClientV2, httpClient)
 

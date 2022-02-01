@@ -21,10 +21,10 @@ class ClientFactory {
     companion object {
         fun createSyketilfelleClient(
             env: Environment,
-            oidcClient: StsOidcClient,
+            accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient
         ): SyketilfelleClient {
-            return SyketilfelleClient(env.syketilfelleEndpointURL, oidcClient, httpClient)
+            return SyketilfelleClient(env.syketilfelleEndpointURL, accessTokenClientV2, env.syketilfelleScope, httpClient)
         }
 
         fun createStsOidcClient(credentials: VaultCredentials, env: Environment): StsOidcClient {

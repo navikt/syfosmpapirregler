@@ -24,6 +24,7 @@ val cxfVersion = "3.4.5"
 val commonsTextVersion = "1.9"
 val saajVersion = "2.0.1"
 val javaxActivationVersion = "1.1.1"
+val kotlinVersion = "1.6.0"
 
 plugins {
     kotlin("jvm") version "1.6.0"
@@ -47,7 +48,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
@@ -121,5 +122,9 @@ tasks {
         testLogging {
             showStandardStreams = true
         }
+    }
+
+    "check" {
+        dependsOn("formatKotlin")
     }
 }

@@ -129,7 +129,7 @@ class PapirsykemeldingRegelService(
 
     private fun GlobalScope.getErNyttSyketilfelleAsync(receivedSykmelding: ReceivedSykmelding, loggingMeta: LoggingMeta): Deferred<LocalDate?> {
         return async {
-            syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(receivedSykmelding.sykmelding.pasientAktoerId, receivedSykmelding.sykmelding.perioder, loggingMeta)
+            syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(receivedSykmelding.personNrPasient, receivedSykmelding.sykmelding.perioder, loggingMeta)
         }
     }
 
