@@ -16,7 +16,9 @@ data class Environment(
     val clientSecretV2: String = getEnvVar("AZURE_APP_CLIENT_SECRET"),
     val helsenettproxyScope: String = getEnvVar("HELSENETT_SCOPE"),
     val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
-    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER")
+    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
+    val applicationName: String = getEnvVar("NAIS_APP_NAME", "syfosmpapirregler"),
+    val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode"
 )
 
 data class VaultCredentials(

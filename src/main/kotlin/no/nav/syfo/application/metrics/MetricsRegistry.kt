@@ -19,3 +19,9 @@ val HTTP_HISTOGRAM =
         .name("requests_duration_seconds")
         .help("http requests durations for incomming requests in seconds")
         .register()
+
+val RULE_HIT_COUNTER: Counter = Counter.Builder()
+    .namespace("syfosm")
+    .name("rule_hit_counter")
+    .labelNames("rule_name")
+    .help("Counts the amount of times a rule is hit").register()

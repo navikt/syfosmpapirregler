@@ -50,6 +50,8 @@ spec:
   webproxy: true
   ingresses:
     - "https://syfosmpapirregler.nais.adeo.no"
+  kafka:
+    pool: nav-prod
   env:
     - name: HELSENETT_SCOPE
       value: api://prod-fss.teamsykmelding.syfohelsenettproxy/.default

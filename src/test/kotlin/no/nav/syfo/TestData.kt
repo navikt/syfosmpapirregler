@@ -49,7 +49,8 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         merknader = null,
         legeHelsepersonellkategori = null,
         legeHprNr = null,
-        partnerreferanse = null
+        partnerreferanse = null,
+        vedlegg = null
     )
 }
 
