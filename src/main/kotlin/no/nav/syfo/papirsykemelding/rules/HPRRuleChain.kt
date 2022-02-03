@@ -16,6 +16,7 @@ class HPRRuleChain(
     private val behandlerOgStartdato: BehandlerOgStartdato,
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
+        // Helsepersonelloven
         // Behandler er ikke gyldig i HPR på konsultasjonstidspunkt
         Rule(
             name = "BEHANDLER_IKKE_GYLDIG_I_HPR",
@@ -33,6 +34,7 @@ class HPRRuleChain(
                 }
             }
         ),
+        // Helsepersonelloven
         // "Behandler har ikke gyldig autorisasjon i HPR"
         Rule(
             name = "BEHANDLER_MANGLER_AUTORISASJON_I_HPR",
@@ -54,6 +56,7 @@ class HPRRuleChain(
                 }
             }
         ),
+        // Helsepersonelloven
         // "Behandler finnes i HPR men er ikke lege, kiropraktor, manuellterapeut eller tannlege"
         Rule(
             name = "BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR",
