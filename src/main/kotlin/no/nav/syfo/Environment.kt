@@ -18,7 +18,8 @@ data class Environment(
     val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
     val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "syfosmpapirregler"),
-    val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode"
+    val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode",
+    val versjonAvKode: String = getEnvVar("NAIS_APP_IMAGE")
 )
 
 data class VaultCredentials(

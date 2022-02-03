@@ -1,6 +1,5 @@
 package no.nav.syfo.papirsykemelding.service
 
-import no.nav.syfo.getEnvVar
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleResult
 import no.nav.syfo.model.Status
@@ -17,12 +16,12 @@ data class JuridiskVurderingResult(
 class JuridiskVurderingService(
     private val kafkaProducer: KafkaProducer<String, JuridiskVurderingResult>,
     val juridiskVurderingTopic: String,
+    val versjonAvKode: String
 ) {
     companion object {
-        val VERSJON_KODE = getEnvVar("NAIS_APP_IMAGE")
         val EVENT_NAME = "subsumsjon"
         val VERSION = "1.0.0"
-        val KILDE = "syfosmregler"
+        val KILDE = "syfosmpapirregler"
     }
 
     fun processRuleResults(
@@ -52,7 +51,7 @@ class JuridiskVurderingService(
             eventName = EVENT_NAME,
             version = VERSION,
             kilde = KILDE,
-            versjonAvKode = VERSJON_KODE,
+            versjonAvKode = versjonAvKode,
             fodselsnummer = receivedSykmelding.personNrPasient,
             juridiskHenvisning = ruleResult.rule.juridiskHenvisning
                 ?: throw RuntimeException("JuridiskHenvisning kan ikke være null"),
