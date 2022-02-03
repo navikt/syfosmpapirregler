@@ -20,6 +20,6 @@ class LegesuspensjonRuleChain(
                 val suspendert = behandlerSuspendert
             },
             predicate = { it.suspendert }
-        ),
+        )
     )
 }

@@ -210,7 +210,7 @@ class SyketilfelleRuleChain(
                 !input.erNyttSyketilfelle &&
                     input.signaturDato > input.forsteFomDato.plusDays(30) && !input.begrunnelseIkkeKontakt.isNullOrEmpty()
             }
-        ),
+        )
     )
 }
 

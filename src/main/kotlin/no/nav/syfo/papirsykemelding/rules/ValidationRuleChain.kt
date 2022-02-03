@@ -209,6 +209,6 @@ class ValidationRuleChain(
             predicate = {
                 it.legekontorOrgnr != null && it.legekontorOrgnr.length != 9
             }
-        ),
+        )
     )
 }
