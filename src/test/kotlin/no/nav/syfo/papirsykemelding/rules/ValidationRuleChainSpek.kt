@@ -15,7 +15,6 @@ import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.MedisinskVurdering
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
-import no.nav.syfo.rules.RuleData
 import no.nav.syfo.signaturDato
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.toDiagnose
@@ -33,15 +32,13 @@ val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddM
 
 object ValidationRuleChainSpek : Spek({
     fun ruleData(
-        sykmelding: Sykmelding,
         receivedDate: LocalDateTime = LocalDateTime.now(),
         signatureDate: LocalDateTime = LocalDateTime.now(),
         patientPersonNumber: String = "1234567891",
         rulesetVersion: String = "1",
         legekontorOrgNr: String = "123456789",
         tssid: String? = "1314445"
-    ): RuleData<RuleMetadata> = RuleData(
-        sykmelding,
+    ): RuleMetadata =
         RuleMetadata(
             signatureDate,
             receivedDate,
@@ -51,22 +48,21 @@ object ValidationRuleChainSpek : Spek({
             legekontorOrgNr,
             tssid
         )
-    )
 
     describe("Testing validation rules and checking the rule outcomes") {
 
         it("Should check rule PASIENT_YNGRE_ENN_13,should trigger rule") {
             val person = fairy.person(PersonProperties.ageBetween(PersonProvider.MIN_AGE, 12))
 
-            ValideringRuleChain.PASIENT_YNGRE_ENN_13(
+            ValidationRuleChain(
+                generateSykemelding(),
                 ruleData(
-                    generateSykemelding(generatePerioder()),
                     patientPersonNumber = generatePersonNumber(
                         person.dateOfBirth,
                         false
                     )
                 )
-            ) shouldBeEqualTo true
+            ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule PASIENT_YNGRE_ENN_13,should NOT trigger rule") {
@@ -74,15 +70,15 @@ object ValidationRuleChainSpek : Spek({
                 PersonProperties.ageBetween(13, 70)
             )
 
-            ValideringRuleChain.PASIENT_YNGRE_ENN_13(
+            ValidationRuleChain(
+                generateSykemelding(generatePerioder()),
                 ruleData(
-                    generateSykemelding(generatePerioder()),
                     patientPersonNumber = generatePersonNumber(
                         person.dateOfBirth,
                         false
                     )
                 )
-            ) shouldBeEqualTo false
+            ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule PASIENT_ELDRE_ENN_70,should trigger rule") {
@@ -90,15 +86,15 @@ object ValidationRuleChainSpek : Spek({
                 PersonProperties.ageBetween(71, 88)
             )
 
-            ValideringRuleChain.PASIENT_ELDRE_ENN_70(
+            ValidationRuleChain(
+                generateSykemelding(generatePerioder()),
                 ruleData(
-                    generateSykemelding(generatePerioder()),
                     patientPersonNumber = generatePersonNumber(
                         person.dateOfBirth,
                         false
                     )
                 )
-            ) shouldBeEqualTo true
+            ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule PASIENT_ELDRE_ENN_70,should NOT trigger rule") {
@@ -106,15 +102,15 @@ object ValidationRuleChainSpek : Spek({
                 PersonProperties.ageBetween(13, 69)
             )
 
-            ValideringRuleChain.PASIENT_ELDRE_ENN_70(
+            ValidationRuleChain(
+                generateSykemelding(generatePerioder()),
                 ruleData(
-                    generateSykemelding(generatePerioder()),
                     patientPersonNumber = generatePersonNumber(
                         person.dateOfBirth,
                         false
                     )
                 )
-            ) shouldBeEqualTo false
+            ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo false
         }
 
         it("Skal håndtere fødselsnummer fra 1854-1899") {
@@ -197,7 +193,8 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.ICPC_2_Z_DIAGNOSE(ruleData(sykmelding)) shouldBeEqualTo true
+            ValidationRuleChain(sykmelding, ruleData()).getRuleByName("ICPC_2_Z_DIAGNOSE")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
@@ -231,7 +228,8 @@ object ValidationRuleChainSpek : Spek({
                 signaturDato,
                 null
             )
-            ValideringRuleChain.ICPC_2_Z_DIAGNOSE(ruleData(sykmelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykmelding, ruleData()).getRuleByName("ICPC_2_Z_DIAGNOSE")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
@@ -270,7 +268,8 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.ICPC_2_Z_DIAGNOSE(ruleData(sykemelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData()).getRuleByName("ICPC_2_Z_DIAGNOSE")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should trigger rule") {
@@ -305,7 +304,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(ruleData(sykemelding)) shouldBeEqualTo true
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should NOT trigger rule") {
@@ -314,7 +315,11 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09", tekst = "Svetteproblemer"),
+                    hovedDiagnose = Diagnose(
+                        system = "2.16.578.1.12.4.1.1.9999",
+                        kode = "A09",
+                        tekst = "Svetteproblemer"
+                    ),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -340,7 +345,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(ruleData(sykemelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule UKJENT_DIAGNOSEKODETYPE,should trigger rule") {
@@ -349,7 +356,11 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.9999", kode = "A09", tekst = "Svetteproblemer"),
+                    hovedDiagnose = Diagnose(
+                        system = "2.16.578.1.12.4.1.1.9999",
+                        kode = "A09",
+                        tekst = "Svetteproblemer"
+                    ),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -375,7 +386,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UKJENT_DIAGNOSEKODETYPE(ruleData(sykemelding)) shouldBeEqualTo true
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UKJENT_DIAGNOSEKODETYPE")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule UKJENT_DIAGNOSEKODETYPE,should NOT trigger rule") {
@@ -410,7 +423,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UKJENT_DIAGNOSEKODETYPE(ruleData(sykemelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UKJENT_DIAGNOSEKODETYPE")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, wrong kodeverk for hoveddiagnose") {
@@ -419,7 +434,11 @@ object ValidationRuleChainSpek : Spek({
                 "1",
                 "2",
                 MedisinskVurdering(
-                    hovedDiagnose = Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09", tekst = "Problem jus/poli"),
+                    hovedDiagnose = Diagnose(
+                        system = "2.16.578.1.12.4.1.1.7110",
+                        kode = "Z09",
+                        tekst = "Problem jus/poli"
+                    ),
                     biDiagnoser = emptyList(),
                     svangerskap = false,
                     yrkesskadeDato = null,
@@ -445,7 +464,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(ruleData(sykemelding)) shouldBeEqualTo true
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, null hovedDiagnose should not trigger") {
@@ -480,7 +501,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(ruleData(sykemelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, wrong kodeverk for biDiagnoser") {
@@ -490,7 +513,13 @@ object ValidationRuleChainSpek : Spek({
                 "2",
                 MedisinskVurdering(
                     hovedDiagnose = null,
-                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7110", kode = "Z09", tekst = "Problem jus/poli")),
+                    biDiagnoser = listOf(
+                        Diagnose(
+                            system = "2.16.578.1.12.4.1.1.7110",
+                            kode = "Z09",
+                            tekst = "Problem jus/poli"
+                        )
+                    ),
                     svangerskap = false,
                     yrkesskadeDato = null,
                     annenFraversArsak = null,
@@ -515,7 +544,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE(ruleData(sykemelding)) shouldBeEqualTo true
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UGYLDIG_KODEVERK_FOR_BIDIAGNOSE")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, correct kodeverk for biDiagnoser") {
@@ -525,7 +556,13 @@ object ValidationRuleChainSpek : Spek({
                 "2",
                 MedisinskVurdering(
                     hovedDiagnose = null,
-                    biDiagnoser = listOf(Diagnose(system = "2.16.578.1.12.4.1.1.7170", kode = "L92", tekst = "Skuldersyndrom")),
+                    biDiagnoser = listOf(
+                        Diagnose(
+                            system = "2.16.578.1.12.4.1.1.7170",
+                            kode = "L92",
+                            tekst = "Skuldersyndrom"
+                        )
+                    ),
                     svangerskap = false,
                     yrkesskadeDato = null,
                     annenFraversArsak = null,
@@ -550,7 +587,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE(ruleData(sykemelding)) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData())
+                .getRuleByName("UGYLDIG_KODEVERK_FOR_BIDIAGNOSE")
+                .executeRule().result shouldBeEqualTo false
         }
 
         it("UGYLDIG_ORGNR_LENGDE should trigger on when orgnr lengt is not 9") {
@@ -584,8 +623,9 @@ object ValidationRuleChainSpek : Spek({
                 signaturDato,
                 null
             )
-
-            ValideringRuleChain.UGYLDIG_ORGNR_LENGDE(ruleData(sykemelding, legekontorOrgNr = "1234567890")) shouldBeEqualTo true
+            ValidationRuleChain(sykemelding, ruleData(legekontorOrgNr = "1234567890"))
+                .getRuleByName("UGYLDIG_ORGNR_LENGDE")
+                .executeRule().result shouldBeEqualTo true
         }
 
         it("UGYLDIG_ORGNR_LENGDE should not trigger on when orgnr is 9") {
@@ -620,7 +660,9 @@ object ValidationRuleChainSpek : Spek({
                 null
             )
 
-            ValideringRuleChain.UGYLDIG_ORGNR_LENGDE(ruleData(sykemelding, legekontorOrgNr = "123456789")) shouldBeEqualTo false
+            ValidationRuleChain(sykemelding, ruleData(legekontorOrgNr = "123456789"))
+                .getRuleByName("UGYLDIG_ORGNR_LENGDE")
+                .executeRule().result shouldBeEqualTo false
         }
     }
 })

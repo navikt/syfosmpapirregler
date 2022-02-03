@@ -14,7 +14,7 @@ val logbackVersion = "1.2.8"
 val logstashEncoderVersion = "7.0.1"
 val mockkVersion = "1.12.1"
 val nimbusdsVersion = "9.15.2"
-val smCommonVersion = "1.a92720c"
+val smCommonVersion = "1.efc6e77"
 val jacksonVersion = "2.13.0"
 val jfairyVersion = "0.6.4"
 val javaxJaxwsApiVersion = "2.3.1"
@@ -68,10 +68,11 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     implementation("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-rules:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-rest-sts:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")

@@ -70,7 +70,8 @@ class NorskHelsenettClient(
 }
 
 data class Behandler(
-    val godkjenninger: List<Godkjenning>
+    val godkjenninger: List<Godkjenning>,
+    val hprNummer: Int? = null
 )
 
 data class Godkjenning(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import net.logstash.logback.argument.StructuredArguments.fields
+import no.nav.syfo.application.metrics.RULE_HIT_COUNTER
 import no.nav.syfo.application.metrics.RULE_HIT_STATUS_COUNTER
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
@@ -13,6 +14,7 @@ import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
+import no.nav.syfo.model.RuleResult
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
@@ -23,10 +25,7 @@ import no.nav.syfo.papirsykemelding.rules.LegesuspensjonRuleChain
 import no.nav.syfo.papirsykemelding.rules.PeriodLogicRuleChain
 import no.nav.syfo.papirsykemelding.rules.RuleMetadataAndForstegangsSykemelding
 import no.nav.syfo.papirsykemelding.rules.SyketilfelleRuleChain
-import no.nav.syfo.papirsykemelding.rules.ValideringRuleChain
-import no.nav.syfo.rules.RULE_HIT_COUNTER
-import no.nav.syfo.rules.Rule
-import no.nav.syfo.rules.executeFlow
+import no.nav.syfo.papirsykemelding.rules.ValidationRuleChain
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -37,7 +36,8 @@ class PapirsykemeldingRegelService(
     private val ruleHitStatusCounter: Counter = RULE_HIT_STATUS_COUNTER,
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val syketilfelleClient: SyketilfelleClient,
-    private val norskHelsenettClient: NorskHelsenettClient
+    private val norskHelsenettClient: NorskHelsenettClient,
+    private val juridiskVurderingService: JuridiskVurderingService
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
@@ -79,17 +79,30 @@ class PapirsykemeldingRegelService(
 
         val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
         val results = listOf(
-            ValideringRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
-            HPRRuleChain.values().executeFlow(receivedSykmelding.sykmelding, BehandlerOgStartdato(behandler, syketilfelleStartdato)),
-            LegesuspensjonRuleChain.values().executeFlow(receivedSykmelding.sykmelding, doctorSuspendedAsync.await()),
-            PeriodLogicRuleChain.values().executeFlow(receivedSykmelding.sykmelding, ruleMetadata),
-            SyketilfelleRuleChain.values().executeFlow(
+            ValidationRuleChain(receivedSykmelding.sykmelding, ruleMetadata).executeRules(),
+            HPRRuleChain(receivedSykmelding.sykmelding, BehandlerOgStartdato(behandler, syketilfelleStartdato)).executeRules(),
+            LegesuspensjonRuleChain(doctorSuspendedAsync.await()).executeRules(),
+            PeriodLogicRuleChain(receivedSykmelding.sykmelding, ruleMetadata).executeRules(),
+            SyketilfelleRuleChain(
                 receivedSykmelding.sykmelding,
                 getRuleMetadataAndForstegangsSykemelding(ruleMetadata = ruleMetadata, erNyttSyketilfelle = syketilfelleStartdato == null)
-            )
+            ).executeRules()
         ).flatten()
-        log.info("Rules hit {}, {}", results.map { it.name }, fields(loggingMeta))
+
+        juridiskVurderingService.processRuleResults(receivedSykmelding, results)
+
+        logRuleResultMetrics(results)
+
+        log.info("Rules hit ${results.filter { it.result }.map { it.rule.name }}, ${fields(loggingMeta)}")
         return validationResult(results)
+    }
+
+    private fun logRuleResultMetrics(result: List<RuleResult<*>>) {
+        result
+            .filter { it.result }
+            .forEach {
+                RULE_HIT_COUNTER.labels(it.rule.name).inc()
+            }
     }
 
     private fun getAndRegisterBehandlerNotInHPR(): ValidationResult {
@@ -144,13 +157,23 @@ class PapirsykemeldingRegelService(
         }
     }
 
-    private fun validationResult(results: List<Rule<Any>>): ValidationResult = ValidationResult(
+    private fun validationResult(results: List<RuleResult<*>>): ValidationResult = ValidationResult(
         status = results
-            .map { status -> status.status }.let {
+            .filter { it.result }
+            .map { result -> result.rule.status }.let {
                 it.firstOrNull { status -> status == Status.INVALID }
                     ?: it.firstOrNull { status -> status == Status.MANUAL_PROCESSING }
                     ?: Status.OK
             },
-        ruleHits = results.map { rule -> RuleInfo(rule.name, rule.messageForSender!!, rule.messageForUser!!, rule.status) }
+        ruleHits = results
+            .filter { it.result }
+            .map { result ->
+                RuleInfo(
+                    result.rule.name,
+                    result.rule.messageForSender,
+                    result.rule.messageForUser,
+                    result.rule.status
+                )
+            }
     )
 }

@@ -4,9 +4,7 @@ import no.nav.syfo.generateGradert
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Periode
-import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
-import no.nav.syfo.rules.RuleData
 import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -15,13 +13,11 @@ import java.time.LocalDateTime
 
 object PeriodLogicRuleChainSpek : Spek({
     fun ruleData(
-        sykemelding: Sykmelding,
         receivedDate: LocalDateTime = LocalDateTime.now(),
         signatureDate: LocalDateTime = LocalDateTime.now(),
         patientPersonNumber: String = "1234567891",
         tssid: String? = "1314445"
-    ): RuleData<RuleMetadata> = RuleData(
-        sykemelding,
+    ): RuleMetadata =
         RuleMetadata(
             signatureDate,
             receivedDate,
@@ -31,7 +27,6 @@ object PeriodLogicRuleChainSpek : Spek({
             "123456789",
             tssid
         )
-    )
 
     describe("Testing validation rules and checking the rule outcomes") {
 
@@ -40,19 +35,19 @@ object PeriodLogicRuleChainSpek : Spek({
                 perioder = listOf()
             )
 
-            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("PERIODER_MANGLER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule PERIODER_MANGLER, should NOT trigger rule") {
             val sykemelding = generateSykemelding()
 
-            PeriodLogicRuleChain.PERIODER_MANGLER(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("PERIODER_MANGLER").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule FRADATO_ETTER_TILDATO, should trigger rule") {
             val sykemelding = generateSykemelding(perioder = listOf(generatePeriode(fom = LocalDate.of(2018, 1, 9), tom = LocalDate.of(2018, 1, 7))))
 
-            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FRADATO_ETTER_TILDATO").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule FRADATO_ETTER_TILDATO, should NOT trigger rule") {
@@ -65,7 +60,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.FRADATO_ETTER_TILDATO(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FRADATO_ETTER_TILDATO").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule OVERLAPPENDE_PERIODER, should trigger rule") {
@@ -82,7 +77,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OVERLAPPENDE_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule OVERLAPPENDE_PERIODER, should NOT trigger rule") {
@@ -99,7 +94,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.OVERLAPPENDE_PERIODER(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OVERLAPPENDE_PERIODER").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
@@ -120,7 +115,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(healthInformation)) shouldBeEqualTo true
+            PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
@@ -145,7 +140,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule OPPHOLD_MELLOM_PERIODER, should NOT trigger rule") {
@@ -163,7 +158,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.OPPHOLD_MELLOM_PERIODER(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should trigger rule") {
@@ -182,7 +177,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldBeEqualTo true
+            PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("TILBAKEDATERT_MER_ENN_3_AR").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should not trigger rule") {
@@ -201,7 +196,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.TILBAKEDATERT_MER_ENN_3_AR(ruleData(healthInformation)) shouldBeEqualTo false
+            PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("TILBAKEDATERT_MER_ENN_3_AR").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule FREMDATERT, should trigger rule") {
@@ -214,7 +209,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.FREMDATERT(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FREMDATERT").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule FREMDATERT, should NOT trigger rule") {
@@ -227,7 +222,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.FREMDATERT(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FREMDATERT").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule VARIGHET_OVER_ETT_AAR, should trigger rule") {
@@ -241,7 +236,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now().minusDays(1)
             )
 
-            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("TOTAL_VARIGHET_OVER_ETT_AAR").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule VARIGHET_OVER_ETT_AAR, should NOT trigger rule") {
@@ -255,7 +250,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 tidspunkt = LocalDateTime.now()
             )
 
-            PeriodLogicRuleChain.VARIGHET_OVER_ETT_AAR(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("TOTAL_VARIGHET_OVER_ETT_AAR").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should trigger rule") {
@@ -274,7 +269,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_KOMBINERT").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should NOT trigger rule") {
@@ -287,7 +282,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_KOMBINERT(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_KOMBINERT").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should trigger rule") {
@@ -301,7 +296,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should NOT trigger rule") {
@@ -315,7 +310,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should trigger rule") {
@@ -329,7 +324,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_OVER_16_DAGER").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should NOT trigger rule") {
@@ -343,7 +338,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.AVVENTENDE_SYKMELDING_OVER_16_DAGER(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_OVER_16_DAGER").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should trigger rule") {
@@ -357,7 +352,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FOR_MANGE_BEHANDLINGSDAGER_PER_UKE").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should NOT trigger rule") {
@@ -371,7 +366,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FOR_MANGE_BEHANDLINGSDAGER_PER_UKE").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should trigger rule") {
@@ -385,7 +380,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_UNDER_20_PROSENT").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should NOT trigger rule") {
@@ -399,7 +394,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_UNDER_20_PROSENT(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_UNDER_20_PROSENT").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should trigger rule") {
@@ -413,7 +408,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(sykemelding)) shouldBeEqualTo true
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_OVER_99_PROSENT").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should NOT trigger rule") {
@@ -427,7 +422,7 @@ object PeriodLogicRuleChainSpek : Spek({
                 )
             )
 
-            PeriodLogicRuleChain.GRADERT_SYKMELDING_OVER_99_PROSENT(ruleData(sykemelding)) shouldBeEqualTo false
+            PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_OVER_99_PROSENT").executeRule().result shouldBeEqualTo false
         }
     }
 })

@@ -9,7 +9,6 @@ import no.nav.syfo.generateSykemelding
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.getUgyldigBehandler
 import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
-import no.nav.syfo.rules.RuleData
 import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -19,20 +18,17 @@ class HPRRuleChainTest : Spek({
 
     describe("1402 Behandler er ikke gyldig i HPR på konsultasjonstidspunktet") {
         it("Should not trigger rule") {
-            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(
-                RuleData(
-                    generateSykemelding(generatePerioder()),
-                    BehandlerOgStartdato(getGyldigBehandler(), null)
-                )
-            ) shouldBeEqualTo false
+            HPRRuleChain(
+                generateSykemelding(generatePerioder()),
+                BehandlerOgStartdato(getGyldigBehandler(), null)
+            ).getRuleByName("BEHANDLER_IKKE_GYLDIG_I_HPR").executeRule().result shouldBeEqualTo false
         }
 
         it("Should not trigger rule") {
-            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(
-                getRuleData(
-                    getUgyldigBehandler()
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(getUgyldigBehandler(), null)
+            ).getRuleByName("BEHANDLER_IKKE_GYLDIG_I_HPR").executeRule().result shouldBeEqualTo true
         }
     }
 
@@ -41,47 +37,44 @@ class HPRRuleChainTest : Spek({
             val validAuthorizations: List<String> = listOf("1", "17", "4", "2", "14", "18")
             for (verdi in validAuthorizations) {
                 val behandler = getBehandler(autorisasjon = Kode(true, 7704, verdi))
-                HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
-                    getRuleData(
-                        behandler
-                    )
-                ) shouldBeEqualTo false
+                HPRRuleChain(
+                    generateSykemelding(),
+                    BehandlerOgStartdato(behandler, null)
+                ).getRuleByName("BEHANDLER_MANGLER_AUTORISASJON_I_HPR")
+                    .executeRule()
+                    .result shouldBeEqualTo false
             }
         }
         it("Should trigger rule when verdi is not valid") {
             val behandler = getBehandler(autorisasjon = Kode(true, 7704, ""))
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_MANGLER_AUTORISASJON_I_HPR").executeRule().result shouldBeEqualTo true
         }
 
         it("Should trigger rule when verdi is null") {
             val behandler = getBehandler(autorisasjon = Kode(true, 7704, null))
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_MANGLER_AUTORISASJON_I_HPR").executeRule().result shouldBeEqualTo true
         }
 
         it("Should trigger rule when not aktiv") {
             val behandler = getBehandler(autorisasjon = Kode(false, 7704, "1"))
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_MANGLER_AUTORISASJON_I_HPR").executeRule().result shouldBeEqualTo true
         }
 
         it("Should trigger rule when with incorrect oid") {
             val behandler = getBehandler(autorisasjon = Kode(true, 7703, "1"))
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_MANGLER_AUTORISASJON_I_HPR").executeRule().result shouldBeEqualTo true
         }
     }
     describe("1407 Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut eller tannlege") {
@@ -95,11 +88,10 @@ class HPRRuleChainTest : Spek({
                         oid = 9060
                     )
                 )
-                HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
-                    getRuleData(
-                        behandler
-                    )
-                ) shouldBeEqualTo false
+                HPRRuleChain(
+                    generateSykemelding(),
+                    BehandlerOgStartdato(behandler, null)
+                ).getRuleByName("BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR").executeRule().result shouldBeEqualTo false
             }
         }
         it("Should trigger rule when not valid kategori") {
@@ -110,11 +102,10 @@ class HPRRuleChainTest : Spek({
                     oid = 9060
                 )
             )
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            HPRRuleChain(
+                generateSykemelding(),
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR").executeRule().result shouldBeEqualTo true
         }
         it("Should trigger rule when helsepersonellkategori ikke er aktiv") {
             val behandler = getBehandler(
@@ -124,11 +115,12 @@ class HPRRuleChainTest : Spek({
                     oid = 9060
                 )
             )
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_TL_FT_I_HPR(
-                getRuleData(
-                    behandler
-                )
-            ) shouldBeEqualTo true
+            val sykmelding = generateSykemelding()
+
+            HPRRuleChain(
+                sykmelding,
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR").executeRule().result shouldBeEqualTo true
         }
     }
 
@@ -151,7 +143,16 @@ class HPRRuleChainTest : Spek({
                     )
                 )
             )
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldBeEqualTo false
+
+            HPRRuleChain(
+                sykemelding,
+                BehandlerOgStartdato(
+                    behandler,
+                    null
+                )
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo false
         }
 
         it("Should not trigger rule") {
@@ -171,10 +172,18 @@ class HPRRuleChainTest : Spek({
                     )
                 )
             )
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldBeEqualTo false
+            HPRRuleChain(
+                sykemelding,
+                BehandlerOgStartdato(
+                    behandler,
+                    null
+                )
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo false
         }
 
-        it("Should trigger rule") {
+        it("BEHANDLER_MT_FT_KI_OVER_12_UKER, hould trigger rule") {
             val behandler = getBehandler(
                 helsepersonellkategori = Kode(
                     aktiv = true,
@@ -191,7 +200,15 @@ class HPRRuleChainTest : Spek({
                     )
                 )
             )
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykemelding, BehandlerOgStartdato(behandler, null))) shouldBeEqualTo true
+            HPRRuleChain(
+                sykemelding,
+                BehandlerOgStartdato(
+                    behandler,
+                    LocalDate.of(2019, 1, 1)
+                )
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo true
         }
 
         it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ut fordi startdato for tidligere sykefravær gir varighet på mer enn 12 uker") {
@@ -221,7 +238,15 @@ class HPRRuleChainTest : Spek({
                 )
             )
 
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(sykmelding, BehandlerOgStartdato(behandler, LocalDate.of(2019, 1, 1)))) shouldBeEqualTo true
+            HPRRuleChain(
+                sykmelding,
+                BehandlerOgStartdato(
+                    behandler,
+                    LocalDate.of(2019, 1, 1)
+                )
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo true
         }
 
         it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi det er nytt sykefravær") {
@@ -251,7 +276,12 @@ class HPRRuleChainTest : Spek({
                 )
             )
 
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, null))) shouldBeEqualTo false
+            HPRRuleChain(
+                healthInformation,
+                BehandlerOgStartdato(behandler, null)
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo false
         }
 
         it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi behandler er Lege(LE) og Kiropraktor(KI)") {
@@ -293,7 +323,10 @@ class HPRRuleChainTest : Spek({
                 )
             )
 
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, LocalDate.of(2019, 1, 1)))) shouldBeEqualTo false
+            HPRRuleChain(healthInformation, BehandlerOgStartdato(behandler, LocalDate.of(2019, 1, 1)))
+                .getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule()
+                .result shouldBeEqualTo false
         }
 
         it("Sjekker BEHANDLER_MT_FT_KI_OVER_12_UKER, slår ikke ut fordi startdato for tidligere sykefravær gir varighet på mindre enn 12 uker") {
@@ -323,7 +356,14 @@ class HPRRuleChainTest : Spek({
                 )
             )
 
-            HPRRuleChain.BEHANDLER_MT_FT_KI_OVER_12_UKER(RuleData(healthInformation, BehandlerOgStartdato(behandler, LocalDate.of(2019, 2, 20)))) shouldBeEqualTo false
+            HPRRuleChain(
+                healthInformation,
+                BehandlerOgStartdato(
+                    behandler,
+                    LocalDate.of(2019, 2, 20)
+                )
+            ).getRuleByName("BEHANDLER_MT_FT_KI_OVER_12_UKER")
+                .executeRule().result shouldBeEqualTo false
         }
     }
 })
@@ -344,5 +384,3 @@ private fun getBehandler(
             )
         )
     )
-
-private fun getRuleData(behandler: Behandler): RuleData<BehandlerOgStartdato> = RuleData(generateSykemelding(), BehandlerOgStartdato(behandler, null))

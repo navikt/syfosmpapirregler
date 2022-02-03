@@ -31,11 +31,13 @@ class PapirsykemeldingRegelServiceTest : Spek({
     val legeSuspensjonsClient = mockk<LegeSuspensjonClient>()
     val syketilfelleClient = mockk<SyketilfelleClient>()
     val norskHelsenettClient = mockk<NorskHelsenettClient>()
+    val juridiskVurderingService = mockk<JuridiskVurderingService>(relaxed = true)
     val service = PapirsykemeldingRegelService(
         ruleHitCounter,
         legeSuspensjonsClient,
         syketilfelleClient,
-        norskHelsenettClient
+        norskHelsenettClient,
+        juridiskVurderingService
     )
 
     beforeEachTest {

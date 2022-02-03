@@ -8,7 +8,12 @@ import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.ClientFactory
+import no.nav.syfo.common.JacksonKafkaSerializer
+import no.nav.syfo.kafka.aiven.KafkaUtils
+import no.nav.syfo.kafka.toProducerConfig
+import no.nav.syfo.papirsykemelding.service.JuridiskVurderingService
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
+import org.apache.kafka.clients.producer.KafkaProducer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -41,10 +46,21 @@ fun main() {
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenClientV2, httpClient)
 
+    val kafkaBaseConfig = KafkaUtils.getAivenKafkaConfig()
+    val kafkaProperties = kafkaBaseConfig.toProducerConfig(
+        env.applicationName,
+        valueSerializer = JacksonKafkaSerializer::class
+    )
+    val juridiskVurderingService = JuridiskVurderingService(
+        KafkaProducer(kafkaProperties),
+        env.etterlevelsesTopic,
+        env.versjonAvKode
+    )
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
         legeSuspensjonClient = legeSuspensjonClient,
         norskHelsenettClient = norskHelsenettClient,
-        syketilfelleClient = syketilfelleClient
+        syketilfelleClient = syketilfelleClient,
+        juridiskVurderingService = juridiskVurderingService
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,
