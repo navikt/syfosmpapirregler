@@ -56,7 +56,7 @@ class JuridiskVurderingService(
             juridiskHenvisning = ruleResult.rule.juridiskHenvisning
                 ?: throw RuntimeException("JuridiskHenvisning kan ikke være null"),
             sporing = mapOf(
-                "sykmeldingsid" to receivedSykmelding.sykmelding.id
+                "sykmelding" to receivedSykmelding.sykmelding.id
             ),
             input = ruleResult.rule.toInputMap(),
             utfall = toJuridiskUtfall(
