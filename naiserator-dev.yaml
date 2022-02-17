@@ -61,3 +61,7 @@ spec:
       value: https://flex-syketilfelle.dev.intern.nav.no
     - name: SYKETILLFELLE_SCOPE
       value: api://dev-gcp.flex.flex-syketilfelle/.default
+    - name: PDL_GRAPHQL_PATH
+      value: https://pdl-api.nais.preprod.local/graphql
+    - name: PDL_SCOPE
+      value: api://dev-fss.pdl.pdl-api/.default

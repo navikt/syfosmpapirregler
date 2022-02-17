@@ -26,6 +26,7 @@ import no.nav.syfo.papirsykemelding.rules.PeriodLogicRuleChain
 import no.nav.syfo.papirsykemelding.rules.RuleMetadataAndForstegangsSykemelding
 import no.nav.syfo.papirsykemelding.rules.SyketilfelleRuleChain
 import no.nav.syfo.papirsykemelding.rules.ValidationRuleChain
+import no.nav.syfo.pdl.FodselsdatoService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -37,7 +38,8 @@ class PapirsykemeldingRegelService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val syketilfelleClient: SyketilfelleClient,
     private val norskHelsenettClient: NorskHelsenettClient,
-    private val juridiskVurderingService: JuridiskVurderingService
+    private val juridiskVurderingService: JuridiskVurderingService,
+    private val fodselsdatoService: FodselsdatoService
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
@@ -52,6 +54,8 @@ class PapirsykemeldingRegelService(
 
         log.info("Received papirsykmelding, checking rules, {}", fields(loggingMeta))
 
+        val fodselsdato = fodselsdatoService.getFodselsdato(receivedSykmelding.personNrPasient, loggingMeta)
+
         val ruleMetadata = RuleMetadata(
             receivedDate = receivedSykmelding.mottattDato,
             signatureDate = receivedSykmelding.sykmelding.signaturDato,
@@ -59,7 +63,8 @@ class PapirsykemeldingRegelService(
             patientPersonNumber = receivedSykmelding.personNrPasient,
             rulesetVersion = receivedSykmelding.rulesetVersion,
             legekontorOrgnr = receivedSykmelding.legekontorOrgNr,
-            tssid = receivedSykmelding.tssid
+            tssid = receivedSykmelding.tssid,
+            pasientFodselsdato = fodselsdato
         )
 
         val validationResult = validateSykemelding(receivedSykmelding, ruleMetadata, loggingMeta)

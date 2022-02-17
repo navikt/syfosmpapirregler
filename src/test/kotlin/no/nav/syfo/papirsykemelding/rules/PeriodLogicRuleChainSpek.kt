@@ -1,17 +1,16 @@
 package no.nav.syfo.papirsykemelding.rules
 
+import io.kotest.core.spec.style.FunSpec
 import no.nav.syfo.generateGradert
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Periode
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-object PeriodLogicRuleChainSpek : Spek({
+class PeriodLogicRuleChainSpek : FunSpec({
     fun ruleData(
         receivedDate: LocalDateTime = LocalDateTime.now(),
         signatureDate: LocalDateTime = LocalDateTime.now(),
@@ -25,12 +24,13 @@ object PeriodLogicRuleChainSpek : Spek({
             patientPersonNumber,
             "1",
             "123456789",
-            tssid
+            tssid,
+            LocalDate.of(1980, 1, 1)
         )
 
-    describe("Testing validation rules and checking the rule outcomes") {
+    context("Testing validation rules and checking the rule outcomes") {
 
-        it("Should check rule PERIODER_MANGLER, should trigger rule") {
+        test("Should check rule PERIODER_MANGLER, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf()
             )
@@ -38,19 +38,19 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("PERIODER_MANGLER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule PERIODER_MANGLER, should NOT trigger rule") {
+        test("Should check rule PERIODER_MANGLER, should NOT trigger rule") {
             val sykemelding = generateSykemelding()
 
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("PERIODER_MANGLER").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule FRADATO_ETTER_TILDATO, should trigger rule") {
+        test("Should check rule FRADATO_ETTER_TILDATO, should trigger rule") {
             val sykemelding = generateSykemelding(perioder = listOf(generatePeriode(fom = LocalDate.of(2018, 1, 9), tom = LocalDate.of(2018, 1, 7))))
 
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FRADATO_ETTER_TILDATO").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule FRADATO_ETTER_TILDATO, should NOT trigger rule") {
+        test("Should check rule FRADATO_ETTER_TILDATO, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -63,7 +63,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FRADATO_ETTER_TILDATO").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule OVERLAPPENDE_PERIODER, should trigger rule") {
+        test("Should check rule OVERLAPPENDE_PERIODER, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -80,7 +80,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OVERLAPPENDE_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule OVERLAPPENDE_PERIODER, should NOT trigger rule") {
+        test("Should check rule OVERLAPPENDE_PERIODER, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -97,7 +97,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OVERLAPPENDE_PERIODER").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
+        test("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -118,7 +118,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
+        test("Should check rule OPPHOLD_MELLOM_PERIODER, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -143,7 +143,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule OPPHOLD_MELLOM_PERIODER, should NOT trigger rule") {
+        test("Should check rule OPPHOLD_MELLOM_PERIODER, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -161,7 +161,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("OPPHOLD_MELLOM_PERIODER").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     Periode(
@@ -180,7 +180,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("TILBAKEDATERT_MER_ENN_3_AR").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should not trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_3_AR, should not trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     Periode(
@@ -199,7 +199,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(healthInformation, ruleData()).getRuleByName("TILBAKEDATERT_MER_ENN_3_AR").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule FREMDATERT, should trigger rule") {
+        test("Should check rule FREMDATERT, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -212,7 +212,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FREMDATERT").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule FREMDATERT, should NOT trigger rule") {
+        test("Should check rule FREMDATERT, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -225,7 +225,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FREMDATERT").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule VARIGHET_OVER_ETT_AAR, should trigger rule") {
+        test("Should check rule VARIGHET_OVER_ETT_AAR, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -239,7 +239,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("TOTAL_VARIGHET_OVER_ETT_AAR").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule VARIGHET_OVER_ETT_AAR, should NOT trigger rule") {
+        test("Should check rule VARIGHET_OVER_ETT_AAR, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -253,7 +253,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("TOTAL_VARIGHET_OVER_ETT_AAR").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should trigger rule") {
+        test("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -272,7 +272,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_KOMBINERT").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should NOT trigger rule") {
+        test("Should check rule AVVENTENDE_SYKMELDING_KOMBINERT, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -285,7 +285,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_KOMBINERT").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should trigger rule") {
+        test("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -299,7 +299,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should NOT trigger rule") {
+        test("Should check rule MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -313,7 +313,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should trigger rule") {
+        test("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -327,7 +327,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_OVER_16_DAGER").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should NOT trigger rule") {
+        test("Should check rule AVVENTENDE_SYKMELDING_OVER_16_DAGER, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -341,7 +341,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("AVVENTENDE_SYKMELDING_OVER_16_DAGER").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should trigger rule") {
+        test("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -355,7 +355,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FOR_MANGE_BEHANDLINGSDAGER_PER_UKE").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should NOT trigger rule") {
+        test("Should check rule FOR_MANGE_BEHANDLINGSDAGER_PER_UKE, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -369,7 +369,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("FOR_MANGE_BEHANDLINGSDAGER_PER_UKE").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should trigger rule") {
+        test("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -383,7 +383,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_UNDER_20_PROSENT").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should NOT trigger rule") {
+        test("Should check rule GRADERT_SYKMELDING_UNDER_20_PROSENT, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -397,7 +397,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_UNDER_20_PROSENT").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should trigger rule") {
+        test("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -411,7 +411,7 @@ object PeriodLogicRuleChainSpek : Spek({
             PeriodLogicRuleChain(sykemelding, ruleData()).getRuleByName("GRADERT_SYKMELDING_OVER_99_PROSENT").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should NOT trigger rule") {
+        test("Should check rule GRADERT_SYKMELDING_OVER_99_PROSENT, should NOT trigger rule") {
             val sykemelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(

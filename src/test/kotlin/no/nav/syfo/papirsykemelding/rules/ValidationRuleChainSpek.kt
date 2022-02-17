@@ -1,8 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import com.devskiller.jfairy.Fairy
-import com.devskiller.jfairy.producer.person.PersonProperties
-import com.devskiller.jfairy.producer.person.PersonProvider
+import io.kotest.core.spec.style.FunSpec
 import no.nav.syfo.behandletTidspunkt
 import no.nav.syfo.generateArbeidsgiver
 import no.nav.syfo.generateBehandler
@@ -18,26 +16,20 @@ import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.signaturDato
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.toDiagnose
-import no.nav.syfo.validation.extractBornYear
-import no.nav.syfo.validation.validatePersonAndDNumber
+import no.nav.syfo.validering.extractBornYear
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-val fairy: Fairy = Fairy.create() // (Locale("no", "NO"))
-val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
-
-object ValidationRuleChainSpek : Spek({
+class ValidationRuleChainSpek : FunSpec({
     fun ruleData(
         receivedDate: LocalDateTime = LocalDateTime.now(),
         signatureDate: LocalDateTime = LocalDateTime.now(),
         patientPersonNumber: String = "1234567891",
         rulesetVersion: String = "1",
         legekontorOrgNr: String = "123456789",
-        tssid: String? = "1314445"
+        tssid: String? = "1314445",
+        pasientFodselsdato: LocalDate = LocalDate.of(1980, 1, 1)
     ): RuleMetadata =
         RuleMetadata(
             signatureDate,
@@ -46,74 +38,49 @@ object ValidationRuleChainSpek : Spek({
             patientPersonNumber,
             rulesetVersion,
             legekontorOrgNr,
-            tssid
+            tssid,
+            pasientFodselsdato
         )
 
-    describe("Testing validation rules and checking the rule outcomes") {
+    context("Testing validation rules and checking the rule outcomes") {
 
-        it("Should check rule PASIENT_YNGRE_ENN_13,should trigger rule") {
-            val person = fairy.person(PersonProperties.ageBetween(PersonProvider.MIN_AGE, 12))
-
+        test("Should check rule PASIENT_YNGRE_ENN_13,should trigger rule") {
             ValidationRuleChain(
                 generateSykemelding(),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(12)
                 )
             ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule PASIENT_YNGRE_ENN_13,should NOT trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(13, 70)
-            )
-
+        test("Should check rule PASIENT_YNGRE_ENN_13,should NOT trigger rule") {
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(40)
                 )
             ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule PASIENT_ELDRE_ENN_70,should trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(71, 88)
-            )
-
+        test("Should check rule PASIENT_ELDRE_ENN_70,should trigger rule") {
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(72)
                 )
             ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule PASIENT_ELDRE_ENN_70,should NOT trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(13, 69)
-            )
-
+        test("Should check rule PASIENT_ELDRE_ENN_70,should NOT trigger rule") {
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(68)
                 )
             ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo false
         }
 
-        it("Skal håndtere fødselsnummer fra 1854-1899") {
+        test("Skal håndtere fødselsnummer fra 1854-1899") {
             val beregnetFodselsar1 = extractBornYear("01015450000")
             val beregnetFodselsar2 = extractBornYear("01015474900")
             val beregnetFodselsar3 = extractBornYear("01019950000")
@@ -125,7 +92,7 @@ object ValidationRuleChainSpek : Spek({
             beregnetFodselsar4 shouldBeEqualTo 1899
         }
 
-        it("Skal håndtere fødselsnummer fra 1900-1999") {
+        test("Skal håndtere fødselsnummer fra 1900-1999") {
             val beregnetFodselsar1 = extractBornYear("01010000000")
             val beregnetFodselsar2 = extractBornYear("01010049900")
             val beregnetFodselsar3 = extractBornYear("01019900000")
@@ -137,7 +104,7 @@ object ValidationRuleChainSpek : Spek({
             beregnetFodselsar4 shouldBeEqualTo 1999
         }
 
-        it("Skal håndtere fødselsnummer fra 1940-1999") {
+        test("Skal håndtere fødselsnummer fra 1940-1999") {
             val beregnetFodselsar1 = extractBornYear("01014090000")
             val beregnetFodselsar2 = extractBornYear("01014099900")
             val beregnetFodselsar3 = extractBornYear("01019990000")
@@ -149,7 +116,7 @@ object ValidationRuleChainSpek : Spek({
             beregnetFodselsar4 shouldBeEqualTo 1999
         }
 
-        it("Skal håndtere fødselsnummer fra 2000-2039") {
+        test("Skal håndtere fødselsnummer fra 2000-2039") {
             val beregnetFodselsar1 = extractBornYear("01010050000")
             val beregnetFodselsar2 = extractBornYear("01010099900")
             val beregnetFodselsar3 = extractBornYear("01013950000")
@@ -161,7 +128,7 @@ object ValidationRuleChainSpek : Spek({
             beregnetFodselsar4 shouldBeEqualTo 2039
         }
 
-        it("Should check rule ICPC_2_Z_DIAGNOSE,should trigger rule") {
+        test("Should check rule ICPC_2_Z_DIAGNOSE,should trigger rule") {
             val sykmelding = Sykmelding(
                 "1",
                 "1",
@@ -197,7 +164,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
+        test("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
             val sykmelding = Sykmelding(
                 "1",
                 "1",
@@ -232,7 +199,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
+        test("Should check rule ICPC_2_Z_DIAGNOSE,should NOT trigger rule") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -272,7 +239,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should trigger rule") {
+        test("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should trigger rule") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -309,7 +276,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should NOT trigger rule") {
+        test("Should check rule HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,should NOT trigger rule") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -350,7 +317,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule UKJENT_DIAGNOSEKODETYPE,should trigger rule") {
+        test("Should check rule UKJENT_DIAGNOSEKODETYPE,should trigger rule") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -391,7 +358,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule UKJENT_DIAGNOSEKODETYPE,should NOT trigger rule") {
+        test("Should check rule UKJENT_DIAGNOSEKODETYPE,should NOT trigger rule") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -428,7 +395,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, wrong kodeverk for hoveddiagnose") {
+        test("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, wrong kodeverk for hoveddiagnose") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -469,7 +436,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, null hovedDiagnose should not trigger") {
+        test("Should check rule UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE, null hovedDiagnose should not trigger") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -506,7 +473,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, wrong kodeverk for biDiagnoser") {
+        test("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, wrong kodeverk for biDiagnoser") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -549,7 +516,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, correct kodeverk for biDiagnoser") {
+        test("Should check rule UGYLDIG_KODEVERK_FOR_BIDIAGNOSE, correct kodeverk for biDiagnoser") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -592,7 +559,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("UGYLDIG_ORGNR_LENGDE should trigger on when orgnr lengt is not 9") {
+        test("UGYLDIG_ORGNR_LENGDE should trigger on when orgnr lengt is not 9") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -628,7 +595,7 @@ object ValidationRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("UGYLDIG_ORGNR_LENGDE should not trigger on when orgnr is 9") {
+        test("UGYLDIG_ORGNR_LENGDE should not trigger on when orgnr is 9") {
             val sykemelding = Sykmelding(
                 "1",
                 "1",
@@ -666,14 +633,3 @@ object ValidationRuleChainSpek : Spek({
         }
     }
 })
-
-fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {
-    val personDate = bornDate.format(personNumberDateFormat).let {
-        if (useDNumber) "${it[0] + 4}${it.substring(1)}" else it
-    }
-    return (if (bornDate.year >= 2000) (75011..99999) else (11111..50099))
-        .map { "$personDate$it" }
-        .first {
-            validatePersonAndDNumber(it)
-        }
-}

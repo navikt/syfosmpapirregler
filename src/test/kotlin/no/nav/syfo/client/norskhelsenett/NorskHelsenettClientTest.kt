@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.client.HttpClient
@@ -18,22 +19,17 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.InternalAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 
 private const val fnr = "12345647981"
 
-@InternalAPI
-class NorskHelsenettClientTest : Spek({
+class NorskHelsenettClientTest : FunSpec({
     val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     val httpClient = HttpClient(Apache) {
         expectSuccess = false
@@ -67,27 +63,23 @@ class NorskHelsenettClientTest : Spek({
 
     val norskHelsenettClient = NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
 
-    afterGroup {
+    afterSpec {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
 
-    beforeGroup {
+    beforeSpec {
         coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
-    describe("Test NorskHelsenettClient") {
-        it("Should get behandler ") {
-            runBlocking {
-                val behandler = norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta)
-                behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
-            }
+    context("Test NorskHelsenettClient") {
+        test("Should get behandler ") {
+            val behandler = norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta)
+            behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
         }
 
-        it("Should get null when 404") {
-            runBlocking {
-                val behandler = norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta)
-                behandler shouldBeEqualTo null
-            }
+        test("Should get null when 404") {
+            val behandler = norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta)
+            behandler shouldBeEqualTo null
         }
     }
 })

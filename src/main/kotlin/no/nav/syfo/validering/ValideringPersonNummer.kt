@@ -1,4 +1,4 @@
-package no.nav.syfo.validation
+package no.nav.syfo.validering
 
 import java.time.LocalDate
 

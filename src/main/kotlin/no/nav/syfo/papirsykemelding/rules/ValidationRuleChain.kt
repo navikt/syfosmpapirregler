@@ -11,7 +11,6 @@ import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.sm.isICPC2
-import no.nav.syfo.validation.extractBornDate
 
 class ValidationRuleChain(
     private val sykmelding: Sykmelding,
@@ -29,9 +28,9 @@ class ValidationRuleChain(
             juridiskHenvisning = null,
             input = object {
                 val sisteTomDato = sykmelding.perioder.sortedTOMDate().last()
-                val fnr = metadata.patientPersonNumber
+                val pasientFodselsdato = metadata.pasientFodselsdato
             },
-            predicate = { it.sisteTomDato < extractBornDate(it.fnr).plusYears(13) }
+            predicate = { it.sisteTomDato < it.pasientFodselsdato.plusYears(13) }
         ),
 
         // §8-3 Det ytes ikke sykepenger til medlem som er fylt 70 år.
@@ -51,10 +50,10 @@ class ValidationRuleChain(
             ),
             input = object {
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first()
-                val fnr = metadata.patientPersonNumber
+                val pasientFodselsdato = metadata.pasientFodselsdato
             },
             predicate = {
-                it.forsteFomDato > extractBornDate(it.fnr).plusYears(70)
+                it.forsteFomDato > it.pasientFodselsdato.plusYears(70)
             }
         ),
 
