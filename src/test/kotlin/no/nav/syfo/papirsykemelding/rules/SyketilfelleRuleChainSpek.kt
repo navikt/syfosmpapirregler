@@ -1,22 +1,21 @@
 package no.nav.syfo.papirsykemelding.rules
 
+import io.kotest.core.spec.style.FunSpec
 import no.nav.syfo.generateKontaktMedPasient
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.KontaktMedPasient
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-object SyketilfelleRuleChainSpek : Spek({
+class SyketilfelleRuleChainSpek : FunSpec({
 
-    describe("Testing validation rules and checking the rule outcomes") {
+    context("Testing validation rules and checking the rule outcomes") {
 
-        it("Should check rule TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -47,7 +46,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -77,7 +76,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -107,7 +106,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -136,7 +135,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -165,7 +164,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -194,7 +193,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_FORLENGELSE_OVER_1_MND, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -228,7 +227,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -261,7 +260,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -294,7 +293,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -327,7 +326,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo true
         }
 
-        it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -360,7 +359,7 @@ object SyketilfelleRuleChainSpek : Spek({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        it("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE, NOT should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(

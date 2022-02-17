@@ -8,7 +8,6 @@ version = "1.0.0"
 val coroutinesVersion = "1.6.0"
 val ktorVersion = "1.6.7"
 val prometheusVersion = "0.15.0"
-val spekVersion = "2.0.17"
 val kluentVersion = "1.68"
 val logbackVersion = "1.2.10"
 val logstashEncoderVersion = "7.0.1"
@@ -18,6 +17,7 @@ val smCommonVersion = "1.efc6e77"
 val jacksonVersion = "2.13.1"
 val kotlinVersion = "1.6.0"
 val caffeineVersion = "3.0.5"
+val kotestVersion = "5.1.0"
 
 plugins {
     kotlin("jvm") version "1.6.0"
@@ -73,13 +73,9 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
-    testRuntimeOnly("org.spekframework.spek2:spek-runtime-jvm:$spekVersion") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-property:$kotestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
@@ -102,7 +98,6 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform {
-            includeEngines("spek2")
         }
         testLogging {
             showStandardStreams = true

@@ -2,6 +2,7 @@ package no.nav.syfo.papirsykemelding.api
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
@@ -21,13 +22,11 @@ import no.nav.syfo.getStringValue
 import no.nav.syfo.getValidResult
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @DelicateCoroutinesApi
-class PapirsykemeldingReglerApiSpek : Spek({
+class PapirsykemeldingReglerApiSpek : FunSpec({
 
-    describe("Validate papirsykemelding") {
+    context("Validate papirsykemelding") {
         with(TestApplicationEngine()) {
             start()
 
@@ -41,7 +40,7 @@ class PapirsykemeldingReglerApiSpek : Spek({
             }
             application.routing { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
 
-            it("Should validate papirsykemelding") {
+            test("Should validate papirsykemelding") {
                 with(
                     handleRequest(HttpMethod.Post, "/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -56,7 +55,7 @@ class PapirsykemeldingReglerApiSpek : Spek({
                     response.status() shouldBeEqualTo HttpStatusCode.OK
                 }
             }
-            it("Should not validate papirsykemelding") {
+            test("Should not validate papirsykemelding") {
                 with(
                     handleRequest(HttpMethod.Post, "/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())

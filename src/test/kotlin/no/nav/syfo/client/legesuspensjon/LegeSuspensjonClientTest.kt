@@ -1,7 +1,10 @@
+package no.nav.syfo.client.legesuspensjon
+
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.client.HttpClient
@@ -18,19 +21,15 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.mockk.coEvery
 import io.mockk.mockkClass
-import kotlinx.coroutines.runBlocking
 import no.nav.syfo.VaultCredentials
 import no.nav.syfo.client.OidcToken
 import no.nav.syfo.client.StsOidcClient
-import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 
-class LegeSuspensjonClientTest : Spek({
+class LegeSuspensjonClientTest : FunSpec({
 
     val fnr = "1"
     val httpClient = HttpClient(Apache) {
@@ -67,26 +66,22 @@ class LegeSuspensjonClientTest : Spek({
         VaultCredentials("username", "password"),
         stsOidcClient, httpClient
     )
-    afterGroup {
+    afterSpec {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
 
-    beforeGroup {
+    beforeSpec {
         coEvery { stsOidcClient.oidcToken() } returns OidcToken("oidcToken", "tokentype", 100L)
     }
 
-    describe("Test LegeSuspensjonClientTest") {
-        it("Should get valid suspensjon == true") {
-            runBlocking {
-                val suspensjon = legeSuspensjonClient.checkTherapist(fnr, "2", "2019-01-01")
-                suspensjon shouldBeEqualTo Suspendert(true)
-            }
+    context("Test no.nav.syfo.client.legesuspensjon.LegeSuspensjonClientTest") {
+        test("Should get valid suspensjon == true") {
+            val suspensjon = legeSuspensjonClient.checkTherapist(fnr, "2", "2019-01-01")
+            suspensjon shouldBeEqualTo Suspendert(true)
         }
-        it("Should get suspensjon == false") {
-            runBlocking {
-                val suspensjon = legeSuspensjonClient.checkTherapist("2", "3", "2019-01-01")
-                suspensjon shouldBeEqualTo Suspendert(false)
-            }
+        test("Should get suspensjon == false") {
+            val suspensjon = legeSuspensjonClient.checkTherapist("2", "3", "2019-01-01")
+            suspensjon shouldBeEqualTo Suspendert(false)
         }
     }
 })

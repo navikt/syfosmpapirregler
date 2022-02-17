@@ -1,5 +1,6 @@
 package no.nav.syfo.papirsykemelding.api
 
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.auth.authenticate
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -22,23 +23,21 @@ import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import no.nav.syfo.setUpAuth
 import no.nav.syfo.setUpTestApplication
 import org.amshove.kluent.shouldBe
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 
 @DelicateCoroutinesApi
-class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
+class PapirsykemeldingReglerApiSpekWithSecurity : FunSpec({
     val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
     coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
 
     val randomPort = ServerSocket(0).use { it.localPort }
     val fakeApi = fakeJWTApi(randomPort)
-    afterGroup {
+    afterSpec {
         fakeApi.stop(TimeUnit.SECONDS.toMillis(0), TimeUnit.SECONDS.toMillis(0))
     }
 
-    describe("Validate papirsykemelding with authentication") {
+    context("Validate papirsykemelding with authentication") {
         with(TestApplicationEngine()) {
             setUpTestApplication()
             setUpAuth("http://localhost:$randomPort/fake.jwt")
@@ -47,7 +46,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
                     authenticate("servicebrukerAADv2") { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
                 }
             }
-            it("Should return 401 Unauthorized") {
+            test("Should return 401 Unauthorized") {
                 with(
                     handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -58,7 +57,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
                 }
             }
 
-            it("should return 200 OK") {
+            test("should return 200 OK") {
                 with(
                     handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -73,7 +72,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : Spek({
                 }
             }
 
-            it("Should return 401 Unauthorized when wrong audience") {
+            test("Should return 401 Unauthorized when wrong audience") {
                 with(
                     handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
