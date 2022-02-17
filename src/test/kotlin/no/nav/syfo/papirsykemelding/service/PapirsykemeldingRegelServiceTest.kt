@@ -18,6 +18,7 @@ import no.nav.syfo.getBehandlerNotInHPRRule
 import no.nav.syfo.getGyldigBehandler
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.pdl.FodselsdatoService
 import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -32,12 +33,14 @@ class PapirsykemeldingRegelServiceTest : Spek({
     val syketilfelleClient = mockk<SyketilfelleClient>()
     val norskHelsenettClient = mockk<NorskHelsenettClient>()
     val juridiskVurderingService = mockk<JuridiskVurderingService>(relaxed = true)
+    val fodselsdatoService = mockk<FodselsdatoService>()
     val service = PapirsykemeldingRegelService(
         ruleHitCounter,
         legeSuspensjonsClient,
         syketilfelleClient,
         norskHelsenettClient,
-        juridiskVurderingService
+        juridiskVurderingService,
+        fodselsdatoService
     )
 
     beforeEachTest {
@@ -47,6 +50,7 @@ class PapirsykemeldingRegelServiceTest : Spek({
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns getGyldigBehandler()
         coEvery { syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(any(), any(), any()) } returns null
         coEvery { legeSuspensjonsClient.checkTherapist(any(), any(), any()) } returns Suspendert(false)
+        coEvery { fodselsdatoService.getFodselsdato(any(), any()) } returns LocalDate.now().minusYears(40)
     }
 
     describe("Validate papirsykemelding") {

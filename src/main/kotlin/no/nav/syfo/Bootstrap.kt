@@ -13,6 +13,8 @@ import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toProducerConfig
 import no.nav.syfo.papirsykemelding.service.JuridiskVurderingService
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
+import no.nav.syfo.pdl.FodselsdatoService
+import no.nav.syfo.pdl.client.PdlClient
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,6 +48,15 @@ fun main() {
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenClientV2, httpClient)
 
+    val pdlClient = PdlClient(
+        httpClient = httpClient,
+        accessTokenClientV2 = accessTokenClientV2,
+        pdlScope = env.pdlScope,
+        basePath = env.pdlGraphqlPath,
+        graphQlQuery = PdlClient::class.java.getResource("/graphql/getPerson.graphql").readText().replace(Regex("[\n\t]"), "")
+    )
+    val fodselsdatoService = FodselsdatoService(pdlClient)
+
     val kafkaBaseConfig = KafkaUtils.getAivenKafkaConfig()
     val kafkaProperties = kafkaBaseConfig.toProducerConfig(
         env.applicationName,
@@ -60,7 +71,8 @@ fun main() {
         legeSuspensjonClient = legeSuspensjonClient,
         norskHelsenettClient = norskHelsenettClient,
         syketilfelleClient = syketilfelleClient,
-        juridiskVurderingService = juridiskVurderingService
+        juridiskVurderingService = juridiskVurderingService,
+        fodselsdatoService = fodselsdatoService
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,

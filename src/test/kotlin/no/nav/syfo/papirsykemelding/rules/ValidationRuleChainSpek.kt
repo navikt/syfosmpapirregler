@@ -1,8 +1,5 @@
 package no.nav.syfo.papirsykemelding.rules
 
-import com.devskiller.jfairy.Fairy
-import com.devskiller.jfairy.producer.person.PersonProperties
-import com.devskiller.jfairy.producer.person.PersonProvider
 import no.nav.syfo.behandletTidspunkt
 import no.nav.syfo.generateArbeidsgiver
 import no.nav.syfo.generateBehandler
@@ -18,17 +15,12 @@ import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.signaturDato
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.toDiagnose
-import no.nav.syfo.validation.extractBornYear
-import no.nav.syfo.validation.validatePersonAndDNumber
+import no.nav.syfo.validering.extractBornYear
 import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-val fairy: Fairy = Fairy.create() // (Locale("no", "NO"))
-val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
 
 object ValidationRuleChainSpek : Spek({
     fun ruleData(
@@ -37,7 +29,8 @@ object ValidationRuleChainSpek : Spek({
         patientPersonNumber: String = "1234567891",
         rulesetVersion: String = "1",
         legekontorOrgNr: String = "123456789",
-        tssid: String? = "1314445"
+        tssid: String? = "1314445",
+        pasientFodselsdato: LocalDate = LocalDate.of(1980, 1, 1)
     ): RuleMetadata =
         RuleMetadata(
             signatureDate,
@@ -46,69 +39,44 @@ object ValidationRuleChainSpek : Spek({
             patientPersonNumber,
             rulesetVersion,
             legekontorOrgNr,
-            tssid
+            tssid,
+            pasientFodselsdato
         )
 
     describe("Testing validation rules and checking the rule outcomes") {
 
         it("Should check rule PASIENT_YNGRE_ENN_13,should trigger rule") {
-            val person = fairy.person(PersonProperties.ageBetween(PersonProvider.MIN_AGE, 12))
-
             ValidationRuleChain(
                 generateSykemelding(),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(12)
                 )
             ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule PASIENT_YNGRE_ENN_13,should NOT trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(13, 70)
-            )
-
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(40)
                 )
             ).getRuleByName("PASIENT_YNGRE_ENN_13").executeRule().result shouldBeEqualTo false
         }
 
         it("Should check rule PASIENT_ELDRE_ENN_70,should trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(71, 88)
-            )
-
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(72)
                 )
             ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo true
         }
 
         it("Should check rule PASIENT_ELDRE_ENN_70,should NOT trigger rule") {
-            val person = fairy.person(
-                PersonProperties.ageBetween(13, 69)
-            )
-
             ValidationRuleChain(
                 generateSykemelding(generatePerioder()),
                 ruleData(
-                    patientPersonNumber = generatePersonNumber(
-                        person.dateOfBirth,
-                        false
-                    )
+                    pasientFodselsdato = LocalDate.now().minusYears(68)
                 )
             ).getRuleByName("PASIENT_ELDRE_ENN_70").executeRule().result shouldBeEqualTo false
         }
@@ -666,14 +634,3 @@ object ValidationRuleChainSpek : Spek({
         }
     }
 })
-
-fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {
-    val personDate = bornDate.format(personNumberDateFormat).let {
-        if (useDNumber) "${it[0] + 4}${it.substring(1)}" else it
-    }
-    return (if (bornDate.year >= 2000) (75011..99999) else (11111..50099))
-        .map { "$personDate$it" }
-        .first {
-            validatePersonAndDNumber(it)
-        }
-}

@@ -1,5 +1,6 @@
 package no.nav.syfo.papirsykemelding.model
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class RuleMetadata(
@@ -9,5 +10,6 @@ data class RuleMetadata(
     val patientPersonNumber: String,
     val rulesetVersion: String?,
     val legekontorOrgnr: String?,
-    val tssid: String?
+    val tssid: String?,
+    val pasientFodselsdato: LocalDate
 )

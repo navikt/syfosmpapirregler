@@ -25,7 +25,8 @@ object PeriodLogicRuleChainSpek : Spek({
             patientPersonNumber,
             "1",
             "123456789",
-            tssid
+            tssid,
+            LocalDate.of(1980, 1, 1)
         )
 
     describe("Testing validation rules and checking the rule outcomes") {
