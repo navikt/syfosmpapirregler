@@ -136,7 +136,7 @@ class ValidationRuleChain(
             ruleId = 1540,
             status = Status.MANUAL_PROCESSING,
             messageForUser = "Den må ha riktig kode for hoveddiagnose.",
-            messageForSender = "Kodeverk for hoveddiagnose er feil.",
+            messageForSender = "Kodeverk for hoveddiagnose er feil. Prosesskoder ikke kan benyttes for å angi diagnose.",
             JuridiskHenvisning(
                 lovverk = Lovverk.FOLKETRYGDLOVEN,
                 paragraf = "8-4",
@@ -170,7 +170,7 @@ class ValidationRuleChain(
             ruleId = 1541,
             status = Status.MANUAL_PROCESSING,
             messageForUser = "Det er brukt eit ukjent kodeverk for bidiagnosen.",
-            messageForSender = "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen.",
+            messageForSender = "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen. Prosesskoder ikke kan benyttes for å angi diagnose.",
             JuridiskHenvisning(
                 lovverk = Lovverk.FOLKETRYGDLOVEN,
                 paragraf = "8-4",
