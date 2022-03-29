@@ -90,7 +90,10 @@ class PapirsykemeldingRegelService(
             PeriodLogicRuleChain(receivedSykmelding.sykmelding, ruleMetadata).executeRules(),
             SyketilfelleRuleChain(
                 receivedSykmelding.sykmelding,
-                getRuleMetadataAndForstegangsSykemelding(ruleMetadata = ruleMetadata, erNyttSyketilfelle = syketilfelleStartdato == null)
+                RuleMetadataAndForstegangsSykemelding(
+                    ruleMetadata = ruleMetadata,
+                    erNyttSyketilfelle = syketilfelleStartdato == null
+                )
             ).executeRules()
         ).flatten()
 
@@ -125,12 +128,6 @@ class PapirsykemeldingRegelService(
             )
         )
     }
-
-    private fun getRuleMetadataAndForstegangsSykemelding(
-        ruleMetadata: RuleMetadata,
-        erNyttSyketilfelle: Boolean
-    ): RuleMetadataAndForstegangsSykemelding =
-        RuleMetadataAndForstegangsSykemelding(ruleMetadata, erNyttSyketilfelle)
 
     private fun GlobalScope.getBehandlerAsync(
         receivedSykmelding: ReceivedSykmelding,

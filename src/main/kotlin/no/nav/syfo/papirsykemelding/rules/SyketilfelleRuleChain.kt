@@ -7,6 +7,7 @@ import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
 import no.nav.syfo.papirsykemelding.model.RuleChain
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 
 class SyketilfelleRuleChain(
     private val sykmelding: Sykmelding,
@@ -127,7 +128,7 @@ class SyketilfelleRuleChain(
             ruleId = null,
             status = Status.MANUAL_PROCESSING,
             messageForUser = "Sykmeldingen er tilbakedatert uten at det er opplyst når du kontaktet den som sykmeldte deg.",
-            messageForSender = "Fom-dato i ny sykmelding som er en forlengelse kan maks være tilbakedatert 1 mnd fra signaturdato og felt 11.1 er ikke utfylt",
+            messageForSender = "Fom-dato i ny sykmelding som er en forlengelse kan maks være tilbakedatert 1 mnd fra behandlingstidspunkt og felt 11.1 er ikke utfylt",
             juridiskHenvisning = JuridiskHenvisning(
                 lovverk = Lovverk.FOLKETRYGDLOVEN,
                 paragraf = "8-7",
@@ -145,38 +146,6 @@ class SyketilfelleRuleChain(
                 !it.erNyttSyketilfelle &&
                     it.forsteFomDato < it.behandletTidspunkt.toLocalDate().minusMonths(1) &&
                     it.begrunnelseIkkeKontakt.isNullOrEmpty()
-            }
-        ),
-
-        // §8-7 Legeerklæring kan ikke godtas for tidsrom før medlemmet ble undersøkt av lege.
-        // En legeerklæring for tidsrom før medlemmet søkte lege kan likevel godtas dersom medlemmet har vært
-        // forhidret fra å søke lege og det er godtgjort at han eller hun har vært arbeidsufør fra et tidligere tidspunkt.
-        //
-        // Dersom sykmeldingen er tilbakedatert mer enn 30 dager og begrunnelse er angitt går den til manuell behandling
-        //
-        // Sykmeldingen er tilbakedatert mer enn 30 dager og årsak for tilbakedatering er angitt.
-        Rule(
-            name = "TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING",
-            ruleId = 1207,
-            status = Status.MANUAL_PROCESSING,
-            messageForUser = "Sykmeldingen er tilbakedatert og årsak for tilbakedatering er angitt",
-            messageForSender = "SykmeldinSykmeldingen er tilbakedatert og årsak for tilbakedatering er angitt",
-            juridiskHenvisning = JuridiskHenvisning(
-                lovverk = Lovverk.FOLKETRYGDLOVEN,
-                paragraf = "8-7",
-                ledd = 2,
-                punktum = null,
-                bokstav = null
-            ),
-            input = object {
-                val erNyttSyketilfelle = ruleMetadataSykmelding.erNyttSyketilfelle
-                val signaturDato = ruleMetadataSykmelding.ruleMetadata.signatureDate
-                val forsteFomDato = sykmelding.perioder.sortedFOMDate().first().atStartOfDay()
-                val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
-            },
-            predicate = { input ->
-                input.erNyttSyketilfelle &&
-                    input.signaturDato > input.forsteFomDato.plusDays(8) && !input.begrunnelseIkkeKontakt.isNullOrEmpty()
             }
         ),
 
@@ -202,13 +171,13 @@ class SyketilfelleRuleChain(
             ),
             input = object {
                 val erNyttSyketilfelle = ruleMetadataSykmelding.erNyttSyketilfelle
-                val signaturDato = ruleMetadataSykmelding.ruleMetadata.signatureDate
+                val behandletTidspunkt = ruleMetadataSykmelding.ruleMetadata.behandletTidspunkt
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first().atStartOfDay()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
             },
             predicate = { input ->
                 !input.erNyttSyketilfelle &&
-                    input.signaturDato > input.forsteFomDato.plusDays(30) && !input.begrunnelseIkkeKontakt.isNullOrEmpty()
+                    input.behandletTidspunkt > input.forsteFomDato.plusDays(30) && !input.begrunnelseIkkeKontakt.isNullOrEmpty()
             }
         )
     )
