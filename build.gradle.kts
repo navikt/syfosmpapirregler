@@ -15,9 +15,11 @@ val mockkVersion = "1.12.3"
 val nimbusdsVersion = "9.21"
 val smCommonVersion = "1.ed38c78"
 val jacksonVersion = "2.13.2"
+val jacksonPatchVersion = "2.13.2.1"
+val jacksonBomVersion = "2.13.2.20220324"
 val kotlinVersion = "1.6.0"
 val caffeineVersion = "3.0.6"
-val kotestVersion = "5.1.0"
+val kotestVersion = "5.2.1"
 
 plugins {
     kotlin("jvm") version "1.6.0"
@@ -54,8 +56,9 @@ dependencies {
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonPatchVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation ("com.fasterxml.jackson:jackson-bom:$jacksonBomVersion")
 
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
