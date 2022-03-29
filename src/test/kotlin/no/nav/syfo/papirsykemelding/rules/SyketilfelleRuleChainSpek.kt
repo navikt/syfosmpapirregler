@@ -61,7 +61,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.of(LocalDate.of(2019, 1, 8), LocalTime.NOON),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.of(LocalDate.of(2019, 1, 8), LocalTime.NOON),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
@@ -121,7 +121,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.of(LocalDate.of(2019, 1, 8), LocalTime.NOON),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.of(LocalDate.of(2019, 1, 8), LocalTime.NOON),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
@@ -213,7 +213,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.now().minusMonths(2),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.now().minusMonths(2),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
@@ -227,11 +227,11 @@ class SyketilfelleRuleChainSpek : FunSpec({
                 .executeRule().result shouldBeEqualTo false
         }
 
-        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE, should trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
-                        fom = LocalDate.now().minusDays(8),
+                        fom = LocalDate.now().minusDays(9),
                         tom = LocalDate.now()
                     )
                 ),
@@ -256,11 +256,11 @@ class SyketilfelleRuleChainSpek : FunSpec({
                 )
 
             SyketilfelleRuleChain(healthInformation, ruleMetadataAndForstegangsSykemelding)
-                .getRuleByName("TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING")
+                .getRuleByName("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE")
                 .executeRule().result shouldBeEqualTo true
         }
 
-        test("Should check rule TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING, should NOT trigger rule") {
+        test("Should check rule TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE, should NOT trigger rule") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -289,7 +289,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                 )
 
             SyketilfelleRuleChain(healthInformation, ruleMetadataAndForstegangsSykemelding)
-                .getRuleByName("TILBAKEDATERT_MED_BEGRUNNELSE_FORSTE_SYKMELDING")
+                .getRuleByName("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE")
                 .executeRule().result shouldBeEqualTo false
         }
 
@@ -311,7 +311,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.now().plusDays(30),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.now().plusDays(30),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
@@ -344,7 +344,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.now().plusDays(29),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.now().plusDays(29),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",
@@ -374,7 +374,7 @@ class SyketilfelleRuleChainSpek : FunSpec({
                     ruleMetadata = RuleMetadata(
                         receivedDate = LocalDateTime.now(),
                         signatureDate = LocalDateTime.now().plusDays(30),
-                        behandletTidspunkt = LocalDateTime.now(),
+                        behandletTidspunkt = LocalDateTime.now().plusDays(30),
                         patientPersonNumber = "1232345244",
                         rulesetVersion = "2",
                         legekontorOrgnr = "12313",

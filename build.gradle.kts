@@ -6,18 +6,20 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion = "1.6.0"
-val ktorVersion = "1.6.7"
+val ktorVersion = "1.6.8"
 val prometheusVersion = "0.15.0"
 val kluentVersion = "1.68"
-val logbackVersion = "1.2.10"
+val logbackVersion = "1.2.11"
 val logstashEncoderVersion = "7.0.1"
-val mockkVersion = "1.12.2"
-val nimbusdsVersion = "9.19"
+val mockkVersion = "1.12.3"
+val nimbusdsVersion = "9.21"
 val smCommonVersion = "1.ed38c78"
-val jacksonVersion = "2.13.1"
+val jacksonVersion = "2.13.2"
+val jacksonPatchVersion = "2.13.2.1"
+val jacksonBomVersion = "2.13.2.20220324"
 val kotlinVersion = "1.6.0"
-val caffeineVersion = "3.0.5"
-val kotestVersion = "5.1.0"
+val caffeineVersion = "3.0.6"
+val kotestVersion = "5.2.1"
 
 plugins {
     kotlin("jvm") version "1.6.0"
@@ -54,9 +56,9 @@ dependencies {
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonPatchVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation ("com.fasterxml.jackson:jackson-bom:$jacksonBomVersion")
 
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
