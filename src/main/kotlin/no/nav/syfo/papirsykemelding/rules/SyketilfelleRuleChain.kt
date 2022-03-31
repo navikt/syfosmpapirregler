@@ -1,5 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules
 
+import no.nav.syfo.model.AnnenFraverGrunn
 import no.nav.syfo.model.Rule
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
@@ -8,6 +9,9 @@ import no.nav.syfo.model.juridisk.Lovverk
 import no.nav.syfo.papirsykemelding.model.RuleChain
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
+import no.nav.syfo.sm.isICD10
+import no.nav.syfo.sm.isICPC2
+import java.time.LocalDate
 
 class SyketilfelleRuleChain(
     private val sykmelding: Sykmelding,
@@ -39,10 +43,14 @@ class SyketilfelleRuleChain(
                 val behandletTidspunkt = ruleMetadataSykmelding.ruleMetadata.behandletTidspunkt
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
+                val erFraSpesialisthelsetjenesten = kommerFraSpesialisthelsetjenesten(sykmelding)
+                val erCoronaRelatert = erCoronaRelatert(sykmelding)
             },
             predicate = {
                 it.erNyttSyketilfelle &&
-                    (it.behandletTidspunkt.toLocalDate() > it.forsteFomDato.plusDays(8) && it.begrunnelseIkkeKontakt.isNullOrEmpty())
+                    (it.behandletTidspunkt.toLocalDate() > it.forsteFomDato.plusDays(8) && it.begrunnelseIkkeKontakt.isNullOrEmpty()) &&
+                    !it.erFraSpesialisthelsetjenesten &&
+                    !it.erCoronaRelatert
             }
         ),
 
@@ -72,11 +80,15 @@ class SyketilfelleRuleChain(
                 val behandletTidspunkt = ruleMetadataSykmelding.ruleMetadata.behandletTidspunkt
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
+                val erFraSpesialisthelsetjenesten = kommerFraSpesialisthelsetjenesten(sykmelding)
+                val erCoronaRelatert = erCoronaRelatert(sykmelding)
             },
             predicate = {
                 it.erNyttSyketilfelle &&
                     it.behandletTidspunkt.toLocalDate() > it.forsteFomDato.plusDays(8) &&
-                    !it.begrunnelseIkkeKontakt.isNullOrEmpty()
+                    !it.begrunnelseIkkeKontakt.isNullOrEmpty() &&
+                    !it.erFraSpesialisthelsetjenesten &&
+                    !it.erCoronaRelatert
             }
         ),
 
@@ -107,12 +119,16 @@ class SyketilfelleRuleChain(
                 val sisteTomDato = sykmelding.perioder.sortedTOMDate().last()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
                 val kontaktMedPasientDato = sykmelding.kontaktMedPasient.kontaktDato
+                val erFraSpesialisthelsetjenesten = kommerFraSpesialisthelsetjenesten(sykmelding)
+                val erCoronaRelatert = erCoronaRelatert(sykmelding)
             },
             predicate = {
                 it.erNyttSyketilfelle &&
                     it.behandletTidspunkt.toLocalDate() > it.forsteFomDato.plusDays(4) &&
                     it.behandletTidspunkt.toLocalDate() <= it.sisteTomDato.plusDays(8) &&
-                    (it.kontaktMedPasientDato == null && it.begrunnelseIkkeKontakt.isNullOrEmpty())
+                    (it.kontaktMedPasientDato == null && it.begrunnelseIkkeKontakt.isNullOrEmpty()) &&
+                    !it.erFraSpesialisthelsetjenesten &&
+                    !it.erCoronaRelatert
             }
         ),
 
@@ -141,11 +157,15 @@ class SyketilfelleRuleChain(
                 val behandletTidspunkt = ruleMetadataSykmelding.ruleMetadata.behandletTidspunkt
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
+                val erFraSpesialisthelsetjenesten = kommerFraSpesialisthelsetjenesten(sykmelding)
+                val erCoronaRelatert = erCoronaRelatert(sykmelding)
             },
             predicate = {
                 !it.erNyttSyketilfelle &&
                     it.forsteFomDato < it.behandletTidspunkt.toLocalDate().minusMonths(1) &&
-                    it.begrunnelseIkkeKontakt.isNullOrEmpty()
+                    it.begrunnelseIkkeKontakt.isNullOrEmpty() &&
+                    !it.erFraSpesialisthelsetjenesten &&
+                    !it.erCoronaRelatert
             }
         ),
 
@@ -174,10 +194,14 @@ class SyketilfelleRuleChain(
                 val behandletTidspunkt = ruleMetadataSykmelding.ruleMetadata.behandletTidspunkt
                 val forsteFomDato = sykmelding.perioder.sortedFOMDate().first().atStartOfDay()
                 val begrunnelseIkkeKontakt = sykmelding.kontaktMedPasient.begrunnelseIkkeKontakt
+                val erFraSpesialisthelsetjenesten = kommerFraSpesialisthelsetjenesten(sykmelding)
+                val erCoronaRelatert = erCoronaRelatert(sykmelding)
             },
             predicate = { input ->
                 !input.erNyttSyketilfelle &&
-                    input.behandletTidspunkt > input.forsteFomDato.plusDays(30) && !input.begrunnelseIkkeKontakt.isNullOrEmpty()
+                    input.behandletTidspunkt > input.forsteFomDato.plusDays(30) && !input.begrunnelseIkkeKontakt.isNullOrEmpty() &&
+                    !input.erFraSpesialisthelsetjenesten &&
+                    !input.erCoronaRelatert
             }
         )
     )
@@ -187,3 +211,22 @@ data class RuleMetadataAndForstegangsSykemelding(
     val ruleMetadata: RuleMetadata,
     val erNyttSyketilfelle: Boolean
 )
+
+fun erCoronaRelatert(sykmelding: Sykmelding): Boolean {
+    return (
+        (sykmelding.medisinskVurdering.hovedDiagnose?.isICPC2() ?: false && sykmelding.medisinskVurdering.hovedDiagnose?.kode == "R991") ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICPC2() ?: false && sykmelding.medisinskVurdering.biDiagnoser.any { it.kode == "R991" }) ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICPC2() ?: false && sykmelding.medisinskVurdering.hovedDiagnose?.kode == "R992") ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICPC2() ?: false && sykmelding.medisinskVurdering.biDiagnoser.any { it.kode == "R992" }) ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false && sykmelding.medisinskVurdering.hovedDiagnose?.kode == "U071") ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false && sykmelding.medisinskVurdering.biDiagnoser.any { it.kode == "U071" }) ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false && sykmelding.medisinskVurdering.hovedDiagnose?.kode == "U072") ||
+            (sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false && sykmelding.medisinskVurdering.biDiagnoser.any { it.kode == "U072" }) ||
+            sykmelding.medisinskVurdering.annenFraversArsak?.grunn?.any { it == AnnenFraverGrunn.SMITTEFARE } ?: false
+        ) &&
+        sykmelding.perioder.any { it.fom.isAfter(LocalDate.of(2020, 2, 24)) }
+}
+
+fun kommerFraSpesialisthelsetjenesten(sykmelding: Sykmelding): Boolean {
+    return sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false
+}

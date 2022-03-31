@@ -59,7 +59,7 @@ fun generateSykemelding(
     tidspunkt: LocalDateTime = behandletTidspunkt,
     signaturDateTime: LocalDateTime = signaturDato,
     kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
-    diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()
+    diagnose: Diagnose = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose()
 ): Sykmelding {
     return Sykmelding(
         "1",
@@ -140,7 +140,7 @@ fun generateArbeidsgiver(): Arbeidsgiver {
     return Arbeidsgiver(HarArbeidsgiver.EN_ARBEIDSGIVER, null, null, null)
 }
 
-fun generateMedisinskVurdering(diagnose: Diagnose = Diagnosekoder.icd10.values.stream().findFirst().get().toDiagnose()): MedisinskVurdering {
+fun generateMedisinskVurdering(diagnose: Diagnose = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose()): MedisinskVurdering {
     return MedisinskVurdering(
         hovedDiagnose = diagnose,
         biDiagnoser = emptyList(),
