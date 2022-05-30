@@ -4,8 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
-import io.ktor.client.features.HttpResponseValidator
-import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultCredentials
@@ -37,11 +37,11 @@ class ClientFactory {
 
         private fun getHttpClientConfig(): HttpClientConfig<ApacheEngineConfig>.() -> Unit {
             val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-                install(JsonFeature) {
-                    serializer = getSerializer()
+                install(ContentNegotiation) {
+                    getSerializer()
                 }
                 HttpResponseValidator {
-                    handleResponseException { exception ->
+                    handleResponseExceptionWithRequest { exception, _ ->
                         when (exception) {
                             is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
                         }

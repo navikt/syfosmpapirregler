@@ -1,16 +1,15 @@
 package no.nav.syfo.papirsykemelding.api
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.kotest.core.spec.style.FunSpec
-import io.ktor.application.install
-import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
-import io.ktor.routing.routing
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.install
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
@@ -35,7 +34,6 @@ class PapirsykemeldingReglerApiSpek : FunSpec({
             application.install(ContentNegotiation) {
                 jackson {
                     registerModule(JavaTimeModule())
-                    registerKotlinModule()
                 }
             }
             application.routing { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }

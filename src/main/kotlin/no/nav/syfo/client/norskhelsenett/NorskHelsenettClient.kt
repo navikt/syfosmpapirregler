@@ -1,11 +1,10 @@
 package no.nav.syfo.client.norskhelsenett
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
+import io.ktor.client.call.body
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
-import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
@@ -31,7 +30,7 @@ class NorskHelsenettClient(
         retryIntervals = arrayOf(500L, 1000L, 1000L)
     ) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
-        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/v2/behandler") {
+        val httpResponse = httpClient.get("$endpointUrl/api/v2/behandler") {
             accept(ContentType.Application.Json)
             val accessToken = accessTokenClient.getAccessTokenV2(resourceId)
             headers {
@@ -39,7 +38,7 @@ class NorskHelsenettClient(
                 append("Nav-CallId", msgId)
                 append("behandlerFnr", behandlerFnr)
             }
-        }.execute()
+        }
         when (httpResponse.status) {
             InternalServerError -> {
                 log.error(
@@ -63,7 +62,7 @@ class NorskHelsenettClient(
             }
             else -> {
                 log.info("Hentet behandler for msgId {}, {}", msgId, StructuredArguments.fields(loggingMeta))
-                httpResponse.call.response.receive<Behandler>()
+                httpResponse.call.response.body<Behandler>()
             }
         }
     }
