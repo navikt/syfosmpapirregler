@@ -9,8 +9,7 @@ import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.errors.IOException
-import no.nav.syfo.VaultCredentials
-import no.nav.syfo.client.StsOidcClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import no.nav.syfo.helpers.retry
 import org.slf4j.Logger
@@ -18,27 +17,26 @@ import org.slf4j.LoggerFactory
 
 class LegeSuspensjonClient(
     private val endpointUrl: String,
-    private val credentials: VaultCredentials,
-    private val stsClient: StsOidcClient,
-    private val httpClient: HttpClient
+    private val accessTokenClientV2: AccessTokenClientV2,
+    private val httpClient: HttpClient,
+    private val scope: String
 ) {
 
     suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry(
         "lege_suspansjon",
         retryIntervals = arrayOf(500L, 1000L)
     ) {
-
         val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
 
-        val httpResponse = httpClient.get("$endpointUrl/api/v1/suspensjon/status") {
+        val httpResponse = httpClient.get("$endpointUrl/btsys/api/v1/suspensjon/status") {
             accept(ContentType.Application.Json)
-            val oidcToken = stsClient.oidcToken()
+            val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
             headers {
                 append("Nav-Call-Id", ediloggid)
-                append("Nav-Consumer-Id", credentials.serviceuserUsername)
+                append("Nav-Consumer-Id", "srvsyfosmpapirregler")
                 append("Nav-Personident", therapistId)
 
-                append("Authorization", "Bearer ${oidcToken.access_token}")
+                append("Authorization", "Bearer $accessToken")
             }
             parameter("oppslagsdato", oppslagsdato)
         }
@@ -49,8 +47,8 @@ class LegeSuspensjonClient(
                 httpResponse.call.response.body<Suspendert>()
             }
             else -> {
-                log.error("Btsys svarte med kode {} for ediloggId {}, {}", httpResponse.status, ediloggid)
-                throw IOException("Btsys svarte med uventet kode ${httpResponse.status} for $ediloggid")
+                log.error("Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}", httpResponse.status, ediloggid)
+                throw IOException("Btsys (smgcp-proxy) svarte med uventet kode ${httpResponse.status} for $ediloggid")
             }
         }
     }

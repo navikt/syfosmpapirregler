@@ -13,19 +13,19 @@ spec:
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
-    path: /is_alive
+    path: /internal/is_alive
     initialDelay: 10
     timeout: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /is_ready
+    path: /internal/is_ready
     initialDelay: 30
     periodSeconds: 5
     timeout: 1
   prometheus:
     enabled: true
-    path: /prometheus
+    path: /internal/prometheus
   resources:
     limits:
       cpu: 500m
@@ -43,25 +43,26 @@ spec:
         - application: syfosmpapirmottak
         - application: smregistrering-backend
   vault:
-    enabled: true
-    paths:
-      - kvPath: serviceuser/data/prod/srvsyfosmpapirregler
-        mountPath: /secrets/serviceuser
-  webproxy: true
+    enabled: false
+  webproxy: false
   ingresses:
-    - "https://syfosmpapirregler.nais.adeo.no"
+    - "https://syfosmpapirregler.intern.nav.no"
   kafka:
     pool: nav-prod
   env:
     - name: HELSENETT_SCOPE
       value: api://prod-fss.teamsykmelding.syfohelsenettproxy/.default
     - name: HELSENETT_ENDPOINT_URL
-      value: https://syfohelsenettproxy.nais.adeo.no
+      value: https://syfohelsenettproxy.prod-fss-pub.nais.io
     - name: SYKETILLFELLE_ENDPOINT_URL
       value: https://flex-syketilfelle.intern.nav.no
     - name: SYKETILLFELLE_SCOPE
       value: api://prod-gcp.flex.flex-syketilfelle/.default
     - name: PDL_GRAPHQL_PATH
-      value: https://pdl-api.nais.adeo.no/graphql
+      value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: PDL_SCOPE
       value: api://prod-fss.pdl.pdl-api/.default
+    - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
+      value: https://smgcp-proxy.prod-fss-pub.nais.io
+    - name: LEGE_SUSPENSJON_PROXY_SCOPE
+      value: api://prod-fss.teamsykmelding.smgcp-proxy/.default
