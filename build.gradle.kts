@@ -16,7 +16,7 @@ val nimbusdsVersion = "9.23"
 val smCommonVersion = "1.cb455aa"
 val jacksonVersion = "2.13.3"
 val kotlinVersion = "1.6.21"
-val caffeineVersion = "3.1.0"
+val caffeineVersion = "3.1.1"
 val kotestVersion = "5.4.1"
 
 plugins {
@@ -65,7 +65,6 @@ dependencies {
 
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-rest-sts:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
 

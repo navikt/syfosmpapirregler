@@ -26,7 +26,6 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 @DelicateCoroutinesApi
 fun main() {
     val env = Environment()
-    val credentials = VaultCredentials()
     val applicationState = ApplicationState()
     DefaultExports.initialize()
 
@@ -36,16 +35,14 @@ fun main() {
         .build()
 
     val httpClient = ClientFactory.createHttpClient()
-    val httpClientProxy = ClientFactory.createHttpClientProxy()
     val accessTokenClientV2 = AccessTokenClientV2(
         env.aadAccessTokenV2Url,
         env.clientIdV2,
         env.clientSecretV2,
-        httpClientProxy
+        httpClient
     )
-    val stsClient = ClientFactory.createStsOidcClient(credentials, env)
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, accessTokenClientV2, httpClient)
-    val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, credentials, stsClient, httpClient)
+    val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, accessTokenClientV2, httpClient)
     val norskHelsenettClient = ClientFactory.createNorskHelsenettClient(env, accessTokenClientV2, httpClient)
 
     val pdlClient = PdlClient(

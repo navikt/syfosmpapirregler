@@ -8,14 +8,11 @@ import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
 import no.nav.syfo.Environment
-import no.nav.syfo.VaultCredentials
 import no.nav.syfo.application.exceptions.ServiceUnavailableException
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner
-import java.net.ProxySelector
 
 class ClientFactory {
     companion object {
@@ -25,10 +22,6 @@ class ClientFactory {
             httpClient: HttpClient
         ): SyketilfelleClient {
             return SyketilfelleClient(env.syketilfelleEndpointURL, accessTokenClientV2, env.syketilfelleScope, httpClient)
-        }
-
-        fun createStsOidcClient(credentials: VaultCredentials, env: Environment): StsOidcClient {
-            return StsOidcClient(credentials.serviceuserUsername, credentials.serviceuserPassword, env.securityTokenServiceURL)
         }
 
         fun createHttpClient(): HttpClient {
@@ -52,18 +45,6 @@ class ClientFactory {
             return config
         }
 
-        fun createHttpClientProxy(): HttpClient {
-            val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-                getHttpClientConfig()()
-                engine {
-                    customizeClient {
-                        setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-                    }
-                }
-            }
-            return HttpClient(Apache, proxyConfig)
-        }
-
         fun createNorskHelsenettClient(
             env: Environment,
             accessTokenClientV2: AccessTokenClientV2,
@@ -79,11 +60,10 @@ class ClientFactory {
 
         fun createLegeSuspensjonClient(
             env: Environment,
-            credentials: VaultCredentials,
-            stsClient: StsOidcClient,
+            accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient
         ): LegeSuspensjonClient {
-            return LegeSuspensjonClient(env.legeSuspensjonEndpointURL, credentials, stsClient, httpClient)
+            return LegeSuspensjonClient(env.legeSuspensjonProxyEndpointURL, accessTokenClientV2, httpClient, env.legeSuspensjonProxyScope)
         }
     }
 }

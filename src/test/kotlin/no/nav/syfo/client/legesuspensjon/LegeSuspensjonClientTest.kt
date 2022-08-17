@@ -18,16 +18,13 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockkClass
-import no.nav.syfo.VaultCredentials
-import no.nav.syfo.client.OidcToken
-import no.nav.syfo.client.StsOidcClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import org.amshove.kluent.shouldBeEqualTo
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 
 class LegeSuspensjonClientTest : FunSpec({
-
     val fnr = "1"
     val httpClient = HttpClient(Apache) {
         install(ContentNegotiation) {
@@ -39,7 +36,7 @@ class LegeSuspensjonClientTest : FunSpec({
         }
     }
 
-    val stsOidcClient = mockkClass(StsOidcClient::class)
+    val accessTokenClientV2 = mockkClass(AccessTokenClientV2::class)
     val mockHttpServerPort = ServerSocket(0).use { it.localPort }
     val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
     val mockServer = embeddedServer(Netty, mockHttpServerPort) {
@@ -51,7 +48,7 @@ class LegeSuspensjonClientTest : FunSpec({
             }
         }
         routing {
-            get("/legeSuspensjonClient/api/v1/suspensjon/status") {
+            get("/legeSuspensjonClient/btsys/api/v1/suspensjon/status") {
                 when {
                     call.request.headers["Nav-Personident"] == fnr -> call.respond(Suspendert(true))
                     call.request.headers["Nav-Personident"] == "2" -> call.respond(Suspendert(false))
@@ -63,15 +60,14 @@ class LegeSuspensjonClientTest : FunSpec({
 
     val legeSuspensjonClient = LegeSuspensjonClient(
         "$mockHttpServerUrl/legeSuspensjonClient",
-        VaultCredentials("username", "password"),
-        stsOidcClient, httpClient
+        accessTokenClientV2, httpClient, "scope"
     )
     afterSpec {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
 
     beforeSpec {
-        coEvery { stsOidcClient.oidcToken() } returns OidcToken("oidcToken", "tokentype", 100L)
+        coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
     context("Test no.nav.syfo.client.legesuspensjon.LegeSuspensjonClientTest") {
