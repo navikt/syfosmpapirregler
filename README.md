@@ -7,7 +7,7 @@ This project contains just the rules for validating whether or not a user is sup
 * Kotlin
 * Ktor
 * Gradle
-* Spek
+* Kotest
 * Jackson
 
 #### Requirements
