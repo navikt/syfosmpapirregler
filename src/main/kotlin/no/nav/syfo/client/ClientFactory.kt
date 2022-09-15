@@ -2,8 +2,9 @@ package no.nav.syfo.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.engine.apache.ApacheEngineConfig
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.cio.CIOEngineConfig
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
@@ -13,6 +14,7 @@ import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
+import no.nav.syfo.log
 
 class ClientFactory {
     companion object {
@@ -25,11 +27,11 @@ class ClientFactory {
         }
 
         fun createHttpClient(): HttpClient {
-            return HttpClient(Apache, getHttpClientConfig())
+            return HttpClient(CIO, getHttpClientConfig())
         }
 
-        private fun getHttpClientConfig(): HttpClientConfig<ApacheEngineConfig>.() -> Unit {
-            val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+        private fun getHttpClientConfig(): HttpClientConfig<CIOEngineConfig>.() -> Unit {
+            val config: HttpClientConfig<CIOEngineConfig>.() -> Unit = {
                 install(ContentNegotiation) {
                     getSerializer()
                 }
@@ -37,6 +39,21 @@ class ClientFactory {
                     handleResponseExceptionWithRequest { exception, _ ->
                         when (exception) {
                             is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
+                        }
+                    }
+                }
+                install(HttpRequestRetry) {
+                    constantDelay(100, 0, false)
+                    retryOnExceptionIf(3) { request, throwable ->
+                        log.warn("Caught exception ${throwable.message}, for url ${request.url}")
+                        true
+                    }
+                    retryIf(maxRetries) { request, response ->
+                        if (response.status.value.let { it in 500..599 }) {
+                            log.warn("Retrying for statuscode ${response.status.value}, for url ${request.url}")
+                            true
+                        } else {
+                            false
                         }
                     }
                 }

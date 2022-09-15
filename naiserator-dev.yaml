@@ -54,8 +54,6 @@ spec:
       value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
     - name: HELSENETT_ENDPOINT_URL
       value: https://syfohelsenettproxy.dev-fss-pub.nais.io
-    - name: SYKETILLFELLE_ENDPOINT_URL
-      value: https://flex-syketilfelle.dev.intern.nav.no
     - name: SYKETILLFELLE_SCOPE
       value: api://dev-gcp.flex.flex-syketilfelle/.default
     - name: PDL_GRAPHQL_PATH
