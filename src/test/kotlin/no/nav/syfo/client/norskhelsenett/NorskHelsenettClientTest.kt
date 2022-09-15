@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.kotest.core.spec.style.FunSpec
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
@@ -28,7 +28,7 @@ private const val fnr = "12345647981"
 
 class NorskHelsenettClientTest : FunSpec({
     val accessTokenClientV2 = mockk<AccessTokenClientV2>()
-    val httpClient = HttpClient(Apache) {
+    val httpClient = HttpClient(CIO) {
         expectSuccess = false
         install(ContentNegotiation) {
             jackson {
