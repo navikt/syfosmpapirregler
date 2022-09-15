@@ -42,6 +42,11 @@ spec:
       rules:
         - application: syfosmpapirmottak
         - application: smregistrering-backend
+    outbound:
+      rules:
+        - application: flex-syketilfelle
+          namespace: flex
+          cluster: prod-gcp
   vault:
     enabled: false
   webproxy: false
