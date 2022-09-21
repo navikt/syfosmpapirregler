@@ -50,7 +50,8 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         legeHelsepersonellkategori = null,
         legeHprNr = null,
         partnerreferanse = null,
-        vedlegg = null
+        vedlegg = null,
+        utenlandskSykmelding = null
     )
 }
 
