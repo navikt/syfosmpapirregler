@@ -2,8 +2,8 @@ package no.nav.syfo.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.engine.cio.CIOEngineConfig
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.engine.apache.ApacheEngineConfig
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -27,11 +27,11 @@ class ClientFactory {
         }
 
         fun createHttpClient(): HttpClient {
-            return HttpClient(CIO, getHttpClientConfig())
+            return HttpClient(Apache, getHttpClientConfig())
         }
 
-        private fun getHttpClientConfig(): HttpClientConfig<CIOEngineConfig>.() -> Unit {
-            val config: HttpClientConfig<CIOEngineConfig>.() -> Unit = {
+        private fun getHttpClientConfig(): HttpClientConfig<ApacheEngineConfig>.() -> Unit {
+            val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
                 install(ContentNegotiation) {
                     getSerializer()
                 }

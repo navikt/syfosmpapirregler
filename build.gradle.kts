@@ -6,21 +6,21 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion = "1.6.4"
-val ktorVersion = "2.1.1"
+val ktorVersion = "2.1.3"
 val prometheusVersion = "0.16.0"
-val kluentVersion = "1.68"
-val logbackVersion = "1.4.0"
+val kluentVersion = "1.72"
+val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
-val mockkVersion = "1.12.8"
-val nimbusdsVersion = "9.24.4"
+val mockkVersion = "1.13.2"
+val nimbusdsVersion = "9.25.6"
 val smCommonVersion = "1.ea531b3"
-val jacksonVersion = "2.13.4"
-val kotlinVersion = "1.7.10"
+val jacksonVersion = "2.14.0"
+val kotlinVersion = "1.7.21"
 val caffeineVersion = "3.1.1"
-val kotestVersion = "5.4.2"
+val kotestVersion = "5.5.4"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jmailen.kotlinter") version "3.10.0"
     id("com.diffplug.spotless") version "6.5.0"
@@ -57,7 +57,7 @@ dependencies {
 
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
