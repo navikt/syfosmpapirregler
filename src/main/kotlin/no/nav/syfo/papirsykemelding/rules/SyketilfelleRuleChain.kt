@@ -212,6 +212,9 @@ data class RuleMetadataAndForstegangsSykemelding(
     val erNyttSyketilfelle: Boolean
 )
 
+val koronaStartdato: LocalDate = LocalDate.of(2020, 2, 24)
+val koronaSluttdato: LocalDate = LocalDate.of(2023, 1, 1)
+
 fun erCoronaRelatert(sykmelding: Sykmelding): Boolean {
     return (
         (sykmelding.medisinskVurdering.hovedDiagnose?.isICPC2() ?: false && sykmelding.medisinskVurdering.hovedDiagnose?.kode == "R991") ||
@@ -224,7 +227,7 @@ fun erCoronaRelatert(sykmelding: Sykmelding): Boolean {
             (sykmelding.medisinskVurdering.hovedDiagnose?.isICD10() ?: false && sykmelding.medisinskVurdering.biDiagnoser.any { it.kode == "U072" }) ||
             sykmelding.medisinskVurdering.annenFraversArsak?.grunn?.any { it == AnnenFraverGrunn.SMITTEFARE } ?: false
         ) &&
-        sykmelding.perioder.any { it.fom.isAfter(LocalDate.of(2020, 2, 24)) }
+        (sykmelding.perioder.any { it.fom.isAfter(koronaStartdato) } && sykmelding.perioder.any { it.fom.isBefore(koronaSluttdato) })
 }
 
 fun kommerFraSpesialisthelsetjenesten(sykmelding: Sykmelding): Boolean {
