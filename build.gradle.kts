@@ -16,7 +16,7 @@ val nimbusdsVersion = "9.25.6"
 val smCommonVersion = "1.ea531b3"
 val jacksonVersion = "2.14.0"
 val kotlinVersion = "1.7.21"
-val caffeineVersion = "3.1.1"
+val caffeineVersion = "3.1.2"
 val kotestVersion = "5.5.4"
 
 plugins {

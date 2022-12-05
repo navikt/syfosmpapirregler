@@ -76,6 +76,68 @@ class SyketilfelleRuleChainSpek : FunSpec({
                 .executeRule().result shouldBeEqualTo false
         }
 
+        test("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING trigges ikke hvis sykmeldingen er koronarelatert og innenfor koronaperioden") {
+            val healthInformation = generateSykemelding(
+                perioder = listOf(
+                    generatePeriode(
+                        fom = LocalDate.of(2020, 2, 25),
+                        tom = LocalDate.of(2020, 3, 20)
+                    )
+                ),
+                kontaktMedPasient = KontaktMedPasient(null, null),
+                diagnose = Diagnose(Diagnosekoder.ICPC2_CODE, "R991", "")
+            )
+
+            val ruleMetadataAndForstegangsSykemelding =
+                RuleMetadataAndForstegangsSykemelding(
+                    ruleMetadata = RuleMetadata(
+                        receivedDate = LocalDateTime.now(),
+                        signatureDate = LocalDateTime.of(LocalDate.of(2020, 3, 10), LocalTime.NOON),
+                        behandletTidspunkt = LocalDateTime.of(LocalDate.of(2020, 3, 10), LocalTime.NOON),
+                        patientPersonNumber = "1232345244",
+                        rulesetVersion = "2",
+                        legekontorOrgnr = "12313",
+                        tssid = "1355435",
+                        pasientFodselsdato = LocalDate.of(1980, 1, 1)
+                    ),
+                    erNyttSyketilfelle = true
+                )
+
+            SyketilfelleRuleChain(healthInformation, ruleMetadataAndForstegangsSykemelding).getRuleByName("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING")
+                .executeRule().result shouldBeEqualTo false
+        }
+
+        test("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING trigges hvis sykmeldingen er koronarelatert men utenfor koronaperioden") {
+            val healthInformation = generateSykemelding(
+                perioder = listOf(
+                    generatePeriode(
+                        fom = LocalDate.of(2023, 1, 1),
+                        tom = LocalDate.of(2023, 2, 1)
+                    )
+                ),
+                kontaktMedPasient = KontaktMedPasient(null, null),
+                diagnose = Diagnose(Diagnosekoder.ICPC2_CODE, "R991", "")
+            )
+
+            val ruleMetadataAndForstegangsSykemelding =
+                RuleMetadataAndForstegangsSykemelding(
+                    ruleMetadata = RuleMetadata(
+                        receivedDate = LocalDateTime.now(),
+                        signatureDate = LocalDateTime.of(LocalDate.of(2023, 1, 15), LocalTime.NOON),
+                        behandletTidspunkt = LocalDateTime.of(LocalDate.of(2023, 1, 15), LocalTime.NOON),
+                        patientPersonNumber = "1232345244",
+                        rulesetVersion = "2",
+                        legekontorOrgnr = "12313",
+                        tssid = "1355435",
+                        pasientFodselsdato = LocalDate.of(1980, 1, 1)
+                    ),
+                    erNyttSyketilfelle = true
+                )
+
+            SyketilfelleRuleChain(healthInformation, ruleMetadataAndForstegangsSykemelding).getRuleByName("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING")
+                .executeRule().result shouldBeEqualTo true
+        }
+
         test("TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING trigges ikke hvis diagnosekode er ICD10") {
             val healthInformation = generateSykemelding(
                 perioder = listOf(
