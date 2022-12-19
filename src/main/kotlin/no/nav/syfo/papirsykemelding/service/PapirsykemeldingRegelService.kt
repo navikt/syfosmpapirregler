@@ -114,7 +114,6 @@ class PapirsykemeldingRegelService(
     }
 
     private fun getAndRegisterBehandlerNotInHPR(): ValidationResult {
-
         RULE_HIT_COUNTER.labels("BEHANLDER_IKKE_I_HPR").inc()
         return ValidationResult(
             status = Status.MANUAL_PROCESSING,

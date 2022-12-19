@@ -60,7 +60,9 @@ class LegeSuspensjonClientTest : FunSpec({
 
     val legeSuspensjonClient = LegeSuspensjonClient(
         "$mockHttpServerUrl/legeSuspensjonClient",
-        accessTokenClientV2, httpClient, "scope"
+        accessTokenClientV2,
+        httpClient,
+        "scope"
     )
     afterSpec {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))

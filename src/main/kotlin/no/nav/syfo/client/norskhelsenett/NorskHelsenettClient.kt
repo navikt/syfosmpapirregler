@@ -42,7 +42,8 @@ class NorskHelsenettClient(
         when (httpResponse.status) {
             InternalServerError -> {
                 log.error(
-                    "Syfohelsenettproxy svarte med feilmelding for msgId {}, {}", msgId,
+                    "Syfohelsenettproxy svarte med feilmelding for msgId {}, {}",
+                    msgId,
                     StructuredArguments.fields(loggingMeta)
                 )
                 throw IOException("Syfohelsenettproxy svarte med feilmelding for $msgId")
@@ -50,7 +51,8 @@ class NorskHelsenettClient(
 
             HttpStatusCode.BadRequest -> {
                 log.error(
-                    "BehandlerFnr mangler i request for msgId {}, {}", msgId,
+                    "BehandlerFnr mangler i request for msgId {}, {}",
+                    msgId,
                     StructuredArguments.fields(loggingMeta)
                 )
                 return@retry null

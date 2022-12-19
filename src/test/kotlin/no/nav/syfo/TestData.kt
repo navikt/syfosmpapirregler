@@ -163,7 +163,8 @@ fun getInvalidResult(): ValidationResult {
             RuleInfo(
                 "Ingen perioder",
                 "Ingen perioder registrert",
-                "Ingen perioder registrert", Status.MANUAL_PROCESSING
+                "Ingen perioder registrert",
+                Status.MANUAL_PROCESSING
             )
         )
     )

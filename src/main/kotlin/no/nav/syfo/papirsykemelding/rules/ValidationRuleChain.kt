@@ -14,7 +14,7 @@ import no.nav.syfo.sm.isICPC2
 
 class ValidationRuleChain(
     private val sykmelding: Sykmelding,
-    private val metadata: RuleMetadata,
+    private val metadata: RuleMetadata
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
         // Opptjening før 13 år er ikke mulig.

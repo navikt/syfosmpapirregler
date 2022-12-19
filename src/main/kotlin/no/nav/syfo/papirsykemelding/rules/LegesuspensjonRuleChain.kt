@@ -5,7 +5,7 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.RuleChain
 
 class LegesuspensjonRuleChain(
-    private val behandlerSuspendert: Boolean,
+    private val behandlerSuspendert: Boolean
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
         // Behandler er suspendert av NAV på konsultasjonstidspunkt

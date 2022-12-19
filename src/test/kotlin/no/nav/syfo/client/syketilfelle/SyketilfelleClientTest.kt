@@ -158,5 +158,7 @@ private fun lagPeriode(fom: LocalDate, tom: LocalDate): Periode =
             arbeidsrelatertArsak = null
         ),
         avventendeInnspillTilArbeidsgiver = null,
-        gradert = null, behandlingsdager = null, reisetilskudd = false
+        gradert = null,
+        behandlingsdager = null,
+        reisetilskudd = false
     )
