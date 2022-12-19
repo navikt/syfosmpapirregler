@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 class SyketilfelleRuleChain(
     private val sykmelding: Sykmelding,
-    private val ruleMetadataSykmelding: RuleMetadataAndForstegangsSykemelding,
+    private val ruleMetadataSykmelding: RuleMetadataAndForstegangsSykemelding
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
         // §8-7 Legeerklæring kan ikke godtas for tidsrom før medlemmet ble undersøkt av lege.

@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit
 
 class PeriodLogicRuleChain(
     sykmelding: Sykmelding,
-    metadata: RuleMetadata,
+    metadata: RuleMetadata
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
         // Sykmeldingen må inneholden en fom-dato og en tom-dato
@@ -48,7 +48,7 @@ class PeriodLogicRuleChain(
             },
             predicate = { input ->
                 input.perioder.any { it.fom.isAfter(it.tom) }
-            },
+            }
         ),
 
         // Hvis sykmeldingen inneholder flere perioden kan ikke periodene overlappe hverandre
@@ -156,8 +156,9 @@ class PeriodLogicRuleChain(
                 val sisteTomDato = sykmelding.perioder.sortedTOMDate().lastOrNull()
             },
             predicate = {
-                if (it.forsteFomDato == null || it.sisteTomDato == null) false
-                else {
+                if (it.forsteFomDato == null || it.sisteTomDato == null) {
+                    false
+                } else {
                     val firstFomDate = it.forsteFomDato.atStartOfDay().toLocalDate()
                     val lastFomDate = it.sisteTomDato.atStartOfDay().toLocalDate()
                     (firstFomDate..lastFomDate).daysBetween() > 365

@@ -9,7 +9,7 @@ data class HentPerson(
 )
 
 data class Foedsel(
-    val foedselsdato: String?,
+    val foedselsdato: String?
 )
 
 data class GraphQLResponse<T> (

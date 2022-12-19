@@ -13,7 +13,7 @@ import java.time.LocalDate
 
 class HPRRuleChain(
     private val sykmelding: Sykmelding,
-    private val behandlerOgStartdato: BehandlerOgStartdato,
+    private val behandlerOgStartdato: BehandlerOgStartdato
 ) : RuleChain {
     override val rules: List<Rule<*>> = listOf(
         // Helsepersonelloven
@@ -127,7 +127,7 @@ class HPRRuleChain(
 
 fun harAktivHelsepersonellAutorisasjonsSom(
     behandlerGodkjenninger: List<Godkjenning>,
-    helsepersonerVerdi: List<String>,
+    helsepersonerVerdi: List<String>
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&
@@ -139,5 +139,5 @@ fun harAktivHelsepersonellAutorisasjonsSom(
 
 data class BehandlerOgStartdato(
     val behandler: Behandler,
-    val startdato: LocalDate?,
+    val startdato: LocalDate?
 )

@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class JuridiskVurderingResult(
-    val juridiskeVurderinger: List<JuridiskVurdering>,
+    val juridiskeVurderinger: List<JuridiskVurdering>
 )
 
 class JuridiskVurderingService(
@@ -27,7 +27,7 @@ class JuridiskVurderingService(
 
     fun processRuleResults(
         receivedSykmelding: ReceivedSykmelding,
-        result: List<RuleResult<*>>,
+        result: List<RuleResult<*>>
     ) {
         val juridiskVurderingResult = JuridiskVurderingResult(
             juridiskeVurderinger = result
@@ -45,7 +45,7 @@ class JuridiskVurderingService(
 
     private fun resultToJuridiskVurdering(
         receivedSykmelding: ReceivedSykmelding,
-        ruleResult: RuleResult<*>,
+        ruleResult: RuleResult<*>
     ): JuridiskVurdering {
         return JuridiskVurdering(
             id = UUID.randomUUID().toString(),
