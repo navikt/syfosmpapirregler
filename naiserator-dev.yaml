@@ -42,6 +42,7 @@ spec:
       rules:
         - application: syfosmpapirmottak
         - application: smregistrering-backend
+        - application: teamsykmelding-mock-backend
     outbound:
       rules:
         - application: flex-syketilfelle
