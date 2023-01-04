@@ -16,7 +16,7 @@ This project contains just the rules for validating whether or not a user is sup
 
 ## Getting started
 ### Getting github-package-registry packages NAV-IT
-Some packages used in this repo is uploaded to the Github Package Registry which requires authentication. It can, for example, be solved like this in Gradle:
+Some packages used in this repo is uploaded to the GitHub Package Registry which requires authentication. It can, for example, be solved like this in Gradle:
 ```
 val githubUser: String by project
 val githubPassword: String by project
@@ -39,6 +39,8 @@ githubPassword=[token]
 ```
 
 Replace `[token]` with a personal access token with scope `read:packages`.
+See githubs guide [creating-a-personal-access-token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) on
+how to create a personal access token.
 
 Alternatively, the variables can be configured via environment variables:
 
