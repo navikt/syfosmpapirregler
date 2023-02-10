@@ -50,8 +50,6 @@ spec:
   vault:
     enabled: false
   webproxy: false
-  ingresses:
-    - "https://syfosmpapirregler.intern.nav.no"
   kafka:
     pool: nav-prod
   env:
