@@ -6,14 +6,14 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion = "1.6.4"
-val ktorVersion = "2.2.3"
+val ktorVersion = "2.2.4"
 val prometheusVersion = "0.16.0"
 val kluentVersion = "1.72"
 val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
 val mockkVersion = "1.13.2"
 val nimbusdsVersion = "9.25.6"
-val smCommonVersion = "1.fbf33a9"
+val smCommonVersion = "1.dec4861"
 val jacksonVersion = "2.14.1"
 val kotlinVersion = "1.8.10"
 val caffeineVersion = "3.1.2"
@@ -21,9 +21,8 @@ val kotestVersion = "5.5.4"
 
 plugins {
     kotlin("jvm") version "1.8.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jmailen.kotlinter") version "3.12.0"
-    id("com.diffplug.spotless") version "6.11.0"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("org.jmailen.kotlinter") version "3.13.0"
 }
 
 val githubUser: String by project
