@@ -6,6 +6,7 @@ import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
+import no.nav.syfo.papirsykemelding.rules.periodlogic.PeriodLogicRuleHit
 import no.nav.syfo.papirsykemelding.rules.periodlogic.Rule
 import no.nav.syfo.papirsykemelding.rules.periodlogic.avventendeKombinert
 import no.nav.syfo.papirsykemelding.rules.periodlogic.avventendeOver16Dager

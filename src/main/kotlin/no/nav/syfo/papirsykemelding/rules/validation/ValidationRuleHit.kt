@@ -9,60 +9,65 @@ enum class ValidationRuleHit(
     PASIENT_YNGRE_ENN_13(
         ruleHit = RuleHit(
             rule = "PASIENT_YNGRE_ENN_13",
-            status = Status.INVALID,
+            status = Status.MANUAL_PROCESSING,
             messageForSender = "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
             messageForUser = "Pasienten er under 13 år. Sykmelding kan ikke benyttes."
         )
     ),
-    UGYLDIG_REGELSETTVERSJON(
+    PASIENT_ELDRE_ENN_70(
         ruleHit = RuleHit(
-            rule = "UGYLDIG_REGELSETTVERSJON",
-            status = Status.INVALID,
-            messageForSender = "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                "Feil regelsett er brukt i sykmeldingen.",
-            messageForUser = "Det er brukt en versjon av sykmeldingen som ikke lenger er gyldig."
+            rule = "PASIENT_ELDRE_ENN_70",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Sykmelding kan ikke benyttes etter at du har fylt 70 år",
+            messageForUser = "Sykmelding kan ikke benyttes etter at du har fylt 70 år"
         )
     ),
-    MANGLENDE_DYNAMISKE_SPOERSMAL_VERSJON2_UKE_39(
+    UKJENT_DIAGNOSEKODETYPE(
         ruleHit = RuleHit(
-            rule = "MANGLENDE_DYNAMISKE_SPOERSMAL_VERSJON2_UKE_39",
-            status = Status.INVALID,
-            messageForSender = "Sykmeldingen kan ikke rettes, det må skrives en ny." +
-                " Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                "Utdypende opplysninger som kreves ved uke 39 mangler. ",
-            messageForUser = "Sykmeldingen mangler utdypende opplysninger som kreves når " +
-                "sykefraværet er lengre enn 39 uker til sammen."
+            rule = "UKJENT_DIAGNOSEKODETYPE",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Ukjent diagnosekode er benyttet.",
+            messageForUser = "Den må ha en kjent diagnosekode."
+        )
+    ),
+    ICPC_2_Z_DIAGNOSE(
+        ruleHit = RuleHit(
+            rule = "ICPC_2_Z_DIAGNOSE",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.",
+            messageForUser = "Den må ha en gyldig diagnosekode som gir rett til sykepenger."
+        )
+    ),
+    HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(
+        ruleHit = RuleHit(
+            rule = "HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler.",
+            messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn."
+        )
+    ),
+    UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
+        ruleHit = RuleHit(
+            rule = "UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Kodeverk for hoveddiagnose er feil. Prosesskoder ikke kan benyttes for å angi diagnose.",
+            messageForUser = "Den må ha riktig kode for hoveddiagnose."
+        )
+    ),
+    UGYLDIG_KODEVERK_FOR_BIDIAGNOSE(
+        ruleHit = RuleHit(
+            rule = "UGYLDIG_KODEVERK_FOR_BIDIAGNOSE",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender = "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen. Prosesskoder ikke kan benyttes for å angi diagnose.",
+            messageForUser = "Det er brukt eit ukjent kodeverk for bidiagnosen."
         )
     ),
     UGYLDIG_ORGNR_LENGDE(
         ruleHit = RuleHit(
             rule = "UGYLDIG_ORGNR_LENGDE",
             status = Status.INVALID,
-            messageForSender = "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                "Feil format på organisasjonsnummer. Dette skal være 9 sifre.",
-            messageForUser = "Den må ha riktig organisasjonsnummer."
-        )
-    ),
-    AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR(
-        ruleHit = RuleHit(
-            rule = "AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR",
-            status = Status.INVALID,
-            messageForSender = "Sykmeldingen kan ikke rettes, " +
-                "Pasienten har fått beskjed, den ble avvist grunnet følgende:" +
-                "Avsender fnr er det samme som pasient fnr",
-            messageForUser = "Den som signert sykmeldingen er også pasient."
-        )
-    ),
-    BEHANDLER_FNR_ER_SAMME_SOM_PASIENT_FNR(
-        ruleHit = RuleHit(
-            rule = "BEHANDLER_FNR_ER_SAMME_SOM_PASIENT_FNR",
-            status = Status.INVALID,
-            messageForSender = "Sykmeldingen kan ikke rettes." +
-                " Pasienten har fått beskjed, den ble avvist grunnet følgende:" +
-                "Behandler fnr er det samme som pasient fnr",
-            messageForUser = "Den som er behandler av sykmeldingen er også pasient."
+            messageForSender = "Den må ha riktig organisasjonsnummer.Dette skal være 9 sifre.",
+            messageForUser = "Den må ha riktig organisasjonsnummer.Dette skal være 9 sifre."
         )
     )
 }

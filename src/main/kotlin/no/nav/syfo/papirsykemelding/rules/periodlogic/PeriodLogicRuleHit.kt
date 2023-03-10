@@ -1,4 +1,4 @@
-package no.nav.syfo.rules.periodlogic
+package no.nav.syfo.papirsykemelding.rules.periodlogic
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit

@@ -6,7 +6,6 @@ import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.ruleMetadataSykmelding
-import no.nav.syfo.rules.periodlogic.PeriodLogicRuleHit
 import no.nav.syfo.rules.periodlogic.PeriodLogicRules
 import no.nav.syfo.toRuleMetadata
 import org.amshove.kluent.shouldBeEqualTo

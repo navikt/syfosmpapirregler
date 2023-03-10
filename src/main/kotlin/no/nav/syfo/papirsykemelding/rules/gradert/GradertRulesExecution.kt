@@ -20,7 +20,7 @@ typealias GradertTreeOutput = TreeOutput<GradertRules, RuleResult>
 
 class GradertRulesExecution(val rootNode: TreeNode<GradertRules, RuleResult> = gradertRuleTree) :
     RuleExecution<GradertRules> {
-    override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding): Pair<GradertTreeOutput, Juridisk> =
+    override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode
             .evaluate(sykmelding, ruleMetadata)
             .also { gradertRulePath ->

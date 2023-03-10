@@ -18,7 +18,7 @@ import no.nav.syfo.validering.validatePersonAndDNumber
 val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
 
 class ValidationTest : FunSpec({
-
+ //TODO fix me
     val ruleTree = ValidationRulesExecution()
 
     context("Testing validation rules and checking the rule outcomes") {
