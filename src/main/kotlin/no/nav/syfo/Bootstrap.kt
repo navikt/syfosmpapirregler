@@ -61,8 +61,7 @@ fun main() {
     )
     val juridiskVurderingService = JuridiskVurderingService(
         KafkaProducer(kafkaProperties),
-        env.etterlevelsesTopic,
-        env.versjonAvKode
+        env.etterlevelsesTopic
     )
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
         legeSuspensjonClient = legeSuspensjonClient,

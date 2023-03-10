@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 
 group = "no.nav.syfo"
 version = "1.0.0"
@@ -107,7 +108,39 @@ tasks {
         }
     }
 
+    register<JavaExec>("generateRuleMermaid") {
+        val output = ByteArrayOutputStream()
+        mainClass.set("no.nav.syfo.papirsykemelding.rules.common.GenerateMermaidKt")
+        classpath = sourceSets["main"].runtimeClasspath
+        group = "documentation"
+        description = "Generates mermaid diagram source of rules"
+        standardOutput = output
+        doLast {
+            val readme = File("README.md")
+            val lines = readme.readLines()
+
+            val starterTag = "<!-- RULE_MARKER_START -->"
+            val endTag = "<!-- RULE_MARKER_END -->"
+
+            val start = lines.indexOfFirst { it.contains(starterTag) }
+            val end = lines.indexOfFirst { it.contains(endTag) }
+
+            val newLines: List<String> =
+                lines.subList(0, start) +
+                        listOf(
+                            starterTag,
+                        ) +
+                        output.toString().split("\n") +
+                        listOf(
+                            endTag,
+                        ) +
+                        lines.subList(end + 1, lines.size)
+            readme.writeText(newLines.joinToString("\n"))
+        }
+    }
+
     "check" {
         dependsOn("formatKotlin")
+        dependsOn("generateRuleMermaid")
     }
 }

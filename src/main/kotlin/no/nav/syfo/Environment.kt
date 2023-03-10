@@ -19,7 +19,6 @@ data class Environment(
     val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "syfosmpapirregler"),
     val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode",
-    val versjonAvKode: String = getEnvVar("NAIS_APP_IMAGE"),
     val pdlScope: String = getEnvVar("PDL_SCOPE"),
     val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH")
 )
