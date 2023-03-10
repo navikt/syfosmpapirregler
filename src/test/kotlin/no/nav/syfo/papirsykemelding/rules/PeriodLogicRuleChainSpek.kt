@@ -244,7 +244,7 @@ class PeriodLogicRuleChainSpek : FunSpec({
                 perioder = listOf(
                     generatePeriode(
                         fom = LocalDate.now(),
-                        tom = LocalDate.now().plusYears(1)
+                        tom = LocalDate.now().plusDays(365)
                     )
                 ),
                 tidspunkt = LocalDateTime.now()

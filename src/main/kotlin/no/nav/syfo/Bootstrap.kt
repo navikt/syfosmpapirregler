@@ -50,7 +50,7 @@ fun main() {
         accessTokenClientV2 = accessTokenClientV2,
         pdlScope = env.pdlScope,
         basePath = env.pdlGraphqlPath,
-        graphQlQuery = PdlClient::class.java.getResource("/graphql/getPerson.graphql").readText().replace(Regex("[\n\t]"), "")
+        graphQlQuery = PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), "")
     )
     val fodselsdatoService = FodselsdatoService(pdlClient)
 
