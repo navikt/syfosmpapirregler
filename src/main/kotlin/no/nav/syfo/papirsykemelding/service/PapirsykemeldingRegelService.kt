@@ -27,12 +27,14 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import no.nav.syfo.client.SmregisterClient
 
 @DelicateCoroutinesApi
 class PapirsykemeldingRegelService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val syketilfelleClient: SyketilfelleClient,
     private val norskHelsenettClient: NorskHelsenettClient,
+    private val smregisterClient: SmregisterClient,
     private val juridiskVurderingService: JuridiskVurderingService,
     private val fodselsdatoService: FodselsdatoService,
     private val ruleExecutionService: RuleExecutionService
@@ -75,6 +77,17 @@ class PapirsykemeldingRegelService(
 
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
         val syketilfelleStartdatoAsync = getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
+
+        val erEttersendingAvTidligereSykmelding = if (erTilbakedatert(receivedSykmelding)) {
+            smregisterClient.harOverlappendeSykmelding(
+                receivedSykmelding.personNrPasient,
+                receivedSykmelding.sykmelding.perioder,
+                receivedSykmelding.sykmelding.medisinskVurdering.hovedDiagnose?.kode,
+                loggingMeta
+            )
+        } else {
+            null
+        }
 
         val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
 
@@ -127,6 +140,9 @@ class PapirsykemeldingRegelService(
             )
         }
     }
+    private fun erTilbakedatert(receivedSykmelding: ReceivedSykmelding): Boolean =
+        receivedSykmelding.sykmelding.behandletTidspunkt.toLocalDate() > receivedSykmelding.sykmelding.perioder.sortedFOMDate()
+            .first().plusDays(8)
 
     private fun GlobalScope.getErNyttSyketilfelleAsync(receivedSykmelding: ReceivedSykmelding, loggingMeta: LoggingMeta): Deferred<LocalDate?> {
         return async {
@@ -171,6 +187,7 @@ data class BehandlerOgStartdato(
 data class RuleMetadataSykmelding(
     val ruleMetadata: RuleMetadata,
     val erNyttSyketilfelle: Boolean,
+    val erEttersendingAvTidligereSykmelding: Boolean?,
     val doctorSuspensjon: Boolean,
     val behandlerOgStartdato: BehandlerOgStartdato
 )
