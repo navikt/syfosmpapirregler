@@ -5,13 +5,6 @@ import io.prometheus.client.Histogram
 
 const val NAMESPACE = "syfosmpapirregler"
 
-val RULE_HIT_STATUS_COUNTER: Counter = Counter.Builder()
-    .namespace(NAMESPACE)
-    .name("rule_hit_status_counter")
-    .labelNames("rule_status")
-    .help("Registers a counter for each rule status")
-    .register()
-
 val HTTP_HISTOGRAM: Histogram = Histogram
     .Builder()
     .labelNames("path")
@@ -19,11 +12,19 @@ val HTTP_HISTOGRAM: Histogram = Histogram
     .help("http requests durations for incomming requests in seconds")
     .register()
 
-val RULE_HIT_COUNTER: Counter = Counter.Builder()
-    .namespace("syfosm")
-    .name("rule_hit_counter")
-    .labelNames("rule_name")
-    .help("Counts the amount of times a rule is hit").register()
+val RULE_NODE_RULE_HIT_COUNTER: Counter = Counter.Builder()
+    .namespace(NAMESPACE)
+    .name("rulenode_rule_hit_counter")
+    .labelNames("status", "rule_hit")
+    .help("Counts rulenode rules")
+    .register()
+
+val RULE_NODE_RULE_PATH_COUNTER: Counter = Counter.Builder()
+    .namespace(NAMESPACE)
+    .name("rulenode_rule_path_counter")
+    .labelNames("path")
+    .help("Counts rulenode rule paths")
+    .register()
 
 val FODSELSDATO_FRA_PDL_COUNTER: Counter = Counter.build()
     .namespace(NAMESPACE)

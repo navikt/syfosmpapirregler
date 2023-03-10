@@ -1,7 +1,6 @@
 package no.nav.syfo.rules.periodlogic
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.MANUAL_PROCESSING
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
@@ -43,42 +42,30 @@ enum class PeriodLogicRules {
 }
 
 val periodLogicRuleTree = tree<PeriodLogicRules, RuleResult>(PeriodLogicRules.PERIODER_MANGLER) {
-    yes(INVALID, PeriodLogicRuleHit.PERIODER_MANGLER)
+    yes(MANUAL_PROCESSING, PeriodLogicRuleHit.PERIODER_MANGLER)
     no(PeriodLogicRules.FRADATO_ETTER_TILDATO) {
-        yes(INVALID, PeriodLogicRuleHit.FRADATO_ETTER_TILDATO)
+        yes(MANUAL_PROCESSING, PeriodLogicRuleHit.FRADATO_ETTER_TILDATO)
         no(PeriodLogicRules.OVERLAPPENDE_PERIODER) {
-            yes(INVALID, PeriodLogicRuleHit.OVERLAPPENDE_PERIODER)
+            yes(MANUAL_PROCESSING, PeriodLogicRuleHit.OVERLAPPENDE_PERIODER)
             no(PeriodLogicRules.OPPHOLD_MELLOM_PERIODER) {
-                yes(INVALID, PeriodLogicRuleHit.OPPHOLD_MELLOM_PERIODER)
-                no(PeriodLogicRules.IKKE_DEFINERT_PERIODE) {
-                    yes(INVALID, PeriodLogicRuleHit.IKKE_DEFINERT_PERIODE)
-                    no(PeriodLogicRules.TILBAKEDATERT_MER_ENN_3_AR) {
-                        yes(INVALID, PeriodLogicRuleHit.TILBAKEDATERT_MER_ENN_3_AR)
-                        no(PeriodLogicRules.FREMDATERT) {
-                            yes(INVALID, PeriodLogicRuleHit.FREMDATERT)
-                            no(PeriodLogicRules.TOTAL_VARIGHET_OVER_ETT_AAR) {
-                                yes(INVALID, PeriodLogicRuleHit.TOTAL_VARIGHET_OVER_ETT_AAR)
-                                no(PeriodLogicRules.BEHANDLINGSDATO_ETTER_MOTTATTDATO) {
-                                    yes(INVALID, PeriodLogicRuleHit.BEHANDLINGSDATO_ETTER_MOTTATTDATO)
-                                    no(PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT) {
-                                        yes(INVALID, PeriodLogicRuleHit.AVVENTENDE_SYKMELDING_KOMBINERT)
-                                        no(PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER) {
-                                            yes(INVALID, PeriodLogicRuleHit.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER)
-                                            no(PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER) {
-                                                yes(INVALID, PeriodLogicRuleHit.AVVENTENDE_SYKMELDING_OVER_16_DAGER)
-                                                no(PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE) {
-                                                    yes(INVALID, PeriodLogicRuleHit.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE)
-                                                    no(PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT) {
-                                                        yes(INVALID, PeriodLogicRuleHit.GRADERT_SYKMELDING_OVER_99_PROSENT)
-                                                        no(PeriodLogicRules.SYKMELDING_MED_BEHANDLINGSDAGER) {
-                                                            yes(
-                                                                MANUAL_PROCESSING,
-                                                                PeriodLogicRuleHit.SYKMELDING_MED_BEHANDLINGSDAGER
-                                                            )
-                                                            no(OK)
-                                                        }
-                                                    }
-                                                }
+                yes(MANUAL_PROCESSING, PeriodLogicRuleHit.OPPHOLD_MELLOM_PERIODER)
+                no(PeriodLogicRules.TILBAKEDATERT_MER_ENN_3_AR) {
+                    yes(MANUAL_PROCESSING, PeriodLogicRuleHit.TILBAKEDATERT_MER_ENN_3_AR)
+                    no(PeriodLogicRules.FREMDATERT) {
+                        yes(MANUAL_PROCESSING, PeriodLogicRuleHit.FREMDATERT)
+                        no(PeriodLogicRules.TOTAL_VARIGHET_OVER_ETT_AAR) {
+                            yes(MANUAL_PROCESSING, PeriodLogicRuleHit.TOTAL_VARIGHET_OVER_ETT_AAR)
+                            no(PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT) {
+                                yes(MANUAL_PROCESSING, PeriodLogicRuleHit.AVVENTENDE_SYKMELDING_KOMBINERT)
+                                no(PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER) {
+                                    yes(MANUAL_PROCESSING, PeriodLogicRuleHit.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER)
+                                    no(PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER) {
+                                        yes(MANUAL_PROCESSING, PeriodLogicRuleHit.AVVENTENDE_SYKMELDING_OVER_16_DAGER)
+                                        no(PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE) {
+                                            yes(MANUAL_PROCESSING, PeriodLogicRuleHit.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE)
+                                            no(PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT) {
+                                                yes(MANUAL_PROCESSING, PeriodLogicRuleHit.GRADERT_SYKMELDING_OVER_99_PROSENT)
+                                                no(OK)
                                             }
                                         }
                                     }

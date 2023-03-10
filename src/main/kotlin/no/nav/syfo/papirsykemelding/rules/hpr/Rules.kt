@@ -4,8 +4,8 @@ import no.nav.syfo.client.norskhelsenett.Godkjenning
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
-import no.nav.syfo.papirsykemelding.rules.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
+import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.daysBetween
 
 typealias Rule<T> = (sykmelding: Sykmelding, behandlerOgStartdato: BehandlerOgStartdato) -> RuleResult<T>

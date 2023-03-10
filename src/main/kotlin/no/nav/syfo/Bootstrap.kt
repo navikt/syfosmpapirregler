@@ -13,6 +13,7 @@ import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toProducerConfig
 import no.nav.syfo.papirsykemelding.service.JuridiskVurderingService
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
+import no.nav.syfo.papirsykemelding.service.RuleExecutionService
 import no.nav.syfo.pdl.FodselsdatoService
 import no.nav.syfo.pdl.client.PdlClient
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -68,7 +69,8 @@ fun main() {
         norskHelsenettClient = norskHelsenettClient,
         syketilfelleClient = syketilfelleClient,
         juridiskVurderingService = juridiskVurderingService,
-        fodselsdatoService = fodselsdatoService
+        fodselsdatoService = fodselsdatoService,
+        ruleExecutionService = RuleExecutionService()
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,
