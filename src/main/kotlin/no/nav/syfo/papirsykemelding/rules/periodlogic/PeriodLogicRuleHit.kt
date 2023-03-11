@@ -102,7 +102,7 @@ enum class PeriodLogicRuleHit(
     GRADERT_SYKMELDING_OVER_99_PROSENT(
         ruleHit = RuleHit(
             rule = "GRADERT_SYKMELDING_OVER_99_PROSENT",
-            status = Status.INVALID,
+            status = Status.MANUAL_PROCESSING,
             messageForSender = "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
                 "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
                 "Hvis sykmeldingsgrad er høyere enn 99% for delvis sykmelding avvises meldingen",

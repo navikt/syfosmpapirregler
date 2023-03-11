@@ -13,6 +13,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class PeriodLogicRulesTest : FunSpec({
+    // TODO fix tests
     val ruleTree = PeriodLogicRulesExecution()
 
     context("Testing periodLogic rules and checking the rule outcomes") {

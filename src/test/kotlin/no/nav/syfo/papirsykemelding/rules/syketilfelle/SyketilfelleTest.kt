@@ -37,22 +37,9 @@ class SyketilfelleTest : FunSpec({
                 SyketilfelleRules.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE to false
             )
 
-            // TODO fix me
             mapOf(
-                "perioder" to sykmelding.perioder,
-                "periodeRanges" to sykmelding.perioder
-                    .sortedBy { it.fom }
-                    .map { it.fom to it.tom },
-                "tilbakeDatertMerEnn3AAr" to false,
-                "fremdatert" to false,
-                "varighetOver1AAr" to false,
-                "behandslingsDatoEtterMottatDato" to false,
-                "avventendeKombinert" to false,
-                "manglendeInnspillArbeidsgiver" to false,
-                "avventendeOver16Dager" to false,
-                "forMangeBehandlingsDagerPrUke" to false,
-                "gradertOver99Prosent" to false,
-                "inneholderBehandlingsDager" to false
+                "erNyttSyketilfelle" to false,
+                "behandletTidspunkt" to ruleMetadata.behandletTidspunkt
             ) shouldBeEqualTo status.ruleInputs
 
             status.treeResult.ruleHit shouldBeEqualTo null

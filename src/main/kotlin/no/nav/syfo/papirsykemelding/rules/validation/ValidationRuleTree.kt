@@ -32,7 +32,7 @@ val validationRuleTree = tree<ValidationRules, RuleResult>(ValidationRules.PASIE
                         no(ValidationRules.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE) {
                             yes(Status.MANUAL_PROCESSING, ValidationRuleHit.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE)
                             no(ValidationRules.UGYLDIG_ORGNR_LENGDE) {
-                                yes(Status.INVALID, ValidationRuleHit.UGYLDIG_ORGNR_LENGDE)
+                                yes(Status.MANUAL_PROCESSING, ValidationRuleHit.UGYLDIG_ORGNR_LENGDE)
                                 no(OK)
                             }
                         }

@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
 val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
 
 class ValidationTest : FunSpec({
-    // TODO fix me
+    // TODO fix tests
     val ruleTree = ValidationRulesExecution()
 
     context("Testing validation rules and checking the rule outcomes") {
@@ -60,17 +60,14 @@ class ValidationTest : FunSpec({
 
             mapOf(
                 "pasientUnder13Aar" to false,
-                "ugyldigRegelsettversjon" to false,
-                "manglendeDynamiskesporsmaalversjon2uke39" to false,
                 "ugyldingOrgNummerLengde" to false,
-                "avsenderSammeSomPasient" to false,
-                "behandlerSammeSomPasient" to false
+                "biDiagnoser" to emptyList<Diagnose>()
 
             ) shouldBeEqualTo status.ruleInputs
 
             status.treeResult.ruleHit shouldBeEqualTo null
         }
-        test("Pasient under 13 Aar, Status INVALID") {
+        test("Pasient under 13 Aar, Status MANUAL_PROCESSING") {
             val person12Years = LocalDate.now().minusYears(12)
 
             val sykmelding = generateSykemelding()
@@ -89,7 +86,7 @@ class ValidationTest : FunSpec({
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
 
-            status.treeResult.status shouldBeEqualTo Status.INVALID
+            status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo listOf(
                 ValidationRules.PASIENT_YNGRE_ENN_13 to true
             )
@@ -102,7 +99,7 @@ class ValidationTest : FunSpec({
             status.treeResult.ruleHit shouldBeEqualTo ValidationRuleHit.PASIENT_YNGRE_ENN_13.ruleHit
         }
 
-        test("Ugyldig orgnummer lengede, Status INVALID") {
+        test("Ugyldig orgnummer lengede, Status MANUAL_PROCESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding = generateSykemelding(
@@ -126,7 +123,7 @@ class ValidationTest : FunSpec({
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-            status.treeResult.status shouldBeEqualTo Status.INVALID
+            status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo listOf(
                 ValidationRules.PASIENT_YNGRE_ENN_13 to false,
                 ValidationRules.UGYLDIG_ORGNR_LENGDE to true

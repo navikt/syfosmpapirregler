@@ -24,15 +24,16 @@ val pasientUnder13Aar: ValidationRule = { sykmelding, ruleMetadata ->
     )
 }
 
-val pasienteldreenn70Aar: ValidationRule = { _, ruleMetadata ->
-    val legekontorOrgnr = ruleMetadata.legekontorOrgnr
+val pasienteldreenn70Aar: ValidationRule = { sykmelding, ruleMetadata ->
+    val sisteTomDato = sykmelding.perioder.sortedTOMDate().last()
+    val pasientFodselsdato = ruleMetadata.pasientFodselsdato
 
-    val ugyldingOrgNummerLengde = legekontorOrgnr != null && legekontorOrgnr.length != 9
+    val pasientOver70Aar = sisteTomDato > pasientFodselsdato.plusYears(70)
 
     RuleResult(
-        ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
+        ruleInputs = mapOf("pasientOver70Aar" to pasientOver70Aar),
         rule = ValidationRules.PASIENT_ELDRE_ENN_70,
-        ruleResult = ugyldingOrgNummerLengde
+        ruleResult = pasientOver70Aar
     )
 }
 val ukjentdiagnosekodetype: ValidationRule = { sykmelding, _ ->

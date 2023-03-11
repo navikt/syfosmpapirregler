@@ -146,7 +146,7 @@ class HPRTest : FunSpec({
 
             status.first.treeResult.ruleHit shouldBeEqualTo HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit
         }
-        test("mangler autorisasjon, Status INVALID") {
+        test("mangler autorisasjon, Status MANUAL_PROCESSING") {
             val sykmelding = generateSykemelding(
                 perioder = listOf(
                     Periode(
@@ -191,7 +191,7 @@ class HPRTest : FunSpec({
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo listOf(
                 HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to false,
                 HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR to true

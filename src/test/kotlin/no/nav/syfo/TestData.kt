@@ -25,8 +25,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-val behandletTidspunkt = LocalDateTime.now()
-val signaturDato = LocalDateTime.now()
+val behandletTidspunkt: LocalDateTime = LocalDateTime.now()
+val signaturDato: LocalDateTime = LocalDateTime.now()
 
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 

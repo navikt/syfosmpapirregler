@@ -65,7 +65,7 @@ enum class ValidationRuleHit(
     UGYLDIG_ORGNR_LENGDE(
         ruleHit = RuleHit(
             rule = "UGYLDIG_ORGNR_LENGDE",
-            status = Status.INVALID,
+            status = Status.MANUAL_PROCESSING,
             messageForSender = "Den må ha riktig organisasjonsnummer.Dette skal være 9 sifre.",
             messageForUser = "Den må ha riktig organisasjonsnummer.Dette skal være 9 sifre."
         )

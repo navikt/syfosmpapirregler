@@ -9,7 +9,7 @@ enum class LegeSuspensjonRuleHit(
     BEHANDLER_SUSPENDERT(
         ruleHit = RuleHit(
             rule = "BEHANDLER_SUSPENDERT",
-            status = Status.INVALID,
+            status = Status.MANUAL_PROCESSING,
             messageForSender = "Behandler er suspendert av NAV på konsultasjonstidspunkt. Pasienten har fått beskjed.",
             messageForUser = "Den som sykmeldte deg har mistet retten til å skrive sykmeldinger."
         )
