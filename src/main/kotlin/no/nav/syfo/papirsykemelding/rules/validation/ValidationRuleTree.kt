@@ -1,7 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.validation
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
@@ -39,7 +38,6 @@ val validationRuleTree = tree<ValidationRules, RuleResult>(ValidationRules.PASIE
                         }
                     }
                 }
-
             }
         }
     }

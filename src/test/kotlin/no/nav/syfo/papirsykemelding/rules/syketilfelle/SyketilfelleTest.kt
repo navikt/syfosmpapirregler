@@ -1,25 +1,24 @@
 package no.nav.syfo.papirsykemelding.rules.syketilfelle
 
 import io.kotest.core.spec.style.FunSpec
-import java.time.LocalDate
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.ruleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
+import java.time.LocalDate
 
 class SyketilfelleTest : FunSpec({
-    //TODO fix me
     val ruleTree = SyketilfelleRulesExecution()
 
     context("Testing syketilfelle rules and checking the rule outcomes") {
-        test("Alt er ok, Status OK") {
+        test("Noene of the rules hits, Status OK") {
             val sykmelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
-                        fom = LocalDate.of(2019, 1, 10),
-                        tom = LocalDate.of(2019, 1, 20)
+                        fom = LocalDate.now(),
+                        tom = LocalDate.now().plusDays(7)
                     )
                 ),
                 tidspunkt = LocalDate.now().atStartOfDay()
@@ -34,21 +33,11 @@ class SyketilfelleTest : FunSpec({
                 SyketilfelleRules.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING to false,
                 SyketilfelleRules.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE to false,
                 SyketilfelleRules.TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE to false,
-                SyketilfelleRules.OPPHOLD_MELLOM_PERIODER to false,
-                SyketilfelleRules.IKKE_DEFINERT_PERIODE to false,
-                SyketilfelleRules.TILBAKEDATERT_MER_ENN_3_AR to false,
-                SyketilfelleRules.FREMDATERT to false,
-                SyketilfelleRules.TOTAL_VARIGHET_OVER_ETT_AAR to false,
-                SyketilfelleRules.BEHANDLINGSDATO_ETTER_MOTTATTDATO to false,
-                SyketilfelleRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
-                SyketilfelleRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
-                SyketilfelleRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
-                SyketilfelleRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE to false,
-                SyketilfelleRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false,
-                SyketilfelleRules.SYKMELDING_MED_BEHANDLINGSDAGER to false
-
+                SyketilfelleRules.TILBAKEDATERT_FORLENGELSE_OVER_1_MND to false,
+                SyketilfelleRules.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE to false
             )
 
+            // TODO fix me
             mapOf(
                 "perioder" to sykmelding.perioder,
                 "periodeRanges" to sykmelding.perioder
@@ -68,5 +57,7 @@ class SyketilfelleTest : FunSpec({
 
             status.treeResult.ruleHit shouldBeEqualTo null
         }
+
+        // TODO add in rest of tests
     }
 })

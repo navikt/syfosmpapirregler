@@ -4,7 +4,6 @@ import no.nav.syfo.log
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
-import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult

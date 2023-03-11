@@ -7,7 +7,6 @@ import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
-
 enum class SyketilfelleRules {
     TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING,
     TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE,
@@ -48,6 +47,5 @@ fun getRule(rules: SyketilfelleRules): Rule<SyketilfelleRules> {
         SyketilfelleRules.TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE -> tilbakedateertintall8dagerutenkontakdaoogbegrunnelse
         SyketilfelleRules.TILBAKEDATERT_FORLENGELSE_OVER_1_MND -> tilbakedatertforlengelseover1mnd
         SyketilfelleRules.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE -> tilbakedertmedbegrunnelseforlengelse
-
     }
 }

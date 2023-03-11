@@ -1,16 +1,16 @@
 package no.nav.syfo.papirsykemelding.rules.gradert
 
 import io.kotest.core.spec.style.FunSpec
+import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.generateGradert
 import no.nav.syfo.generatePeriode
-import no.nav.syfo.model.Status
-import org.amshove.kluent.shouldBeEqualTo
-import java.time.LocalDate
-import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.generateSykemelding
+import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
+import org.amshove.kluent.shouldBeEqualTo
+import java.time.LocalDate
 
 class GradertTest : FunSpec({
 

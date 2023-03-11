@@ -105,7 +105,6 @@ val ugyldigkodeverkforbidiagnose: ValidationRule = { sykmelding, _ ->
     )
 }
 
-
 val ugyldingOrgNummerLengde: ValidationRule = { _, ruleMetadata ->
     val legekontorOrgnr = ruleMetadata.legekontorOrgnr
 
@@ -117,4 +116,3 @@ val ugyldingOrgNummerLengde: ValidationRule = { _, ruleMetadata ->
         ruleResult = ugyldingOrgNummerLengde
     )
 }
-

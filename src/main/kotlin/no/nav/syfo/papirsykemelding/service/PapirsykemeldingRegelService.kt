@@ -76,7 +76,6 @@ class PapirsykemeldingRegelService(
         val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
         val syketilfelleStartdatoAsync = getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
 
-
         val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
 
         val ruleMetadataSykmelding = RuleMetadataSykmelding(
