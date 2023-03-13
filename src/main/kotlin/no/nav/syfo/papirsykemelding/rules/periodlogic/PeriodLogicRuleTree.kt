@@ -10,13 +10,10 @@ import no.nav.syfo.papirsykemelding.rules.periodlogic.PeriodLogicRuleHit
 import no.nav.syfo.papirsykemelding.rules.periodlogic.Rule
 import no.nav.syfo.papirsykemelding.rules.periodlogic.avventendeKombinert
 import no.nav.syfo.papirsykemelding.rules.periodlogic.avventendeOver16Dager
-import no.nav.syfo.papirsykemelding.rules.periodlogic.behandslingsDatoEtterMottatDato
 import no.nav.syfo.papirsykemelding.rules.periodlogic.forMangeBehandlingsDagerPrUke
 import no.nav.syfo.papirsykemelding.rules.periodlogic.fraDatoEtterTilDato
 import no.nav.syfo.papirsykemelding.rules.periodlogic.fremdatertOver30Dager
 import no.nav.syfo.papirsykemelding.rules.periodlogic.gradertOver99Prosent
-import no.nav.syfo.papirsykemelding.rules.periodlogic.ikkeDefinertPeriode
-import no.nav.syfo.papirsykemelding.rules.periodlogic.inneholderBehandlingsDager
 import no.nav.syfo.papirsykemelding.rules.periodlogic.manglendeInnspillArbeidsgiver
 import no.nav.syfo.papirsykemelding.rules.periodlogic.oppholdMellomPerioder
 import no.nav.syfo.papirsykemelding.rules.periodlogic.overlappendePerioder
@@ -29,17 +26,14 @@ enum class PeriodLogicRules {
     FRADATO_ETTER_TILDATO,
     OVERLAPPENDE_PERIODER,
     OPPHOLD_MELLOM_PERIODER,
-    IKKE_DEFINERT_PERIODE,
     TILBAKEDATERT_MER_ENN_3_AR,
     FREMDATERT,
     TOTAL_VARIGHET_OVER_ETT_AAR,
-    BEHANDLINGSDATO_ETTER_MOTTATTDATO,
     AVVENTENDE_SYKMELDING_KOMBINERT,
     MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER,
     AVVENTENDE_SYKMELDING_OVER_16_DAGER,
     FOR_MANGE_BEHANDLINGSDAGER_PER_UKE,
-    GRADERT_SYKMELDING_OVER_99_PROSENT,
-    SYKMELDING_MED_BEHANDLINGSDAGER
+    GRADERT_SYKMELDING_OVER_99_PROSENT
 }
 
 val periodLogicRuleTree = tree<PeriodLogicRules, RuleResult>(PeriodLogicRules.PERIODER_MANGLER) {
@@ -94,16 +88,13 @@ fun getRule(rules: PeriodLogicRules): Rule<PeriodLogicRules> {
         PeriodLogicRules.FRADATO_ETTER_TILDATO -> fraDatoEtterTilDato
         PeriodLogicRules.OVERLAPPENDE_PERIODER -> overlappendePerioder
         PeriodLogicRules.OPPHOLD_MELLOM_PERIODER -> oppholdMellomPerioder
-        PeriodLogicRules.IKKE_DEFINERT_PERIODE -> ikkeDefinertPeriode
         PeriodLogicRules.FREMDATERT -> fremdatertOver30Dager
         PeriodLogicRules.TOTAL_VARIGHET_OVER_ETT_AAR -> varighetOver1AAr
-        PeriodLogicRules.BEHANDLINGSDATO_ETTER_MOTTATTDATO -> behandslingsDatoEtterMottatDato
         PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT -> avventendeKombinert
         PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER -> manglendeInnspillArbeidsgiver
         PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER -> avventendeOver16Dager
         PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE -> forMangeBehandlingsDagerPrUke
         PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT -> gradertOver99Prosent
-        PeriodLogicRules.SYKMELDING_MED_BEHANDLINGSDAGER -> inneholderBehandlingsDager
         PeriodLogicRules.TILBAKEDATERT_MER_ENN_3_AR -> tilbakeDatertOver3Ar
     }
 }

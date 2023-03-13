@@ -76,22 +76,7 @@ val oppholdMellomPerioder: PeriodLogicRule = { sykmelding, _ ->
     )
 }
 
-val ikkeDefinertPeriode: PeriodLogicRule = { sykmelding, _ ->
-    val perioder = sykmelding.perioder
 
-    val ikkeDefinertPeriode = perioder.any {
-        it.aktivitetIkkeMulig == null &&
-            it.gradert == null &&
-            it.avventendeInnspillTilArbeidsgiver.isNullOrEmpty() &&
-            !it.reisetilskudd && (it.behandlingsdager == null || it.behandlingsdager == 0)
-    }
-
-    RuleResult(
-        ruleInputs = mapOf("perioder" to perioder),
-        rule = PeriodLogicRules.IKKE_DEFINERT_PERIODE,
-        ruleResult = ikkeDefinertPeriode
-    )
-}
 
 val fremdatertOver30Dager: PeriodLogicRule = { sykmelding, ruleMetadata ->
     val forsteFomDato = sykmelding.perioder.sortedFOMDate().firstOrNull()
@@ -140,18 +125,7 @@ val varighetOver1AAr: PeriodLogicRule = { sykmelding, _ ->
     )
 }
 
-val behandslingsDatoEtterMottatDato: PeriodLogicRule = { sykmelding, ruleMetadata ->
-    val behandletTidspunkt = sykmelding.behandletTidspunkt
-    val receivedDate = ruleMetadata.receivedDate
 
-    val behandslingsDatoEtterMottatDato = behandletTidspunkt > receivedDate.plusDays(1)
-
-    RuleResult(
-        ruleInputs = mapOf("behandslingsDatoEtterMottatDato" to behandslingsDatoEtterMottatDato),
-        rule = PeriodLogicRules.BEHANDLINGSDATO_ETTER_MOTTATTDATO,
-        ruleResult = behandslingsDatoEtterMottatDato
-    )
-}
 
 val avventendeKombinert: PeriodLogicRule = { sykmelding, _ ->
     val perioder = sykmelding.perioder
@@ -218,20 +192,6 @@ val gradertOver99Prosent: PeriodLogicRule = { sykmelding, _ ->
         ruleInputs = mapOf("gradertOver99Prosent" to gradertOver99Prosent),
         rule = PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT,
         ruleResult = gradertOver99Prosent
-    )
-}
-
-val inneholderBehandlingsDager: PeriodLogicRule = { sykmelding, _ ->
-    val perioder = sykmelding.perioder
-
-    val inneholderBehandlingsDager = perioder.any {
-        it.behandlingsdager != null
-    }
-
-    RuleResult(
-        ruleInputs = mapOf("inneholderBehandlingsDager" to inneholderBehandlingsDager),
-        rule = PeriodLogicRules.SYKMELDING_MED_BEHANDLINGSDAGER,
-        ruleResult = inneholderBehandlingsDager
     )
 }
 
