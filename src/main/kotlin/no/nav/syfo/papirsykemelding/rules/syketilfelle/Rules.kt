@@ -2,10 +2,10 @@ package no.nav.syfo.papirsykemelding.rules.syketilfelle
 
 import no.nav.syfo.model.AnnenFraverGrunn
 import no.nav.syfo.model.Sykmelding
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-import no.nav.syfo.papirsykemelding.service.sortedFOMDate
 import no.nav.syfo.sm.isICD10
 import no.nav.syfo.sm.isICPC2
 import java.time.LocalDate

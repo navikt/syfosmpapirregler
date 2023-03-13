@@ -4,6 +4,7 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
+import no.nav.syfo.papirsykemelding.rules.gradert.gradertRuleTree
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
 import no.nav.syfo.papirsykemelding.rules.syketilfelle.syketilfelleRuleTree
@@ -16,7 +17,8 @@ fun main() {
         "HPR" to hprRuleTree,
         "Validation" to validationRuleTree,
         "Periode" to periodLogicRuleTree,
-        "Syketilfelle" to syketilfelleRuleTree
+        "Syketilfelle" to syketilfelleRuleTree,
+        "Gradert" to gradertRuleTree
     )
 
     ruleTrees.forEach {

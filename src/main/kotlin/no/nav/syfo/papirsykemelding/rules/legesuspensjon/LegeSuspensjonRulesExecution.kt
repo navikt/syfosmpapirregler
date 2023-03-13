@@ -17,7 +17,7 @@ import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 typealias LegeSuspensjonTreeOutput = TreeOutput<LegeSuspensjonRules, RuleResult>
 typealias LegeSuspensjonTreeNode = TreeNode<LegeSuspensjonRules, RuleResult>
 
-class LegeSuspensjonRulesExecution(val rootNode: TreeNode<LegeSuspensjonRules, RuleResult> = legeSuspensjonRuleTree) :
+class LegeSuspensjonRulesExecution(val rootNode: LegeSuspensjonTreeNode = legeSuspensjonRuleTree) :
     RuleExecution<LegeSuspensjonRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding): Pair<LegeSuspensjonTreeOutput, Juridisk> =
         rootNode

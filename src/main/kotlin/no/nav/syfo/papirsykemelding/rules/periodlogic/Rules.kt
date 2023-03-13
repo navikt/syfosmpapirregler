@@ -1,14 +1,16 @@
 package no.nav.syfo.papirsykemelding.rules.periodlogic
 
-import no.nav.syfo.model.Periode
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.model.daysBetween
+import no.nav.syfo.papirsykemelding.model.range
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.sortedTOMDate
+import no.nav.syfo.papirsykemelding.model.startedWeeksBetween
+import no.nav.syfo.papirsykemelding.model.workdaysBetween
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
-import no.nav.syfo.papirsykemelding.service.daysBetween
 import no.nav.syfo.rules.periodlogic.PeriodLogicRules
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 typealias PeriodLogicRule = Rule<PeriodLogicRules>
@@ -190,17 +192,3 @@ val gradertOver99Prosent: PeriodLogicRule = { sykmelding, _ ->
         ruleResult = gradertOver99Prosent
     )
 }
-
-fun List<Periode>.sortedFOMDate(): List<LocalDate> =
-    map { it.fom }.sorted()
-
-fun List<Periode>.sortedTOMDate(): List<LocalDate> =
-    map { it.tom }.sorted()
-
-fun workdaysBetween(a: LocalDate, b: LocalDate): Int = (1..(ChronoUnit.DAYS.between(a, b) - 1))
-    .map { a.plusDays(it) }
-    .filter { it.dayOfWeek !in arrayOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY) }
-    .count()
-
-fun ClosedRange<LocalDate>.startedWeeksBetween(): Int = ChronoUnit.WEEKS.between(start, endInclusive).toInt() + 1
-fun Periode.range(): ClosedRange<LocalDate> = fom.rangeTo(tom)

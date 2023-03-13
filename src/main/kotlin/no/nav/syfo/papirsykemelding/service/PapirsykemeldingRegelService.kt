@@ -11,13 +11,13 @@ import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
-import no.nav.syfo.model.Periode
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
@@ -26,7 +26,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 @DelicateCoroutinesApi
 class PapirsykemeldingRegelService(
@@ -177,10 +176,3 @@ data class RuleMetadataSykmelding(
     val doctorSuspensjon: Boolean,
     val behandlerOgStartdato: BehandlerOgStartdato
 )
-fun List<Periode>.sortedFOMDate(): List<LocalDate> =
-    map { it.fom }.sorted()
-
-fun List<Periode>.sortedTOMDate(): List<LocalDate> =
-    map { it.tom }.sorted()
-
-fun ClosedRange<LocalDate>.daysBetween(): Long = ChronoUnit.DAYS.between(start, endInclusive)

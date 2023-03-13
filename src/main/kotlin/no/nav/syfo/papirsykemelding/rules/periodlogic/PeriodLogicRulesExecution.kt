@@ -19,7 +19,7 @@ import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
 typealias PeriodLogicTreeOutput = TreeOutput<PeriodLogicRules, RuleResult>
 typealias PeriodLogicTreeNode = TreeNode<PeriodLogicRules, RuleResult>
 
-class PeriodLogicRulesExecution(private val rootNode: TreeNode<PeriodLogicRules, RuleResult> = periodLogicRuleTree) :
+class PeriodLogicRulesExecution(private val rootNode: PeriodLogicTreeNode = periodLogicRuleTree) :
     RuleExecution<PeriodLogicRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode
