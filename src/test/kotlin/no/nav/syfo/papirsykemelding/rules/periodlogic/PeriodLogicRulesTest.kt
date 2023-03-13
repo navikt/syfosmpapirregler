@@ -31,7 +31,7 @@ class PeriodLogicRulesTest : FunSpec({
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-            //status.treeResult.status shouldBeEqualTo Status.OK
+            // status.treeResult.status shouldBeEqualTo Status.OK
             status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo listOf(
                 PeriodLogicRules.PERIODER_MANGLER to false,
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
@@ -44,7 +44,7 @@ class PeriodLogicRulesTest : FunSpec({
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
                 PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE to false,
-                PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false,
+                PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false
             )
 
             mapOf(
@@ -59,7 +59,7 @@ class PeriodLogicRulesTest : FunSpec({
                 "manglendeInnspillArbeidsgiver" to false,
                 "avventendeOver16Dager" to false,
                 "forMangeBehandlingsDagerPrUke" to false,
-                "gradertOver99Prosent" to false,
+                "gradertOver99Prosent" to false
             ) shouldBeEqualTo status.ruleInputs
 
             status.treeResult.ruleHit shouldBeEqualTo null

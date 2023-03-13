@@ -40,7 +40,7 @@ val ukjentdiagnosekodetype: ValidationRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
-        ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
+        ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.UKJENT_DIAGNOSEKODETYPE,
         ruleResult = hoveddiagnose != null && hoveddiagnose.system !in Diagnosekoder
     )
@@ -50,7 +50,7 @@ val icpc2zdiagnose: ValidationRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
-        ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
+        ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.ICPC_2_Z_DIAGNOSE,
         ruleResult = hoveddiagnose != null && hoveddiagnose.isICPC2() && hoveddiagnose.kode.startsWith("Z")
     )
@@ -61,7 +61,10 @@ val houveddiagnsoeellerfravaergrunnmangler: ValidationRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
-        ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
+        ruleInputs = mapOf(
+            "hoveddiagnose" to (hoveddiagnose ?: ""),
+            "annenFraversArsak" to (annenFraversArsak ?: "")
+        ),
         rule = ValidationRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
         ruleResult = annenFraversArsak == null && hoveddiagnose == null
     )
@@ -71,7 +74,7 @@ val ugyldigkodeverkforhouveddiagnose: ValidationRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
-        ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
+        ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE,
         ruleResult = if (hoveddiagnose == null) {
             false

@@ -10,6 +10,7 @@ import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule()).registerModule(
     KotlinModule.Builder()
@@ -25,9 +26,12 @@ fun <T> getStringValue(content: T): String {
     return objectMapper.writeValueAsString(content)
 }
 
-fun Sykmelding.toRuleMetadata() = RuleMetadata(
-    signatureDate = signaturDato,
-    receivedDate = signaturDato,
+fun Sykmelding.toRuleMetadata(
+    signatureDate: LocalDateTime = signaturDato,
+    receivedDate: LocalDateTime = signaturDato
+) = RuleMetadata(
+    signatureDate = signatureDate,
+    receivedDate = receivedDate,
     behandletTidspunkt = behandletTidspunkt,
     patientPersonNumber = "1",
     rulesetVersion = null,
@@ -36,9 +40,13 @@ fun Sykmelding.toRuleMetadata() = RuleMetadata(
     pasientFodselsdato = LocalDate.now()
 )
 
-fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) = RuleMetadataSykmelding(
-    ruleMetadata = ruleMetadata,
-    erNyttSyketilfelle = false,
-    doctorSuspensjon = false,
-    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
-)
+fun ruleMetadataSykmelding(
+    ruleMetadata: RuleMetadata,
+    erNyttSyketilfelle: Boolean = false
+) =
+    RuleMetadataSykmelding(
+        ruleMetadata = ruleMetadata,
+        erNyttSyketilfelle = erNyttSyketilfelle,
+        doctorSuspensjon = false,
+        behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
+    )

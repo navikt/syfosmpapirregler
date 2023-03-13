@@ -76,8 +76,6 @@ val oppholdMellomPerioder: PeriodLogicRule = { sykmelding, _ ->
     )
 }
 
-
-
 val fremdatertOver30Dager: PeriodLogicRule = { sykmelding, ruleMetadata ->
     val forsteFomDato = sykmelding.perioder.sortedFOMDate().firstOrNull()
     val behandletTidspunkt = ruleMetadata.behandletTidspunkt
@@ -124,8 +122,6 @@ val varighetOver1AAr: PeriodLogicRule = { sykmelding, _ ->
         ruleResult = varighetOver1AAr
     )
 }
-
-
 
 val avventendeKombinert: PeriodLogicRule = { sykmelding, _ ->
     val perioder = sykmelding.perioder
