@@ -42,7 +42,6 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
         jwtIssuerV2 = "https://sts.issuer.net/myidV2",
         syketilfelleScope = "syketilfelle",
         syketilfelleEndpointURL = "https://syketilfelle",
-        versjonAvKode = "verson2",
         pdlScope = "pdl",
         pdlGraphqlPath = "https://pdl",
         legeSuspensjonProxyEndpointURL = "url",

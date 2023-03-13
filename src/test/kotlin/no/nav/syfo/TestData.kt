@@ -25,8 +25,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-val behandletTidspunkt = LocalDateTime.now()
-val signaturDato = LocalDateTime.now()
+val behandletTidspunkt: LocalDateTime = LocalDateTime.now()
+val signaturDato: LocalDateTime = LocalDateTime.now()
 
 fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 
@@ -60,13 +60,14 @@ fun generateSykemelding(
     tidspunkt: LocalDateTime = behandletTidspunkt,
     signaturDateTime: LocalDateTime = signaturDato,
     kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
-    diagnose: Diagnose = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose()
+    diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
+    biDiagnose: List<Diagnose> = emptyList()
 ): Sykmelding {
     return Sykmelding(
         "1",
         "1",
         "2",
-        generateMedisinskVurdering(diagnose = diagnose),
+        generateMedisinskVurdering(diagnose = diagnose, biDiagnose = biDiagnose),
         false,
         generateArbeidsgiver(),
         perioder,
@@ -141,10 +142,10 @@ fun generateArbeidsgiver(): Arbeidsgiver {
     return Arbeidsgiver(HarArbeidsgiver.EN_ARBEIDSGIVER, null, null, null)
 }
 
-fun generateMedisinskVurdering(diagnose: Diagnose = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose()): MedisinskVurdering {
+fun generateMedisinskVurdering(diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(), biDiagnose: List<Diagnose>): MedisinskVurdering {
     return MedisinskVurdering(
         hovedDiagnose = diagnose,
-        biDiagnoser = emptyList(),
+        biDiagnoser = biDiagnose,
         svangerskap = false,
         yrkesskadeDato = null,
         annenFraversArsak = null,

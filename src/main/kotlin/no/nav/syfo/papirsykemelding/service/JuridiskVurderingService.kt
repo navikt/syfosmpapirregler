@@ -1,10 +1,14 @@
 package no.nav.syfo.papirsykemelding.service
 
+import no.nav.syfo.getEnvVar
 import no.nav.syfo.model.ReceivedSykmelding
-import no.nav.syfo.model.RuleResult
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.juridisk.JuridiskUtfall
 import no.nav.syfo.model.juridisk.JuridiskVurdering
+import no.nav.syfo.papirsykemelding.rules.common.Juridisk
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
+import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import java.time.LocalDateTime
@@ -17,7 +21,7 @@ data class JuridiskVurderingResult(
 class JuridiskVurderingService(
     private val kafkaProducer: KafkaProducer<String, JuridiskVurderingResult>,
     val juridiskVurderingTopic: String,
-    val versjonAvKode: String
+    val versjonsKode: String = getEnvVar("NAIS_APP_IMAGE")
 ) {
     companion object {
         val EVENT_NAME = "subsumsjon"
@@ -27,12 +31,16 @@ class JuridiskVurderingService(
 
     fun processRuleResults(
         receivedSykmelding: ReceivedSykmelding,
-        result: List<RuleResult<*>>
+        result: List<Pair<TreeOutput<out Enum<*>, RuleResult>, Juridisk>>
     ) {
         val juridiskVurderingResult = JuridiskVurderingResult(
             juridiskeVurderinger = result
-                .filter { it.rule.juridiskHenvisning != null }
-                .map { resultToJuridiskVurdering(receivedSykmelding, it) }
+                .mapNotNull {
+                    when (val juridisk = it.second) {
+                        is MedJuridisk -> resultToJuridiskVurdering(receivedSykmelding, it.first, juridisk)
+                        else -> null
+                    }
+                }
         )
         kafkaProducer.send(
             ProducerRecord(
@@ -45,27 +53,22 @@ class JuridiskVurderingService(
 
     private fun resultToJuridiskVurdering(
         receivedSykmelding: ReceivedSykmelding,
-        ruleResult: RuleResult<*>
+        result: TreeOutput<out Enum<*>, RuleResult>,
+        medJuridisk: MedJuridisk
     ): JuridiskVurdering {
         return JuridiskVurdering(
             id = UUID.randomUUID().toString(),
             eventName = EVENT_NAME,
             version = VERSION,
             kilde = KILDE,
-            versjonAvKode = versjonAvKode,
+            versjonAvKode = versjonsKode,
             fodselsnummer = receivedSykmelding.personNrPasient,
-            juridiskHenvisning = ruleResult.rule.juridiskHenvisning
-                ?: throw RuntimeException("JuridiskHenvisning kan ikke være null"),
+            juridiskHenvisning = medJuridisk.juridiskHenvisning,
             sporing = mapOf(
                 "sykmelding" to receivedSykmelding.sykmelding.id
             ),
-            input = ruleResult.rule.toInputMap(),
-            utfall = toJuridiskUtfall(
-                when (ruleResult.result) {
-                    true -> ruleResult.rule.status
-                    else -> Status.OK
-                }
-            ),
+            input = result.ruleInputs,
+            utfall = toJuridiskUtfall(result.treeResult.status),
             tidsstempel = LocalDateTime.now()
         )
     }
