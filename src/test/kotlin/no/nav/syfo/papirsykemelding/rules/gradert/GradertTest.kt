@@ -42,7 +42,7 @@ class GradertTest : FunSpec({
             result.first.treeResult.status shouldBeEqualTo Status.OK
         }
 
-        test("Sick leave is 19 procent, should be INVALID") {
+        test("Sick leave is 19 procent, should be MANUAL_PROCESSING") {
             val sykmelding = generateSykemelding(
                 perioder = listOf(
                     generatePeriode(
@@ -64,7 +64,7 @@ class GradertTest : FunSpec({
 
             val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            result.first.treeResult.status shouldBeEqualTo Status.INVALID
+            result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
         }
     }
 })
