@@ -16,14 +16,14 @@ val mockkVersion = "1.13.2"
 val nimbusdsVersion = "9.25.6"
 val smCommonVersion = "1.9df1108"
 val jacksonVersion = "2.14.2"
-val kotlinVersion = "1.8.10"
+val kotlinVersion = "1.8.20"
 val caffeineVersion = "3.1.2"
 val kotestVersion = "5.5.4"
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
-    id("org.jmailen.kotlinter") version "3.13.0"
+    kotlin("jvm") version "1.8.20"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("org.jmailen.kotlinter") version "3.14.0"
 }
 
 val githubUser: String by project
