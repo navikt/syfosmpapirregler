@@ -29,7 +29,7 @@ class SyketilfelleClientTest : FunSpec({
             val startdato = syketilfelleClient.finnStartdato(
                 emptyList(),
                 listOf(lagPeriode(fom = LocalDate.of(2020, 10, 1), tom = LocalDate.of(2020, 10, 20))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo null
@@ -40,11 +40,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 10)
-                    )
+                        tom = LocalDate.of(2021, 1, 10),
+                    ),
                 ),
                 emptyList(),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo null
@@ -55,11 +55,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 10)
-                    )
+                        tom = LocalDate.of(2021, 1, 10),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2021, 1, 27), tom = LocalDate.of(2021, 2, 10))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo null
@@ -70,11 +70,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 10)
-                    )
+                        tom = LocalDate.of(2021, 1, 10),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2021, 1, 26), tom = LocalDate.of(2021, 2, 10))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo oppfolgingsdato
@@ -85,11 +85,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 10)
-                    )
+                        tom = LocalDate.of(2021, 1, 10),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2020, 12, 1), tom = LocalDate.of(2020, 12, 17))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo null
@@ -100,11 +100,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 10)
-                    )
+                        tom = LocalDate.of(2021, 1, 10),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2020, 12, 1), tom = LocalDate.of(2020, 12, 18))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo oppfolgingsdato
@@ -115,11 +115,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato,
                         fom = LocalDate.of(2021, 1, 3),
-                        tom = LocalDate.of(2021, 1, 17)
-                    )
+                        tom = LocalDate.of(2021, 1, 17),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2021, 1, 15), tom = LocalDate.of(2021, 2, 10))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo oppfolgingsdato
@@ -131,11 +131,11 @@ class SyketilfelleClientTest : FunSpec({
                     lagSykeforloep(
                         oppfolgingsdato.minusWeeks(8),
                         fom = LocalDate.of(2020, 11, 3),
-                        tom = LocalDate.of(2020, 11, 25)
-                    )
+                        tom = LocalDate.of(2020, 11, 25),
+                    ),
                 ),
                 listOf(lagPeriode(fom = LocalDate.of(2021, 1, 26), tom = LocalDate.of(2021, 2, 10))),
-                loggingMeta
+                loggingMeta,
             )
 
             startdato shouldBeEqualTo oppfolgingsdato
@@ -146,7 +146,7 @@ class SyketilfelleClientTest : FunSpec({
 private fun lagSykeforloep(oppfolgingsdato: LocalDate, fom: LocalDate, tom: LocalDate) =
     Sykeforloep(
         oppfolgingsdato,
-        listOf(SimpleSykmelding("321", fom, tom))
+        listOf(SimpleSykmelding("321", fom, tom)),
     )
 
 private fun lagPeriode(fom: LocalDate, tom: LocalDate): Periode =
@@ -155,10 +155,10 @@ private fun lagPeriode(fom: LocalDate, tom: LocalDate): Periode =
         tom = tom,
         aktivitetIkkeMulig = AktivitetIkkeMulig(
             medisinskArsak = MedisinskArsak(null, emptyList()),
-            arbeidsrelatertArsak = null
+            arbeidsrelatertArsak = null,
         ),
         avventendeInnspillTilArbeidsgiver = null,
         gradert = null,
         behandlingsdager = null,
-        reisetilskudd = false
+        reisetilskudd = false,
     )

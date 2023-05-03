@@ -18,7 +18,7 @@ fun main() {
         "Validation" to validationRuleTree,
         "Periode" to periodLogicRuleTree,
         "Syketilfelle" to syketilfelleRuleTree,
-        "Gradert" to gradertRuleTree
+        "Gradert" to gradertRuleTree,
     )
 
     ruleTrees.forEach {
@@ -38,7 +38,7 @@ fun main() {
 private fun <T> TreeNode<T, RuleResult>.traverseTree(
     builder: StringBuilder,
     thisNodeKey: String,
-    nodeKey: String
+    nodeKey: String,
 ) {
     when (this) {
         is ResultNode -> {

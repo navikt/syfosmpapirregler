@@ -15,7 +15,7 @@ fun Routing.registerNaisApi(
     applicationState: ApplicationState,
     aliveCheck: () -> Boolean = { applicationState.alive },
     readyCheck: () -> Boolean = { applicationState.ready },
-    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
+    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry,
 ) {
     get("/internal/is_alive") {
         if (aliveCheck()) {

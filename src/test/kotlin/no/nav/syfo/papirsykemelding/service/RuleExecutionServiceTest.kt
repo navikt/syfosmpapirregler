@@ -13,7 +13,7 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import org.amshove.kluent.shouldBeEqualTo
 
 enum class TestRules {
-    RULE2
+    RULE2,
 }
 
 class RuleExecutionServiceTest : FunSpec({
@@ -28,14 +28,14 @@ class RuleExecutionServiceTest : FunSpec({
         every {
             rulesExecution.runRules(
                 any(),
-                any()
+                any(),
             )
         } returns (
             TreeOutput<TestRules, RuleResult>(
                 treeResult = RuleResult(
                     status = Status.OK,
-                    ruleHit = null
-                )
+                    ruleHit = null,
+                ),
             ) to UtenJuridisk
             )
 
@@ -51,8 +51,8 @@ class RuleExecutionServiceTest : FunSpec({
                 TreeOutput<TestRules, RuleResult>(
                     treeResult = RuleResult(
                         status = Status.OK,
-                        ruleHit = null
-                    )
+                        ruleHit = null,
+                    ),
                 ) to UtenJuridisk
                 )
         }
@@ -61,8 +61,8 @@ class RuleExecutionServiceTest : FunSpec({
                 TreeOutput<TestRules, RuleResult>(
                     treeResult = RuleResult(
                         status = Status.MANUAL_PROCESSING,
-                        ruleHit = RuleHit(Status.MANUAL_PROCESSING, TestRules.RULE2.name, "message", "message")
-                    )
+                        ruleHit = RuleHit(Status.MANUAL_PROCESSING, TestRules.RULE2.name, "message", "message"),
+                    ),
                 ) to UtenJuridisk
                 )
         }

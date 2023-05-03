@@ -19,12 +19,12 @@ class LegeSuspensjonClient(
     private val endpointUrl: String,
     private val accessTokenClientV2: AccessTokenClientV2,
     private val httpClient: HttpClient,
-    private val scope: String
+    private val scope: String,
 ) {
 
     suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry(
         "lege_suspansjon",
-        retryIntervals = arrayOf(500L, 1000L)
+        retryIntervals = arrayOf(500L, 1000L),
     ) {
         val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
 

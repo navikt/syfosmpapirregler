@@ -51,7 +51,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity : FunSpec({
                     handleRequest(HttpMethod.Post, "/v2/rules/validate") {
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         setBody(getStringValue(generateReceivedSykemelding()))
-                    }
+                    },
                 ) {
                     response.status() shouldBe HttpStatusCode.Unauthorized
                 }
@@ -64,9 +64,9 @@ class PapirsykemeldingReglerApiSpekWithSecurity : FunSpec({
                         setBody(getStringValue(generateReceivedSykemelding()))
                         addHeader(
                             "Authorization",
-                            "Bearer ${genereateJWT(audience = "regel-clientId-v2")}"
+                            "Bearer ${genereateJWT(audience = "regel-clientId-v2")}",
                         )
-                    }
+                    },
                 ) {
                     response.status() shouldBe HttpStatusCode.OK
                 }
@@ -79,9 +79,9 @@ class PapirsykemeldingReglerApiSpekWithSecurity : FunSpec({
                         setBody(getStringValue(generateReceivedSykemelding()))
                         addHeader(
                             "Authorization",
-                            "Bearer ${genereateJWT(audience = "my random app")}"
+                            "Bearer ${genereateJWT(audience = "my random app")}",
                         )
-                    }
+                    },
                 ) {
                     response.status() shouldBe HttpStatusCode.Unauthorized
                 }

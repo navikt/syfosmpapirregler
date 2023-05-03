@@ -20,7 +20,7 @@ val pasientUnder13Aar: ValidationRule = { sykmelding, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("pasientUnder13Aar" to pasientUnder13Aar),
         rule = ValidationRules.PASIENT_YNGRE_ENN_13,
-        ruleResult = pasientUnder13Aar
+        ruleResult = pasientUnder13Aar,
     )
 }
 
@@ -33,7 +33,7 @@ val pasienteldreenn70Aar: ValidationRule = { sykmelding, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("pasientOver70Aar" to pasientOver70Aar),
         rule = ValidationRules.PASIENT_ELDRE_ENN_70,
-        ruleResult = pasientOver70Aar
+        ruleResult = pasientOver70Aar,
     )
 }
 val ukjentdiagnosekodetype: ValidationRule = { sykmelding, _ ->
@@ -42,7 +42,7 @@ val ukjentdiagnosekodetype: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.UKJENT_DIAGNOSEKODETYPE,
-        ruleResult = hoveddiagnose != null && hoveddiagnose.system !in Diagnosekoder
+        ruleResult = hoveddiagnose != null && hoveddiagnose.system !in Diagnosekoder,
     )
 }
 
@@ -52,7 +52,7 @@ val icpc2zdiagnose: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.ICPC_2_Z_DIAGNOSE,
-        ruleResult = hoveddiagnose != null && hoveddiagnose.isICPC2() && hoveddiagnose.kode.startsWith("Z")
+        ruleResult = hoveddiagnose != null && hoveddiagnose.isICPC2() && hoveddiagnose.kode.startsWith("Z"),
     )
 }
 
@@ -63,10 +63,10 @@ val houveddiagnsoeellerfravaergrunnmangler: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf(
             "hoveddiagnose" to (hoveddiagnose ?: ""),
-            "annenFraversArsak" to (annenFraversArsak ?: "")
+            "annenFraversArsak" to (annenFraversArsak ?: ""),
         ),
         rule = ValidationRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
-        ruleResult = annenFraversArsak == null && hoveddiagnose == null
+        ruleResult = annenFraversArsak == null && hoveddiagnose == null,
     )
 }
 
@@ -81,7 +81,7 @@ val ugyldigkodeverkforhouveddiagnose: ValidationRule = { sykmelding, _ ->
         } else {
             hoveddiagnose.system !in arrayOf(
                 Diagnosekoder.ICPC2_CODE,
-                Diagnosekoder.ICD10_CODE
+                Diagnosekoder.ICD10_CODE,
             ) || !hoveddiagnose.let { diagnose ->
                 if (diagnose.isICPC2()) {
                     Diagnosekoder.icpc2.containsKey(diagnose.kode)
@@ -89,7 +89,7 @@ val ugyldigkodeverkforhouveddiagnose: ValidationRule = { sykmelding, _ ->
                     Diagnosekoder.icd10.containsKey(diagnose.kode)
                 }
             }
-        }
+        },
     )
 }
 
@@ -105,7 +105,7 @@ val ugyldigkodeverkforbidiagnose: ValidationRule = { sykmelding, _ ->
             } else {
                 Diagnosekoder.icd10.containsKey(diagnose.kode)
             }
-        }
+        },
     )
 }
 
@@ -117,6 +117,6 @@ val ugyldingOrgNummerLengde: ValidationRule = { _, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
         rule = ValidationRules.UGYLDIG_ORGNR_LENGDE,
-        ruleResult = ugyldingOrgNummerLengde
+        ruleResult = ugyldingOrgNummerLengde,
     )
 }

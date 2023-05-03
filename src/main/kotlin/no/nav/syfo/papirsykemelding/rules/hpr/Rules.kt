@@ -21,7 +21,7 @@ val behanderIkkeGyldigHPR: HPRRule = { _, behandlerOgStartdato ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR,
-        ruleResult = !aktivAutorisasjon
+        ruleResult = !aktivAutorisasjon,
     )
 }
 
@@ -41,7 +41,7 @@ val behandlerManglerAutorisasjon: HPRRule = { _, behandlerOgStartdato ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR,
-        ruleResult = !gyldigeGodkjenninger
+        ruleResult = !gyldigeGodkjenninger,
     )
 }
 
@@ -59,8 +59,8 @@ val behandlerIkkeLEKIMTTLFT: HPRRule = { _, behandlerOgStartdato ->
                         HelsepersonellKategori.KIROPRAKTOR.verdi,
                         HelsepersonellKategori.MANUELLTERAPEUT.verdi,
                         HelsepersonellKategori.TANNLEGE.verdi,
-                        HelsepersonellKategori.FYSIOTERAPAEUT.verdi
-                    )
+                        HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
+                    ),
                 )
             )
     }
@@ -68,7 +68,7 @@ val behandlerIkkeLEKIMTTLFT: HPRRule = { _, behandlerOgStartdato ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR,
-        ruleResult = !behandlerLEKIMTTLFT
+        ruleResult = !behandlerLEKIMTTLFT,
     )
 }
 
@@ -86,28 +86,28 @@ val behandlerMTFTKISykmeldtOver12Uker: HPRRule = { sykmelding, behandlerOgStartd
             behandlerGodkjenninger,
             listOf(
                 HelsepersonellKategori.LEGE.verdi,
-                HelsepersonellKategori.TANNLEGE.verdi
-            )
+                HelsepersonellKategori.TANNLEGE.verdi,
+            ),
         ) &&
         harAktivHelsepersonellAutorisasjonsSom(
             behandlerGodkjenninger,
             listOf(
                 HelsepersonellKategori.KIROPRAKTOR.verdi,
                 HelsepersonellKategori.MANUELLTERAPEUT.verdi,
-                HelsepersonellKategori.FYSIOTERAPAEUT.verdi
-            )
+                HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
+            ),
         )
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_MT_FT_KI_OVER_12_UKER,
-        ruleResult = behandlerMTFTKISykmeldtOver12Uker
+        ruleResult = behandlerMTFTKISykmeldtOver12Uker,
     )
 }
 
 private fun harAktivHelsepersonellAutorisasjonsSom(
     behandlerGodkjenninger: List<Godkjenning>,
-    helsepersonerVerdi: List<String>
+    helsepersonerVerdi: List<String>,
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&

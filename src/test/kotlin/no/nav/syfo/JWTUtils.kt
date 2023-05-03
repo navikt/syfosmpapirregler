@@ -41,7 +41,7 @@ fun fakeJWTApi(randomPort: Int): NettyApplicationEngine {
 fun genereateJWT(
     consumerClientId: String? = "consumerClientId",
     audience: String? = "regel-clientId",
-    expiry: LocalDateTime? = LocalDateTime.now().plusHours(1)
+    expiry: LocalDateTime? = LocalDateTime.now().plusHours(1),
 ): String? {
     val now = Date()
     val key = getDefaultRSAKey()

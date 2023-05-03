@@ -30,12 +30,12 @@ fun createApplicationEngine(
     papirsykemeldingRegelService: PapirsykemeldingRegelService,
     env: Environment,
     applicationState: ApplicationState,
-    jwkProviderAadV2: JwkProvider
+    jwkProviderAadV2: JwkProvider,
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         setupAuth(
             environment = env,
-            jwkProviderAadV2 = jwkProviderAadV2
+            jwkProviderAadV2 = jwkProviderAadV2,
         )
         routing {
             registerNaisApi(applicationState)

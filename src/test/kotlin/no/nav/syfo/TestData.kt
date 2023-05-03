@@ -51,7 +51,7 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         legeHprNr = null,
         partnerreferanse = null,
         vedlegg = null,
-        utenlandskSykmelding = null
+        utenlandskSykmelding = null,
     )
 }
 
@@ -61,7 +61,7 @@ fun generateSykemelding(
     signaturDateTime: LocalDateTime = signaturDato,
     kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
     diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
-    biDiagnose: List<Diagnose> = emptyList()
+    biDiagnose: List<Diagnose> = emptyList(),
 ): Sykmelding {
     return Sykmelding(
         "1",
@@ -84,7 +84,7 @@ fun generateSykemelding(
         AvsenderSystem("test", "1"),
         null,
         signaturDateTime,
-        null
+        null,
     )
 }
 
@@ -97,8 +97,8 @@ fun generatePerioder(): List<Periode> {
             null,
             null,
             null,
-            false
-        )
+            false,
+        ),
     )
 }
 fun generatePeriode(
@@ -108,7 +108,7 @@ fun generatePeriode(
     avventendeInnspillTilArbeidsgiver: String? = null,
     behandlingsdager: Int? = null,
     gradert: Gradert? = null,
-    reisetilskudd: Boolean = false
+    reisetilskudd: Boolean = false,
 ) = Periode(
     fom = fom,
     tom = tom,
@@ -116,13 +116,13 @@ fun generatePeriode(
     avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
     behandlingsdager = behandlingsdager,
     gradert = gradert,
-    reisetilskudd = reisetilskudd
+    reisetilskudd = reisetilskudd,
 )
 
 fun generateBehandler(): Behandler {
     return Behandler(
         "test", null, "Tester", "1",
-        "12054475942", null, null, generateAdresse(), null
+        "12054475942", null, null, generateAdresse(), null,
     )
 }
 
@@ -149,7 +149,7 @@ fun generateMedisinskVurdering(diagnose: Diagnose? = Diagnosekoder.icpc2.values.
         svangerskap = false,
         yrkesskadeDato = null,
         annenFraversArsak = null,
-        yrkesskade = false
+        yrkesskade = false,
     )
 }
 
@@ -165,9 +165,9 @@ fun getInvalidResult(): ValidationResult {
                 "Ingen perioder",
                 "Ingen perioder registrert",
                 "Ingen perioder registrert",
-                Status.MANUAL_PROCESSING
-            )
-        )
+                Status.MANUAL_PROCESSING,
+            ),
+        ),
     )
 }
 
@@ -179,18 +179,18 @@ fun getBehandlerNotInHPRRule(): ValidationResult {
                 ruleName = "BEHANLDER_IKKE_I_HPR",
                 messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
                 messageForUser = "Behandler er ikke register i HPR",
-                ruleStatus = Status.MANUAL_PROCESSING
-            )
-        )
+                ruleStatus = Status.MANUAL_PROCESSING,
+            ),
+        ),
     )
 }
 
 fun generateGradert(
     reisetilskudd: Boolean = false,
-    grad: Int = 50
+    grad: Int = 50,
 ) = Gradert(
     reisetilskudd = reisetilskudd,
-    grad = grad
+    grad = grad,
 )
 
 fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
@@ -200,15 +200,15 @@ fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
                 autorisasjon = Kode(
                     true,
                     7704,
-                    "17"
+                    "17",
                 ),
                 helsepersonellkategori = Kode(
                     true,
                     7702,
-                    HelsepersonellKategori.LEGE.verdi
-                )
-            )
-        )
+                    HelsepersonellKategori.LEGE.verdi,
+                ),
+            ),
+        ),
     )
 }
 
@@ -219,9 +219,9 @@ fun getUgyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
                 autorisasjon = Kode(
                     false,
                     2,
-                    "LE"
-                )
-            )
-        )
+                    "LE",
+                ),
+            ),
+        ),
     )
 }

@@ -17,7 +17,7 @@ class PdlClient(
     private val accessTokenClientV2: AccessTokenClientV2,
     private val pdlScope: String,
     private val basePath: String,
-    private val graphQlQuery: String
+    private val graphQlQuery: String,
 ) {
 
     private val temaHeader = "TEMA"

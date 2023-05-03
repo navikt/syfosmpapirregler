@@ -62,7 +62,7 @@ class LegeSuspensjonClientTest : FunSpec({
         "$mockHttpServerUrl/legeSuspensjonClient",
         accessTokenClientV2,
         httpClient,
-        "scope"
+        "scope",
     )
     afterSpec {
         mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))

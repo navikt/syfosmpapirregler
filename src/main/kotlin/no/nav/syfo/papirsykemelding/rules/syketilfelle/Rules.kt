@@ -24,13 +24,13 @@ val tilbakedatermerenn8dagerforstesykmelding: SyketilfelleRule = { sykmelding, m
     RuleResult(
         ruleInputs = mapOf(
             "erNyttSyketilfelle" to erNyttSyketilfelle,
-            "behandletTidspunkt" to behandletTidspunkt
+            "behandletTidspunkt" to behandletTidspunkt,
         ),
         rule = SyketilfelleRules.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING,
         ruleResult = erNyttSyketilfelle &&
             (behandletTidspunkt.toLocalDate() > forsteFomDato.plusDays(8) && begrunnelseIkkeKontakt.isNullOrEmpty()) &&
             !erFraSpesialisthelsetjenesten &&
-            !erCoronaRelatert
+            !erCoronaRelatert,
     )
 }
 
@@ -45,14 +45,14 @@ val tilbakedatermerenn8dagerforstesykmeldingmedbegrunnelse: SyketilfelleRule = {
     RuleResult(
         ruleInputs = mapOf(
             "erNyttSyketilfelle" to erNyttSyketilfelle,
-            "behandletTidspunkt" to behandletTidspunkt
+            "behandletTidspunkt" to behandletTidspunkt,
         ),
         rule = SyketilfelleRules.TILBAKEDATERT_MER_ENN_8_DAGER_FORSTE_SYKMELDING_MED_BEGRUNNELSE,
         ruleResult = erNyttSyketilfelle &&
             behandletTidspunkt.toLocalDate() > forsteFomDato.plusDays(8) &&
             !begrunnelseIkkeKontakt.isNullOrEmpty() &&
             !erFraSpesialisthelsetjenesten &&
-            !erCoronaRelatert
+            !erCoronaRelatert,
     )
 }
 
@@ -69,7 +69,7 @@ val tilbakedateertintall8dagerutenkontakdaoogbegrunnelse: SyketilfelleRule = { s
     RuleResult(
         ruleInputs = mapOf(
             "erNyttSyketilfelle" to erNyttSyketilfelle,
-            "behandletTidspunkt" to behandletTidspunkt
+            "behandletTidspunkt" to behandletTidspunkt,
         ),
         rule = SyketilfelleRules.TILBAKEDATERT_INNTIL_8_DAGER_UTEN_KONTAKTDATO_OG_BEGRUNNELSE,
         ruleResult = erNyttSyketilfelle &&
@@ -77,7 +77,7 @@ val tilbakedateertintall8dagerutenkontakdaoogbegrunnelse: SyketilfelleRule = { s
             behandletTidspunkt.toLocalDate() <= sisteTomDato.plusDays(8) &&
             (kontaktMedPasientDato == null && begrunnelseIkkeKontakt.isNullOrEmpty()) &&
             !erFraSpesialisthelsetjenesten &&
-            !erCoronaRelatert
+            !erCoronaRelatert,
     )
 }
 
@@ -92,14 +92,14 @@ val tilbakedatertforlengelseover1mnd: SyketilfelleRule = { sykmelding, metadata 
     RuleResult(
         ruleInputs = mapOf(
             "erNyttSyketilfelle" to erNyttSyketilfelle,
-            "behandletTidspunkt" to behandletTidspunkt
+            "behandletTidspunkt" to behandletTidspunkt,
         ),
         rule = SyketilfelleRules.TILBAKEDATERT_FORLENGELSE_OVER_1_MND,
         ruleResult = !erNyttSyketilfelle &&
             forsteFomDato < behandletTidspunkt.toLocalDate().minusMonths(1) &&
             begrunnelseIkkeKontakt.isNullOrEmpty() &&
             !erFraSpesialisthelsetjenesten &&
-            !erCoronaRelatert
+            !erCoronaRelatert,
     )
 }
 
@@ -114,13 +114,13 @@ val tilbakedertmedbegrunnelseforlengelse: SyketilfelleRule = { sykmelding, metad
     RuleResult(
         ruleInputs = mapOf(
             "erNyttSyketilfelle" to erNyttSyketilfelle,
-            "behandletTidspunkt" to behandletTidspunkt
+            "behandletTidspunkt" to behandletTidspunkt,
         ),
         rule = SyketilfelleRules.TILBAKEDATERT_MED_BEGRUNNELSE_FORLENGELSE,
         ruleResult = !erNyttSyketilfelle &&
             behandletTidspunkt > forsteFomDato.plusDays(30) && !begrunnelseIkkeKontakt.isNullOrEmpty() &&
             !erFraSpesialisthelsetjenesten &&
-            !erCoronaRelatert
+            !erCoronaRelatert,
     )
 }
 

@@ -21,13 +21,13 @@ class NorskHelsenettClient(
     private val endpointUrl: String,
     private val accessTokenClient: AccessTokenClientV2,
     private val resourceId: String,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) {
     private val log: Logger = LoggerFactory.getLogger(NorskHelsenettClient::class.java)
 
     suspend fun finnBehandler(behandlerFnr: String, msgId: String, loggingMeta: LoggingMeta): Behandler? = retry(
         callName = "finnbehandler",
-        retryIntervals = arrayOf(500L, 1000L, 1000L)
+        retryIntervals = arrayOf(500L, 1000L, 1000L),
     ) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
         val httpResponse = httpClient.get("$endpointUrl/api/v2/behandler") {
@@ -44,7 +44,7 @@ class NorskHelsenettClient(
                 log.error(
                     "Syfohelsenettproxy svarte med feilmelding for msgId {}, {}",
                     msgId,
-                    StructuredArguments.fields(loggingMeta)
+                    StructuredArguments.fields(loggingMeta),
                 )
                 throw IOException("Syfohelsenettproxy svarte med feilmelding for $msgId")
             }
@@ -53,7 +53,7 @@ class NorskHelsenettClient(
                 log.error(
                     "BehandlerFnr mangler i request for msgId {}, {}",
                     msgId,
-                    StructuredArguments.fields(loggingMeta)
+                    StructuredArguments.fields(loggingMeta),
                 )
                 return@retry null
             }
@@ -72,16 +72,16 @@ class NorskHelsenettClient(
 
 data class Behandler(
     val godkjenninger: List<Godkjenning>,
-    val hprNummer: Int? = null
+    val hprNummer: Int? = null,
 )
 
 data class Godkjenning(
     val helsepersonellkategori: Kode? = null,
-    val autorisasjon: Kode? = null
+    val autorisasjon: Kode? = null,
 )
 
 data class Kode(
     val aktiv: Boolean,
     val oid: Int,
-    val verdi: String?
+    val verdi: String?,
 )

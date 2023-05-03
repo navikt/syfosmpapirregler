@@ -20,7 +20,7 @@ data class Environment(
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "syfosmpapirregler"),
     val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode",
     val pdlScope: String = getEnvVar("PDL_SCOPE"),
-    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH")
+    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH"),
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

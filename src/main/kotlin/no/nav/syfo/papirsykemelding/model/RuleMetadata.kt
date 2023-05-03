@@ -11,5 +11,5 @@ data class RuleMetadata(
     val rulesetVersion: String?,
     val legekontorOrgnr: String?,
     val tssid: String?,
-    val pasientFodselsdato: LocalDate
+    val pasientFodselsdato: LocalDate,
 )

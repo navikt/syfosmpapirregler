@@ -40,7 +40,7 @@ fun main() {
         env.aadAccessTokenV2Url,
         env.clientIdV2,
         env.clientSecretV2,
-        httpClient
+        httpClient,
     )
     val syketilfelleClient = ClientFactory.createSyketilfelleClient(env, accessTokenClientV2, httpClient)
     val legeSuspensjonClient = ClientFactory.createLegeSuspensjonClient(env, accessTokenClientV2, httpClient)
@@ -51,18 +51,18 @@ fun main() {
         accessTokenClientV2 = accessTokenClientV2,
         pdlScope = env.pdlScope,
         basePath = env.pdlGraphqlPath,
-        graphQlQuery = PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), "")
+        graphQlQuery = PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), ""),
     )
     val fodselsdatoService = FodselsdatoService(pdlClient)
 
     val kafkaBaseConfig = KafkaUtils.getAivenKafkaConfig()
     val kafkaProperties = kafkaBaseConfig.toProducerConfig(
         env.applicationName,
-        valueSerializer = JacksonKafkaSerializer::class
+        valueSerializer = JacksonKafkaSerializer::class,
     )
     val juridiskVurderingService = JuridiskVurderingService(
         KafkaProducer(kafkaProperties),
-        env.etterlevelsesTopic
+        env.etterlevelsesTopic,
     )
     val papirsykemeldingRegelService = PapirsykemeldingRegelService(
         legeSuspensjonClient = legeSuspensjonClient,
@@ -70,13 +70,13 @@ fun main() {
         syketilfelleClient = syketilfelleClient,
         juridiskVurderingService = juridiskVurderingService,
         fodselsdatoService = fodselsdatoService,
-        ruleExecutionService = RuleExecutionService()
+        ruleExecutionService = RuleExecutionService(),
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,
         env = env,
         applicationState = applicationState,
-        jwkProviderAadV2 = jwkProviderAadV2
+        jwkProviderAadV2 = jwkProviderAadV2,
     )
 
     val applicationServer = ApplicationServer(applicationEngine, applicationState)

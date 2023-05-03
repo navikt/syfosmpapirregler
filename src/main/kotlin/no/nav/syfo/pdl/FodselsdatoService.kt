@@ -12,7 +12,7 @@ import java.time.Duration
 import java.time.LocalDate
 
 class FodselsdatoService(
-    private val pdlClient: PdlClient
+    private val pdlClient: PdlClient,
 ) {
     private val cache = Caffeine
         .newBuilder().expireAfterWrite(Duration.ofHours(12))

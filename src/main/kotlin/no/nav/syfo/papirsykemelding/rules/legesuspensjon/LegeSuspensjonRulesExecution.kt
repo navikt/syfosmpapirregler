@@ -29,7 +29,7 @@ class LegeSuspensjonRulesExecution(val rootNode: LegeSuspensjonTreeNode = legeSu
 
 private fun TreeNode<LegeSuspensjonRules, RuleResult>.evaluate(
     sykmeldingId: String,
-    behandlerSuspendert: Boolean
+    behandlerSuspendert: Boolean,
 ): LegeSuspensjonTreeOutput =
     when (this) {
         is ResultNode -> LegeSuspensjonTreeOutput(treeResult = result)

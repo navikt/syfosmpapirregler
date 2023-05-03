@@ -17,7 +17,7 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler.authenticat
 
 fun Application.setupAuth(
     environment: Environment,
-    jwkProviderAadV2: JwkProvider
+    jwkProviderAadV2: JwkProvider,
 ) {
     install(Authentication) {
         jwt(name = "servicebrukerAADv2") {
@@ -42,7 +42,7 @@ fun unauthorized(credentials: JWTCredential): Principal? {
     log.warn(
         "Auth: Unexpected audience for jwt {}, {}",
         StructuredArguments.keyValue("issuer", credentials.payload.issuer),
-        StructuredArguments.keyValue("audience", credentials.payload.audience)
+        StructuredArguments.keyValue("audience", credentials.payload.audience),
     )
     return null
 }

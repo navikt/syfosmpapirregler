@@ -22,7 +22,7 @@ val periodeMangler: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("perioder" to perioder),
         rule = PeriodLogicRules.PERIODER_MANGLER,
-        ruleResult = periodeMangler
+        ruleResult = periodeMangler,
     )
 }
 
@@ -34,7 +34,7 @@ val fraDatoEtterTilDato: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("perioder" to perioder),
         rule = PeriodLogicRules.FRADATO_ETTER_TILDATO,
-        ruleResult = fraDatoEtterTilDato
+        ruleResult = fraDatoEtterTilDato,
     )
 }
 
@@ -52,7 +52,7 @@ val overlappendePerioder: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("perioder" to perioder),
         rule = PeriodLogicRules.OVERLAPPENDE_PERIODER,
-        ruleResult = overlappendePerioder
+        ruleResult = overlappendePerioder,
     )
 }
 
@@ -74,7 +74,7 @@ val oppholdMellomPerioder: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("periodeRanges" to periodeRanges),
         rule = PeriodLogicRules.OPPHOLD_MELLOM_PERIODER,
-        ruleResult = oppholdMellomPerioder
+        ruleResult = oppholdMellomPerioder,
     )
 }
 
@@ -90,7 +90,7 @@ val fremdatertOver30Dager: PeriodLogicRule = { sykmelding, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("fremdatert" to fremdatert),
         rule = PeriodLogicRules.FREMDATERT,
-        ruleResult = fremdatert
+        ruleResult = fremdatert,
     )
 }
 val tilbakeDatertOver3Ar: PeriodLogicRule = { sykmelding, _ ->
@@ -99,10 +99,10 @@ val tilbakeDatertOver3Ar: PeriodLogicRule = { sykmelding, _ ->
 
     RuleResult(
         ruleInputs = mapOf(
-            "tilbakeDatertMerEnn3AAr" to tilbakeDatertMerEnn3AAr
+            "tilbakeDatertMerEnn3AAr" to tilbakeDatertMerEnn3AAr,
         ),
         rule = PeriodLogicRules.TILBAKEDATERT_MER_ENN_3_AR,
-        ruleResult = tilbakeDatertMerEnn3AAr
+        ruleResult = tilbakeDatertMerEnn3AAr,
     )
 }
 
@@ -121,7 +121,7 @@ val varighetOver1AAr: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("varighetOver1AAr" to varighetOver1AAr),
         rule = PeriodLogicRules.TOTAL_VARIGHET_OVER_ETT_AAR,
-        ruleResult = varighetOver1AAr
+        ruleResult = varighetOver1AAr,
     )
 }
 
@@ -134,7 +134,7 @@ val avventendeKombinert: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("avventendeKombinert" to avventendeKombinert),
         rule = PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT,
-        ruleResult = avventendeKombinert
+        ruleResult = avventendeKombinert,
     )
 }
 
@@ -149,7 +149,7 @@ val manglendeInnspillArbeidsgiver: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("manglendeInnspillArbeidsgiver" to manglendeInnspillArbeidsgiver),
         rule = PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER,
-        ruleResult = manglendeInnspillArbeidsgiver
+        ruleResult = manglendeInnspillArbeidsgiver,
     )
 }
 
@@ -163,7 +163,7 @@ val avventendeOver16Dager: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("avventendeOver16Dager" to avventendeOver16Dager),
         rule = PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER,
-        ruleResult = avventendeOver16Dager
+        ruleResult = avventendeOver16Dager,
     )
 }
 
@@ -177,7 +177,7 @@ val forMangeBehandlingsDagerPrUke: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("forMangeBehandlingsDagerPrUke" to forMangeBehandlingsDagerPrUke),
         rule = PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE,
-        ruleResult = forMangeBehandlingsDagerPrUke
+        ruleResult = forMangeBehandlingsDagerPrUke,
     )
 }
 
@@ -189,6 +189,6 @@ val gradertOver99Prosent: PeriodLogicRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("gradertOver99Prosent" to gradertOver99Prosent),
         rule = PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT,
-        ruleResult = gradertOver99Prosent
+        ruleResult = gradertOver99Prosent,
     )
 }

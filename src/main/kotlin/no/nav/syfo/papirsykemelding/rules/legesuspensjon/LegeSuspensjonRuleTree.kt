@@ -8,7 +8,7 @@ import no.nav.syfo.papirsykemelding.rules.dsl.tree
 import no.nav.syfo.rules.legesuspensjon.LegeSuspensjonRuleHit
 
 enum class LegeSuspensjonRules {
-    BEHANDLER_SUSPENDERT
+    BEHANDLER_SUSPENDERT,
 }
 
 val legeSuspensjonRuleTree = tree<LegeSuspensjonRules, RuleResult>(LegeSuspensjonRules.BEHANDLER_SUSPENDERT) {

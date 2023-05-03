@@ -34,7 +34,7 @@ class PapirsykemeldingRegelService(
     private val norskHelsenettClient: NorskHelsenettClient,
     private val juridiskVurderingService: JuridiskVurderingService,
     private val fodselsdatoService: FodselsdatoService,
-    private val ruleExecutionService: RuleExecutionService
+    private val ruleExecutionService: RuleExecutionService,
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
@@ -44,7 +44,7 @@ class PapirsykemeldingRegelService(
             mottakId = receivedSykmelding.navLogId,
             orgNr = receivedSykmelding.legekontorOrgNr,
             msgId = receivedSykmelding.msgId,
-            sykmeldingId = receivedSykmelding.sykmelding.id
+            sykmeldingId = receivedSykmelding.sykmelding.id,
         )
 
         log.info("Received papirsykmelding, checking rules, {}", fields(loggingMeta))
@@ -59,7 +59,7 @@ class PapirsykemeldingRegelService(
             rulesetVersion = receivedSykmelding.rulesetVersion,
             legekontorOrgnr = receivedSykmelding.legekontorOrgNr,
             tssid = receivedSykmelding.tssid,
-            pasientFodselsdato = fodselsdato
+            pasientFodselsdato = fodselsdato,
         )
 
         return validateSykemelding(receivedSykmelding, ruleMetadata, loggingMeta)
@@ -68,7 +68,7 @@ class PapirsykemeldingRegelService(
     private suspend fun validateSykemelding(
         receivedSykmelding: ReceivedSykmelding,
         ruleMetadata: RuleMetadata,
-        loggingMeta: LoggingMeta
+        loggingMeta: LoggingMeta,
     ): ValidationResult = with(GlobalScope) {
         val behandler = getBehandlerAsync(receivedSykmelding, loggingMeta).await() ?: return getAndRegisterBehandlerNotInHPR()
 
@@ -81,13 +81,13 @@ class PapirsykemeldingRegelService(
             ruleMetadata = ruleMetadata,
             erNyttSyketilfelle = syketilfelleStartdato == null,
             doctorSuspensjon = doctorSuspendedAsync.await(),
-            behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato)
+            behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato),
         )
 
         val result = ruleExecutionService.runRules(receivedSykmelding.sykmelding, ruleMetadataSykmelding)
         result.forEach {
             RULE_NODE_RULE_PATH_COUNTER.labels(
-                it.first.printRulePath()
+                it.first.printRulePath(),
             ).inc()
         }
 
@@ -95,7 +95,7 @@ class PapirsykemeldingRegelService(
         val validationResult = validationResult(result.map { it.first })
         RULE_NODE_RULE_HIT_COUNTER.labels(
             validationResult.status.name,
-            validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name
+            validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name,
         ).inc()
         return validationResult
     }
@@ -108,21 +108,21 @@ class PapirsykemeldingRegelService(
                     ruleName = "BEHANLDER_IKKE_I_HPR",
                     messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
                     messageForUser = "Behandler er ikke register i HPR",
-                    ruleStatus = Status.MANUAL_PROCESSING
-                )
-            )
+                    ruleStatus = Status.MANUAL_PROCESSING,
+                ),
+            ),
         )
     }
 
     private fun GlobalScope.getBehandlerAsync(
         receivedSykmelding: ReceivedSykmelding,
-        loggingMeta: LoggingMeta
+        loggingMeta: LoggingMeta,
     ): Deferred<Behandler?> {
         return async {
             norskHelsenettClient.finnBehandler(
                 behandlerFnr = receivedSykmelding.personNrLege,
                 msgId = receivedSykmelding.msgId,
-                loggingMeta = loggingMeta
+                loggingMeta = loggingMeta,
             )
         }
     }
@@ -142,7 +142,7 @@ class PapirsykemeldingRegelService(
             legeSuspensjonClient.checkTherapist(
                 receivedSykmelding.personNrLege,
                 receivedSykmelding.navLogId,
-                signaturDatoString
+                signaturDatoString,
             ).suspendert
         }
     }
@@ -160,19 +160,19 @@ class PapirsykemeldingRegelService(
                     result.rule,
                     result.messageForSender,
                     result.messageForUser,
-                    result.status
+                    result.status,
                 )
-            }
+            },
     )
 }
 
 data class BehandlerOgStartdato(
     val behandler: Behandler,
-    val startdato: LocalDate?
+    val startdato: LocalDate?,
 )
 data class RuleMetadataSykmelding(
     val ruleMetadata: RuleMetadata,
     val erNyttSyketilfelle: Boolean,
     val doctorSuspensjon: Boolean,
-    val behandlerOgStartdato: BehandlerOgStartdato
+    val behandlerOgStartdato: BehandlerOgStartdato,
 )

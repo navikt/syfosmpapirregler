@@ -19,7 +19,7 @@ val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule()).regist
         .configure(KotlinFeature.NullToEmptyMap, false)
         .configure(KotlinFeature.NullIsSameAsDefault, false)
         .configure(KotlinFeature.StrictNullChecks, false)
-        .build()
+        .build(),
 )
 
 fun <T> getStringValue(content: T): String {
@@ -28,7 +28,7 @@ fun <T> getStringValue(content: T): String {
 
 fun Sykmelding.toRuleMetadata(
     signatureDate: LocalDateTime = signaturDato,
-    receivedDate: LocalDateTime = signaturDato
+    receivedDate: LocalDateTime = signaturDato,
 ) = RuleMetadata(
     signatureDate = signatureDate,
     receivedDate = receivedDate,
@@ -37,16 +37,16 @@ fun Sykmelding.toRuleMetadata(
     rulesetVersion = null,
     legekontorOrgnr = null,
     tssid = null,
-    pasientFodselsdato = LocalDate.now()
+    pasientFodselsdato = LocalDate.now(),
 )
 
 fun ruleMetadataSykmelding(
     ruleMetadata: RuleMetadata,
-    erNyttSyketilfelle: Boolean = false
+    erNyttSyketilfelle: Boolean = false,
 ) =
     RuleMetadataSykmelding(
         ruleMetadata = ruleMetadata,
         erNyttSyketilfelle = erNyttSyketilfelle,
         doctorSuspensjon = false,
-        behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
+        behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
     )

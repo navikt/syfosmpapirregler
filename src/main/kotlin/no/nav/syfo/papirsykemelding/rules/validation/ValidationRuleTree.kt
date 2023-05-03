@@ -14,7 +14,7 @@ enum class ValidationRules {
     HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE,
     UGYLDIG_KODEVERK_FOR_BIDIAGNOSE,
-    UGYLDIG_ORGNR_LENGDE
+    UGYLDIG_ORGNR_LENGDE,
 }
 
 val validationRuleTree = tree<ValidationRules, RuleResult>(ValidationRules.PASIENT_YNGRE_ENN_13) {

@@ -28,7 +28,7 @@ class SyketilfelleRulesExecution(private val rootNode: SyketilfelleTreeNode = sy
 
 private fun TreeNode<SyketilfelleRules, RuleResult>.evaluate(
     sykmelding: Sykmelding,
-    metadata: RuleMetadataSykmelding
+    metadata: RuleMetadataSykmelding,
 ): SyketilfelleTreeOutput =
     when (this) {
         is ResultNode -> {

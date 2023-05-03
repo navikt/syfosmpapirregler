@@ -19,7 +19,7 @@ class SyketilfelleClient(
     private val endpointUrl: String,
     private val accessTokenClient: AccessTokenClientV2,
     private val resourceId: String,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) {
 
     suspend fun finnStartdatoForSammenhengendeSyketilfelle(fnr: String, periodeliste: List<Periode>, loggingMeta: LoggingMeta): LocalDate? {
@@ -66,11 +66,11 @@ class SyketilfelleClient(
 
 data class Sykeforloep(
     var oppfolgingsdato: LocalDate,
-    val sykmeldinger: List<SimpleSykmelding>
+    val sykmeldinger: List<SimpleSykmelding>,
 )
 
 data class SimpleSykmelding(
     val id: String,
     val fom: LocalDate,
-    val tom: LocalDate
+    val tom: LocalDate,
 )

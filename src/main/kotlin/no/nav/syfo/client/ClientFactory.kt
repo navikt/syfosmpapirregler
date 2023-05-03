@@ -21,7 +21,7 @@ class ClientFactory {
         fun createSyketilfelleClient(
             env: Environment,
             accessTokenClientV2: AccessTokenClientV2,
-            httpClient: HttpClient
+            httpClient: HttpClient,
         ): SyketilfelleClient {
             return SyketilfelleClient(env.syketilfelleEndpointURL, accessTokenClientV2, env.syketilfelleScope, httpClient)
         }
@@ -65,20 +65,20 @@ class ClientFactory {
         fun createNorskHelsenettClient(
             env: Environment,
             accessTokenClientV2: AccessTokenClientV2,
-            httpClient: HttpClient
+            httpClient: HttpClient,
         ): NorskHelsenettClient {
             return NorskHelsenettClient(
                 env.norskHelsenettEndpointURL,
                 accessTokenClientV2,
                 env.helsenettproxyScope,
-                httpClient
+                httpClient,
             )
         }
 
         fun createLegeSuspensjonClient(
             env: Environment,
             accessTokenClientV2: AccessTokenClientV2,
-            httpClient: HttpClient
+            httpClient: HttpClient,
         ): LegeSuspensjonClient {
             return LegeSuspensjonClient(env.legeSuspensjonProxyEndpointURL, accessTokenClientV2, httpClient, env.legeSuspensjonProxyScope)
         }

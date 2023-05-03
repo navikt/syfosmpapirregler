@@ -22,7 +22,7 @@ class FodselsdatoServiceTest : FunSpec({
         test("Henter fødselsdato fra PDL") {
             coEvery { pdlClient.getPerson(any()) } returns GraphQLResponse(
                 PdlResponse(hentPerson = HentPerson(listOf(Foedsel("1980-01-02")))),
-                errors = null
+                errors = null,
             )
 
             val fodselsdato = FodselsdatoService(pdlClient).getFodselsdato(fnr, loggingMeta)
@@ -32,7 +32,7 @@ class FodselsdatoServiceTest : FunSpec({
         test("Utleder fødselsdato fra fnr hvis fødselsdato mangler i PDL") {
             coEvery { pdlClient.getPerson(any()) } returns GraphQLResponse(
                 PdlResponse(hentPerson = HentPerson(emptyList())),
-                errors = null
+                errors = null,
             )
             val fodselsdato = FodselsdatoService(pdlClient).getFodselsdato(fnr, loggingMeta)
 
@@ -41,7 +41,7 @@ class FodselsdatoServiceTest : FunSpec({
         test("Feiler hvis personen ikke finnes i PDL") {
             coEvery { pdlClient.getPerson(any()) } returns GraphQLResponse(
                 PdlResponse(hentPerson = null),
-                errors = null
+                errors = null,
             )
 
             assertFailsWith<RuntimeException> {

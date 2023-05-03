@@ -44,10 +44,10 @@ class PapirsykemeldingReglerApiSpek : FunSpec({
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         setBody(
                             getStringValue(
-                                generateReceivedSykemelding()
-                            )
+                                generateReceivedSykemelding(),
+                            ),
                         )
-                    }
+                    },
                 ) {
                     response.content shouldBeEqualTo getStringValue(getValidResult())
                     response.status() shouldBeEqualTo HttpStatusCode.OK
@@ -59,7 +59,7 @@ class PapirsykemeldingReglerApiSpek : FunSpec({
                         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getInvalidResult()
                         setBody(getStringValue(generateReceivedSykemelding()))
-                    }
+                    },
                 ) {
                     response.content shouldBeEqualTo getStringValue(getInvalidResult())
                     response.status() shouldBeEqualTo HttpStatusCode.OK

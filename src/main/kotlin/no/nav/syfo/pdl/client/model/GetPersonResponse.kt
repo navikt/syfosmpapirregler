@@ -1,35 +1,35 @@
 package no.nav.syfo.pdl.client.model
 
 data class PdlResponse(
-    val hentPerson: HentPerson?
+    val hentPerson: HentPerson?,
 )
 
 data class HentPerson(
-    val foedsel: List<Foedsel>?
+    val foedsel: List<Foedsel>?,
 )
 
 data class Foedsel(
-    val foedselsdato: String?
+    val foedselsdato: String?,
 )
 
 data class GraphQLResponse<T> (
     val data: T,
-    val errors: List<ResponseError>?
+    val errors: List<ResponseError>?,
 )
 
 data class ResponseError(
     val message: String?,
     val locations: List<ErrorLocation>?,
     val path: List<String>?,
-    val extensions: ErrorExtension?
+    val extensions: ErrorExtension?,
 )
 
 data class ErrorLocation(
     val line: String?,
-    val column: String?
+    val column: String?,
 )
 
 data class ErrorExtension(
     val code: String?,
-    val classification: String?
+    val classification: String?,
 )
