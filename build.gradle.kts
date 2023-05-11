@@ -18,7 +18,7 @@ val smCommonVersion = "1.0.1"
 val jacksonVersion = "2.15.0"
 val kotlinVersion = "1.8.21"
 val caffeineVersion = "3.1.6"
-val kotestVersion = "5.6.1"
+val kotestVersion = "5.6.2"
 
 plugins {
     kotlin("jvm") version "1.8.21"
