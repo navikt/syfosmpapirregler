@@ -7,9 +7,9 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.gradert.gradertRuleTree
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
-import no.nav.syfo.papirsykemelding.rules.syketilfelle.syketilfelleRuleTree
 import no.nav.syfo.papirsykemelding.rules.validation.validationRuleTree
 import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
+import no.nav.syfo.rules.tilbakedatering.tilbakedateringRuleTree
 
 fun main() {
     val ruleTrees = listOf(
@@ -17,7 +17,7 @@ fun main() {
         "HPR" to hprRuleTree,
         "Validation" to validationRuleTree,
         "Periode" to periodLogicRuleTree,
-        "Syketilfelle" to syketilfelleRuleTree,
+        "Tilbakedatering" to tilbakedateringRuleTree,
         "Gradert" to gradertRuleTree,
     )
 

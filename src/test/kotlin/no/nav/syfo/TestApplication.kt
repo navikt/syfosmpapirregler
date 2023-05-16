@@ -46,6 +46,7 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
         pdlGraphqlPath = "https://pdl",
         legeSuspensjonProxyEndpointURL = "url",
         legeSuspensjonProxyScope = "scope",
+        smregisterAudience = "smregister-audience",
     )
 
     val path = "src/test/resources/jwkset.json"

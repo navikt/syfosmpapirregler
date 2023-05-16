@@ -9,6 +9,7 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
+import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -49,4 +50,5 @@ fun ruleMetadataSykmelding(
         erNyttSyketilfelle = erNyttSyketilfelle,
         doctorSuspensjon = false,
         behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
+        sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
     )

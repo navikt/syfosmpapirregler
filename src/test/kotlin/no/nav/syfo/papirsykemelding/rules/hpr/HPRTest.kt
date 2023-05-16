@@ -12,6 +12,7 @@ import no.nav.syfo.model.Periode
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
+import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import no.nav.syfo.toRuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
 import java.time.LocalDate
@@ -68,6 +69,7 @@ class HPRTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -132,6 +134,7 @@ class HPRTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -187,6 +190,7 @@ class HPRTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -246,6 +250,7 @@ class HPRTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -307,6 +312,7 @@ class HPRTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)

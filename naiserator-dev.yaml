@@ -69,3 +69,5 @@ spec:
       value: https://smgcp-proxy.dev-fss-pub.nais.io
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
       value: api://dev-fss.teamsykmelding.smgcp-proxy/.default
+    - name: SMREGISTER_AUDIENCE
+      value: api://dev-gcp.teamsykmelding.syfosmregister/.default

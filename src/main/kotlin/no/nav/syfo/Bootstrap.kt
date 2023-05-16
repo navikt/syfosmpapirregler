@@ -8,12 +8,14 @@ import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.ClientFactory
+import no.nav.syfo.client.SmregisterClient
 import no.nav.syfo.common.JacksonKafkaSerializer
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toProducerConfig
 import no.nav.syfo.papirsykemelding.service.JuridiskVurderingService
 import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import no.nav.syfo.papirsykemelding.service.RuleExecutionService
+import no.nav.syfo.papirsykemelding.service.SykmeldingService
 import no.nav.syfo.pdl.FodselsdatoService
 import no.nav.syfo.pdl.client.PdlClient
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -71,6 +73,7 @@ fun main() {
         juridiskVurderingService = juridiskVurderingService,
         fodselsdatoService = fodselsdatoService,
         ruleExecutionService = RuleExecutionService(),
+        sykmeldingService = SykmeldingService(SmregisterClient(env.smregisterEndpointURL, accessTokenClientV2, env.smregisterAudience, httpClient)),
     )
     val applicationEngine = createApplicationEngine(
         papirsykemeldingRegelService = papirsykemeldingRegelService,
