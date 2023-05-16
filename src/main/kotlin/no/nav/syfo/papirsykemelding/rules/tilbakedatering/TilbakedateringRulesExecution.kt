@@ -11,6 +11,7 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakeDatertJuridiskHenvisning
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias TilbakedateringTreeOutput = TreeOutput<TilbakedateringRules, RuleResult>

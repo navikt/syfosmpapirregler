@@ -7,6 +7,11 @@ import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.Rule
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRuleHit
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_30_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_30_DAGER_MED_BEGRUNNELSE
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_8_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRuleHit.OVER_30_DAGER
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.arbeidsgiverperiode
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.begrunnelse_min_1_ord
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.begrunnelse_min_3_ord
@@ -16,10 +21,6 @@ import no.nav.syfo.papirsykemelding.rules.tilbakedatering.spesialisthelsetjenest
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakedatering
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakedateringInntil30Dager
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakedateringInntil8Dager
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_30_DAGER
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_30_DAGER_MED_BEGRUNNELSE
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRuleHit.INNTIL_8_DAGER
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRuleHit.OVER_30_DAGER
 import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.ARBEIDSGIVERPERIODE
 import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_1_ORD
 import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_3_ORD

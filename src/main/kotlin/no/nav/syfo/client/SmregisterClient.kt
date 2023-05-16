@@ -89,25 +89,6 @@ enum class RegelStatusDTO {
     OK, MANUAL_PROCESSING, INVALID
 }
 
-fun List<SykmeldingsperiodeDTO>.sortedFOMDate(): List<LocalDate> =
-    map { it.fom }.sorted()
-
-fun List<SykmeldingsperiodeDTO>.sortedTOMDate(): List<LocalDate> =
-    map { it.tom }.sorted()
-
-fun SykmeldingsperiodeDTO.periodelisteInneholderSammeType(perioder: List<Periode>): Boolean {
-    val periodetyper = perioder.mapNotNull { it.tilPeriodetypeDTO() }.distinct()
-
-    return if (periodetyper.contains(type) && type != PeriodetypeDTO.GRADERT) {
-        true
-    } else if (periodetyper.contains(type) && type == PeriodetypeDTO.GRADERT) {
-        val sykmeldingsgrader = perioder.mapNotNull { it.gradert?.grad }
-        sykmeldingsgrader.contains(gradert?.grad)
-    } else {
-        false
-    }
-}
-
 fun Periode.tilPeriodetypeDTO(): PeriodetypeDTO? {
     return when {
         aktivitetIkkeMulig != null -> return PeriodetypeDTO.AKTIVITET_IKKE_MULIG
