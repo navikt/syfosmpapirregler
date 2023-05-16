@@ -44,6 +44,9 @@ spec:
         - application: smregistrering-backend
     outbound:
       rules:
+        - application: syfosmregister
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: flex-syketilfelle
           namespace: flex
           cluster: prod-gcp

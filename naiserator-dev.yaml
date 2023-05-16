@@ -45,6 +45,9 @@ spec:
         - application: teamsykmelding-mock-backend
     outbound:
       rules:
+        - application: syfosmregister
+          namespace: teamsykmelding
+          cluster: dev-gcp
         - application: flex-syketilfelle
           namespace: flex
           cluster: dev-gcp
