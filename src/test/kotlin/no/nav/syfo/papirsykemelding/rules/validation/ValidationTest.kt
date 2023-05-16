@@ -8,6 +8,7 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
+import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import no.nav.syfo.validering.validatePersonAndDNumber
 import org.amshove.kluent.shouldBeEqualTo
 import java.time.LocalDate
@@ -409,6 +410,7 @@ fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) = RuleMetadataSykmelding(
     erNyttSyketilfelle = false,
     doctorSuspensjon = false,
     behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
+    sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
 )
 
 fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {

@@ -1,4 +1,4 @@
-package no.nav.syfo.papirsykemelding.rules.syketilfelle
+package no.nav.syfo.rules.tilbakedatering
 
 import no.nav.syfo.log
 import no.nav.syfo.model.Sykmelding
@@ -13,26 +13,26 @@ import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
-typealias SyketilfelleTreeOutput = TreeOutput<SyketilfelleRules, RuleResult>
-typealias SyketilfelleTreeNode = TreeNode<SyketilfelleRules, RuleResult>
+typealias TilbakedateringTreeOutput = TreeOutput<TilbakedateringRules, RuleResult>
+typealias TilbakedateringTreeNode = TreeNode<TilbakedateringRules, RuleResult>
 
-class SyketilfelleRulesExecution(private val rootNode: SyketilfelleTreeNode = syketilfelleRuleTree) :
-    RuleExecution<SyketilfelleRules> {
+class TilbakedateringRulesExecution(private val rootNode: TilbakedateringTreeNode = tilbakedateringRuleTree) :
+    RuleExecution<TilbakedateringRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode
             .evaluate(sykmelding, ruleMetadata)
-            .also { syketilfelleRulePath ->
-                log.info("Rules ${sykmelding.id}, ${syketilfelleRulePath.printRulePath()}")
-            } to MedJuridisk(syketilfelleJuridiskHenvisning())
+            .also { tilbakedateringRulePath ->
+                log.info("Rules ${sykmelding.id}, ${tilbakedateringRulePath.printRulePath()}")
+            } to MedJuridisk(tilbakeDatertJuridiskHenvisning())
 }
 
-private fun TreeNode<SyketilfelleRules, RuleResult>.evaluate(
+private fun TreeNode<TilbakedateringRules, RuleResult>.evaluate(
     sykmelding: Sykmelding,
     metadata: RuleMetadataSykmelding,
-): SyketilfelleTreeOutput =
+): TilbakedateringTreeOutput =
     when (this) {
         is ResultNode -> {
-            SyketilfelleTreeOutput(treeResult = result)
+            TilbakedateringTreeOutput(treeResult = result)
         }
         is RuleNode -> {
             val rule = getRule(rule)

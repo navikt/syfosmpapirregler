@@ -21,6 +21,8 @@ data class Environment(
     val etterlevelsesTopic: String = "teamsykmelding.paragraf-i-kode",
     val pdlScope: String = getEnvVar("PDL_SCOPE"),
     val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH"),
+    val smregisterEndpointURL: String = getEnvVar("SMREGISTER_URL", "http://syfosmregister"),
+    val smregisterAudience: String = getEnvVar("SMREGISTER_AUDIENCE"),
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

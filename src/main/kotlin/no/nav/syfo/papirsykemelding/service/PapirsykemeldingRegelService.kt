@@ -35,6 +35,7 @@ class PapirsykemeldingRegelService(
     private val juridiskVurderingService: JuridiskVurderingService,
     private val fodselsdatoService: FodselsdatoService,
     private val ruleExecutionService: RuleExecutionService,
+    private val sykmeldingService: SykmeldingService,
 ) {
 
     private val log: Logger = LoggerFactory.getLogger(PapirsykemeldingRegelService::class.java)
@@ -76,12 +77,17 @@ class PapirsykemeldingRegelService(
         val syketilfelleStartdatoAsync = getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
 
         val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
-
+        val ettersendingOgForlengelse = if (erTilbakedatert(receivedSykmelding)) {
+            sykmeldingService.getSykmeldingMetadataInfo(receivedSykmelding.personNrPasient, receivedSykmelding.sykmelding, loggingMeta)
+        } else {
+            SykmeldingMetadataInfo(null, emptyList())
+        }
         val ruleMetadataSykmelding = RuleMetadataSykmelding(
             ruleMetadata = ruleMetadata,
             erNyttSyketilfelle = syketilfelleStartdato == null,
             doctorSuspensjon = doctorSuspendedAsync.await(),
             behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato),
+            ettersendingOgForlengelse,
         )
 
         val result = ruleExecutionService.runRules(receivedSykmelding.sykmelding, ruleMetadataSykmelding)
@@ -175,4 +181,5 @@ data class RuleMetadataSykmelding(
     val erNyttSyketilfelle: Boolean,
     val doctorSuspensjon: Boolean,
     val behandlerOgStartdato: BehandlerOgStartdato,
+    val sykmeldingMetadataInfo: SykmeldingMetadataInfo,
 )

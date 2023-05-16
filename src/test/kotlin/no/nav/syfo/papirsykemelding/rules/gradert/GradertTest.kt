@@ -8,6 +8,7 @@ import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
+import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import no.nav.syfo.toRuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
 import java.time.LocalDate
@@ -35,6 +36,7 @@ class GradertTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -60,6 +62,7 @@ class GradertTest : FunSpec({
                 erNyttSyketilfelle = false,
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
+                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
             )
 
             val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)

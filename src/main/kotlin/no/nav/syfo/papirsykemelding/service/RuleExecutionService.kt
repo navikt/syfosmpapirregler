@@ -13,11 +13,11 @@ import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.LegeSuspensjonRulesExecution
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
 import no.nav.syfo.papirsykemelding.rules.periodlogic.PeriodLogicRulesExecution
-import no.nav.syfo.papirsykemelding.rules.syketilfelle.SyketilfelleRulesExecution
-import no.nav.syfo.papirsykemelding.rules.syketilfelle.syketilfelleRuleTree
 import no.nav.syfo.papirsykemelding.rules.validation.ValidationRulesExecution
 import no.nav.syfo.papirsykemelding.rules.validation.validationRuleTree
 import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
+import no.nav.syfo.rules.tilbakedatering.TilbakedateringRulesExecution
+import no.nav.syfo.rules.tilbakedatering.tilbakedateringRuleTree
 
 class RuleExecutionService() {
 
@@ -26,8 +26,9 @@ class RuleExecutionService() {
         HPRRulesExecution(hprRuleTree),
         ValidationRulesExecution(validationRuleTree),
         PeriodLogicRulesExecution(periodLogicRuleTree),
-        SyketilfelleRulesExecution(syketilfelleRuleTree),
+        TilbakedateringRulesExecution(tilbakedateringRuleTree),
         GradertRulesExecution(gradertRuleTree),
+
     )
 
     fun runRules(
