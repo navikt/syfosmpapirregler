@@ -16,7 +16,7 @@ val mockkVersion = "1.13.5"
 val nimbusdsVersion = "9.31"
 val smCommonVersion = "1.0.1"
 val jacksonVersion = "2.15.2"
-val kotlinVersion = "1.8.21"
+val kotlinVersion = "1.8.22"
 val caffeineVersion = "3.1.6"
 val kotestVersion = "5.6.2"
 
