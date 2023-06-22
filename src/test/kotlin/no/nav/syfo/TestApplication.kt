@@ -10,8 +10,8 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.testing.TestApplicationEngine
-import no.nav.syfo.application.authentication.setupAuth
 import java.nio.file.Paths
+import no.nav.syfo.application.authentication.setupAuth
 
 fun TestApplicationEngine.setUpTestApplication() {
     start(true)
@@ -32,22 +32,23 @@ fun TestApplicationEngine.setUpTestApplication() {
 }
 
 fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
-    val env = Environment(
-        helsenettproxyScope = "",
-        norskHelsenettEndpointURL = "url",
-        aadAccessTokenV2Url = "",
-        clientIdV2 = "regel-clientId-v2",
-        clientSecretV2 = "",
-        jwkKeysUrlV2 = jwkKeysUrl,
-        jwtIssuerV2 = "https://sts.issuer.net/myidV2",
-        syketilfelleScope = "syketilfelle",
-        syketilfelleEndpointURL = "https://syketilfelle",
-        pdlScope = "pdl",
-        pdlGraphqlPath = "https://pdl",
-        legeSuspensjonProxyEndpointURL = "url",
-        legeSuspensjonProxyScope = "scope",
-        smregisterAudience = "smregister-audience",
-    )
+    val env =
+        Environment(
+            helsenettproxyScope = "",
+            norskHelsenettEndpointURL = "url",
+            aadAccessTokenV2Url = "",
+            clientIdV2 = "regel-clientId-v2",
+            clientSecretV2 = "",
+            jwkKeysUrlV2 = jwkKeysUrl,
+            jwtIssuerV2 = "https://sts.issuer.net/myidV2",
+            syketilfelleScope = "syketilfelle",
+            syketilfelleEndpointURL = "https://syketilfelle",
+            pdlScope = "pdl",
+            pdlGraphqlPath = "https://pdl",
+            legeSuspensjonProxyEndpointURL = "url",
+            legeSuspensjonProxyScope = "scope",
+            smregisterAudience = "smregister-audience",
+        )
 
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()

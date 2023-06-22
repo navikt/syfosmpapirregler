@@ -8,10 +8,10 @@ import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.sm.isICPC2
 
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
+
 typealias ValidationRule = Rule<ValidationRules>
 
 val pasientUnder13Aar: ValidationRule = { sykmelding, ruleMetadata ->
-
     val sisteTomDato = sykmelding.perioder.sortedTOMDate().last()
     val pasientFodselsdato = ruleMetadata.pasientFodselsdato
 
@@ -52,7 +52,8 @@ val icpc2zdiagnose: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.ICPC_2_Z_DIAGNOSE,
-        ruleResult = hoveddiagnose != null && hoveddiagnose.isICPC2() && hoveddiagnose.kode.startsWith("Z"),
+        ruleResult =
+            hoveddiagnose != null && hoveddiagnose.isICPC2() && hoveddiagnose.kode.startsWith("Z"),
     )
 }
 
@@ -61,10 +62,11 @@ val houveddiagnsoeellerfravaergrunnmangler: ValidationRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
-        ruleInputs = mapOf(
-            "hoveddiagnose" to (hoveddiagnose ?: ""),
-            "annenFraversArsak" to (annenFraversArsak ?: ""),
-        ),
+        ruleInputs =
+            mapOf(
+                "hoveddiagnose" to (hoveddiagnose ?: ""),
+                "annenFraversArsak" to (annenFraversArsak ?: ""),
+            ),
         rule = ValidationRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
         ruleResult = annenFraversArsak == null && hoveddiagnose == null,
     )
@@ -76,20 +78,23 @@ val ugyldigkodeverkforhouveddiagnose: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("hoveddiagnose" to (hoveddiagnose ?: "")),
         rule = ValidationRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE,
-        ruleResult = if (hoveddiagnose == null) {
-            false
-        } else {
-            hoveddiagnose.system !in arrayOf(
-                Diagnosekoder.ICPC2_CODE,
-                Diagnosekoder.ICD10_CODE,
-            ) || !hoveddiagnose.let { diagnose ->
-                if (diagnose.isICPC2()) {
-                    Diagnosekoder.icpc2.containsKey(diagnose.kode)
-                } else {
-                    Diagnosekoder.icd10.containsKey(diagnose.kode)
-                }
-            }
-        },
+        ruleResult =
+            if (hoveddiagnose == null) {
+                false
+            } else {
+                hoveddiagnose.system !in
+                    arrayOf(
+                        Diagnosekoder.ICPC2_CODE,
+                        Diagnosekoder.ICD10_CODE,
+                    ) ||
+                    !hoveddiagnose.let { diagnose ->
+                        if (diagnose.isICPC2()) {
+                            Diagnosekoder.icpc2.containsKey(diagnose.kode)
+                        } else {
+                            Diagnosekoder.icd10.containsKey(diagnose.kode)
+                        }
+                    }
+            },
     )
 }
 
@@ -99,13 +104,14 @@ val ugyldigkodeverkforbidiagnose: ValidationRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("biDiagnoser" to biDiagnoser),
         rule = ValidationRules.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE,
-        ruleResult = !biDiagnoser.all { diagnose ->
-            if (diagnose.isICPC2()) {
-                Diagnosekoder.icpc2.containsKey(diagnose.kode)
-            } else {
-                Diagnosekoder.icd10.containsKey(diagnose.kode)
-            }
-        },
+        ruleResult =
+            !biDiagnoser.all { diagnose ->
+                if (diagnose.isICPC2()) {
+                    Diagnosekoder.icpc2.containsKey(diagnose.kode)
+                } else {
+                    Diagnosekoder.icd10.containsKey(diagnose.kode)
+                }
+            },
     )
 }
 

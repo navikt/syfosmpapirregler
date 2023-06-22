@@ -17,16 +17,15 @@ import no.nav.syfo.rules.periodlogic.getRule
 import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
 
 typealias PeriodLogicTreeOutput = TreeOutput<PeriodLogicRules, RuleResult>
+
 typealias PeriodLogicTreeNode = TreeNode<PeriodLogicRules, RuleResult>
 
 class PeriodLogicRulesExecution(private val rootNode: PeriodLogicTreeNode = periodLogicRuleTree) :
     RuleExecution<PeriodLogicRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode
-            .evaluate(sykmelding, ruleMetadata)
-            .also { periodLogicRulePath ->
-                log.info("Rules ${sykmelding.id}, ${periodLogicRulePath.printRulePath()}")
-            } to UtenJuridisk
+        rootNode.evaluate(sykmelding, ruleMetadata).also { periodLogicRulePath ->
+            log.info("Rules ${sykmelding.id}, ${periodLogicRulePath.printRulePath()}")
+        } to UtenJuridisk
 }
 
 private fun TreeNode<PeriodLogicRules, RuleResult>.evaluate(

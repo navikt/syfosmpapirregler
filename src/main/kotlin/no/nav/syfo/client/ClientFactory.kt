@@ -23,7 +23,12 @@ class ClientFactory {
             accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient,
         ): SyketilfelleClient {
-            return SyketilfelleClient(env.syketilfelleEndpointURL, accessTokenClientV2, env.syketilfelleScope, httpClient)
+            return SyketilfelleClient(
+                env.syketilfelleEndpointURL,
+                accessTokenClientV2,
+                env.syketilfelleScope,
+                httpClient
+            )
         }
 
         fun createHttpClient(): HttpClient {
@@ -32,13 +37,12 @@ class ClientFactory {
 
         private fun getHttpClientConfig(): HttpClientConfig<ApacheEngineConfig>.() -> Unit {
             val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-                install(ContentNegotiation) {
-                    getSerializer()
-                }
+                install(ContentNegotiation) { getSerializer() }
                 HttpResponseValidator {
                     handleResponseExceptionWithRequest { exception, _ ->
                         when (exception) {
-                            is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
+                            is SocketTimeoutException ->
+                                throw ServiceUnavailableException(exception.message)
                         }
                     }
                 }
@@ -50,7 +54,9 @@ class ClientFactory {
                     }
                     retryIf(maxRetries) { request, response ->
                         if (response.status.value.let { it in 500..599 }) {
-                            log.warn("Retrying for statuscode ${response.status.value}, for url ${request.url}")
+                            log.warn(
+                                "Retrying for statuscode ${response.status.value}, for url ${request.url}"
+                            )
                             true
                         } else {
                             false
@@ -80,7 +86,12 @@ class ClientFactory {
             accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient,
         ): LegeSuspensjonClient {
-            return LegeSuspensjonClient(env.legeSuspensjonProxyEndpointURL, accessTokenClientV2, httpClient, env.legeSuspensjonProxyScope)
+            return LegeSuspensjonClient(
+                env.legeSuspensjonProxyEndpointURL,
+                accessTokenClientV2,
+                httpClient,
+                env.legeSuspensjonProxyScope
+            )
         }
     }
 }

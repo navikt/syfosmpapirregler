@@ -15,11 +15,14 @@ import org.slf4j.LoggerFactory
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 
 @DelicateCoroutinesApi
-fun Route.registerPapirsykemeldingsRegler(papirsykemeldingRegelService: PapirsykemeldingRegelService) {
+fun Route.registerPapirsykemeldingsRegler(
+    papirsykemeldingRegelService: PapirsykemeldingRegelService
+) {
     post("/rules/validate") {
         log.info("Got an request to validate papirregler")
         val receivedSykemleding: ReceivedSykmelding = call.receive()
-        val result: ValidationResult = papirsykemeldingRegelService.validateSykemelding(receivedSykemleding)
+        val result: ValidationResult =
+            papirsykemeldingRegelService.validateSykemelding(receivedSykemleding)
         call.respond(result)
     }
 }

@@ -25,12 +25,15 @@ class PdlClient(
 
     suspend fun getPerson(fnr: String): GraphQLResponse<PdlResponse> {
         val token = accessTokenClientV2.getAccessTokenV2(pdlScope)
-        val getPersonRequest = GetPersonRequest(query = graphQlQuery, variables = GetPersonVariables(ident = fnr))
-        return httpClient.post(basePath) {
-            setBody(getPersonRequest)
-            header(HttpHeaders.Authorization, "Bearer $token")
-            header(temaHeader, tema)
-            header(HttpHeaders.ContentType, "application/json")
-        }.body()
+        val getPersonRequest =
+            GetPersonRequest(query = graphQlQuery, variables = GetPersonVariables(ident = fnr))
+        return httpClient
+            .post(basePath) {
+                setBody(getPersonRequest)
+                header(HttpHeaders.Authorization, "Bearer $token")
+                header(temaHeader, tema)
+                header(HttpHeaders.ContentType, "application/json")
+            }
+            .body()
     }
 }

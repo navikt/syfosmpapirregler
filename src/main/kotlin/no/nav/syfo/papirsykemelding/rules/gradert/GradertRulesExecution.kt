@@ -20,19 +20,18 @@ typealias GradertTreeOutput = TreeOutput<GradertRules, RuleResult>
 class GradertRulesExecution(val rootNode: TreeNode<GradertRules, RuleResult> = gradertRuleTree) :
     RuleExecution<GradertRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode
-            .evaluate(sykmelding, ruleMetadata)
-            .also { gradertRulePath ->
-                log.info("Rules ${sykmelding.id}, ${gradertRulePath.printRulePath()}")
-            } to MedJuridisk(
-            JuridiskHenvisning(
-                lovverk = Lovverk.FOLKETRYGDLOVEN,
-                paragraf = "8-13",
-                ledd = 1,
-                punktum = null,
-                bokstav = null,
-            ),
-        )
+        rootNode.evaluate(sykmelding, ruleMetadata).also { gradertRulePath ->
+            log.info("Rules ${sykmelding.id}, ${gradertRulePath.printRulePath()}")
+        } to
+            MedJuridisk(
+                JuridiskHenvisning(
+                    lovverk = Lovverk.FOLKETRYGDLOVEN,
+                    paragraf = "8-13",
+                    ledd = 1,
+                    punktum = null,
+                    bokstav = null,
+                ),
+            )
 }
 
 private fun TreeNode<GradertRules, RuleResult>.evaluate(

@@ -15,16 +15,15 @@ import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias ValidationTreeOutput = TreeOutput<ValidationRules, RuleResult>
+
 typealias ValidationTreeNode = TreeNode<ValidationRules, RuleResult>
 
 class ValidationRulesExecution(private val rootNode: ValidationTreeNode = validationRuleTree) :
     RuleExecution<ValidationRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode
-            .evaluate(sykmelding, ruleMetadata.ruleMetadata)
-            .also { validationRulePath ->
-                log.info("Rules ${sykmelding.id}, ${validationRulePath.printRulePath()}")
-            } to UtenJuridisk
+        rootNode.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->
+            log.info("Rules ${sykmelding.id}, ${validationRulePath.printRulePath()}")
+        } to UtenJuridisk
 }
 
 private fun TreeNode<ValidationRules, RuleResult>.evaluate(

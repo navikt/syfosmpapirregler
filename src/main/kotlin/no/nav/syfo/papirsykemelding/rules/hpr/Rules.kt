@@ -8,15 +8,16 @@ import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 
-typealias Rule<T> = (sykmelding: Sykmelding, behandlerOgStartdato: BehandlerOgStartdato) -> RuleResult<T>
+typealias Rule<T> =
+    (sykmelding: Sykmelding, behandlerOgStartdato: BehandlerOgStartdato) -> RuleResult<T>
+
 typealias HPRRule = Rule<HPRRules>
 
 val behanderIkkeGyldigHPR: HPRRule = { _, behandlerOgStartdato ->
     val behandlerGodkjenninger = behandlerOgStartdato.behandler.godkjenninger
 
-    val aktivAutorisasjon = behandlerGodkjenninger.any {
-        (it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv)
-    }
+    val aktivAutorisasjon =
+        behandlerGodkjenninger.any { (it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv) }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -28,15 +29,14 @@ val behanderIkkeGyldigHPR: HPRRule = { _, behandlerOgStartdato ->
 val behandlerManglerAutorisasjon: HPRRule = { _, behandlerOgStartdato ->
     val behandlerGodkjenninger = behandlerOgStartdato.behandler.godkjenninger
 
-    val gyldigeGodkjenninger = behandlerGodkjenninger.any {
-        (
-            it.autorisasjon?.aktiv != null &&
+    val gyldigeGodkjenninger =
+        behandlerGodkjenninger.any {
+            (it.autorisasjon?.aktiv != null &&
                 it.autorisasjon.aktiv &&
                 it.autorisasjon.oid == 7704 &&
                 it.autorisasjon.verdi != null &&
-                it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
-            )
-    }
+                it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18"))
+        }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -48,10 +48,11 @@ val behandlerManglerAutorisasjon: HPRRule = { _, behandlerOgStartdato ->
 val behandlerIkkeLEKIMTTLFT: HPRRule = { _, behandlerOgStartdato ->
     val behandlerGodkjenninger = behandlerOgStartdato.behandler.godkjenninger
 
-    val behandlerLEKIMTTLFT = behandlerGodkjenninger.any {
-        (
-            it.helsepersonellkategori?.aktiv != null &&
-                it.autorisasjon?.aktiv == true && it.helsepersonellkategori.verdi != null &&
+    val behandlerLEKIMTTLFT =
+        behandlerGodkjenninger.any {
+            (it.helsepersonellkategori?.aktiv != null &&
+                it.autorisasjon?.aktiv == true &&
+                it.helsepersonellkategori.verdi != null &&
                 harAktivHelsepersonellAutorisasjonsSom(
                     behandlerGodkjenninger,
                     listOf(
@@ -61,9 +62,8 @@ val behandlerIkkeLEKIMTTLFT: HPRRule = { _, behandlerOgStartdato ->
                         HelsepersonellKategori.TANNLEGE.verdi,
                         HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
                     ),
-                )
-            )
-    }
+                ))
+        }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -78,25 +78,25 @@ val behandlerMTFTKISykmeldtOver12Uker: HPRRule = { sykmelding, behandlerOgStartd
     val behandlerStartDato = behandlerOgStartdato.startdato
     val behandlerGodkjenninger = behandlerOgStartdato.behandler.godkjenninger
 
-    val behandlerMTFTKISykmeldtOver12Uker = (
-        (forsteFomDato..sisteTomDato).daysBetween() > 84 ||
-            (behandlerStartDato != null && (behandlerStartDato..sisteTomDato).daysBetween() > 84)
-        ) &&
-        !harAktivHelsepersonellAutorisasjonsSom(
-            behandlerGodkjenninger,
-            listOf(
-                HelsepersonellKategori.LEGE.verdi,
-                HelsepersonellKategori.TANNLEGE.verdi,
-            ),
-        ) &&
-        harAktivHelsepersonellAutorisasjonsSom(
-            behandlerGodkjenninger,
-            listOf(
-                HelsepersonellKategori.KIROPRAKTOR.verdi,
-                HelsepersonellKategori.MANUELLTERAPEUT.verdi,
-                HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
-            ),
-        )
+    val behandlerMTFTKISykmeldtOver12Uker =
+        ((forsteFomDato..sisteTomDato).daysBetween() > 84 ||
+            (behandlerStartDato != null &&
+                (behandlerStartDato..sisteTomDato).daysBetween() > 84)) &&
+            !harAktivHelsepersonellAutorisasjonsSom(
+                behandlerGodkjenninger,
+                listOf(
+                    HelsepersonellKategori.LEGE.verdi,
+                    HelsepersonellKategori.TANNLEGE.verdi,
+                ),
+            ) &&
+            harAktivHelsepersonellAutorisasjonsSom(
+                behandlerGodkjenninger,
+                listOf(
+                    HelsepersonellKategori.KIROPRAKTOR.verdi,
+                    HelsepersonellKategori.MANUELLTERAPEUT.verdi,
+                    HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
+                ),
+            )
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -111,8 +111,7 @@ private fun harAktivHelsepersonellAutorisasjonsSom(
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&
-            godkjenning.autorisasjon?.aktiv == true && godkjenning.helsepersonellkategori.verdi != null &&
-            godkjenning.helsepersonellkategori.let {
-                it.aktiv && it.verdi in helsepersonerVerdi
-            }
+            godkjenning.autorisasjon?.aktiv == true &&
+            godkjenning.helsepersonellkategori.verdi != null &&
+            godkjenning.helsepersonellkategori.let { it.aktiv && it.verdi in helsepersonerVerdi }
     }

@@ -19,11 +19,12 @@ val jacksonVersion = "2.15.2"
 val kotlinVersion = "1.8.22"
 val caffeineVersion = "3.1.6"
 val kotestVersion = "5.6.2"
+val ktfmtVersion = "0.44"
 
 plugins {
     kotlin("jvm") version "1.8.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.jmailen.kotlinter") version "3.15.0"
+    id("com.diffplug.spotless") version "6.19.0"
     id("org.cyclonedx.bom") version "1.7.4"
 }
 
@@ -140,8 +141,11 @@ tasks {
         }
     }
 
-    "check" {
-        dependsOn("formatKotlin")
-        dependsOn("generateRuleMermaid")
+    spotless {
+        kotlin { ktfmt(ktfmtVersion).kotlinlangStyle() }
+        check {
+            dependsOn("spotlessApply")
+            dependsOn("generateRuleMermaid")
+        }
     }
 }

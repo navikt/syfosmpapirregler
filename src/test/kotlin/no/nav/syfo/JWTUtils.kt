@@ -24,16 +24,15 @@ import java.util.UUID
 const val keyId = "localhost-signer"
 
 /* Brukes for til å hente ut pubkeyen som brukes til å validere tokens. Denne er noe som tilbyder av tokens (AzureAd)
-   normalt tilbyr.
- */
+  normalt tilbyr.
+*/
 fun fakeJWTApi(randomPort: Int): NettyApplicationEngine {
     return embeddedServer(Netty, randomPort) {
-        routing {
-            get("/fake.jwt") {
-                call.respond(getFileAsString("src/test/resources/jwkset.json"))
+            routing {
+                get("/fake.jwt") { call.respond(getFileAsString("src/test/resources/jwkset.json")) }
             }
         }
-    }.start(wait = false)
+        .start(wait = false)
 }
 
 /* Utsteder en Bearer-token (En slik vi ber AzureAd om). OBS: Det er viktig at KeyId matcher kid i jwkset.json
@@ -70,7 +69,12 @@ private fun getDefaultRSAKey(): RSAKey {
 
 private fun getJWKSet(): JWKSet {
     try {
-        return JWKSet.parse(String(Files.readAllBytes(Paths.get("src/test/resources/jwkset.json")), StandardCharsets.UTF_8))
+        return JWKSet.parse(
+            String(
+                Files.readAllBytes(Paths.get("src/test/resources/jwkset.json")),
+                StandardCharsets.UTF_8
+            )
+        )
     } catch (io: IOException) {
         throw RuntimeException(io)
     } catch (io: ParseException) {

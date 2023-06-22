@@ -1,5 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
+import java.time.temporal.ChronoUnit
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
@@ -16,9 +17,9 @@ import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
 import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_30_DAGER
 import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.sm.isICD10
-import java.time.temporal.ChronoUnit
 
 typealias Rule<T> = (sykmelding: Sykmelding, metadata: RuleMetadataSykmelding) -> RuleResult<T>
+
 typealias TilbakedateringRule = Rule<TilbakedateringRules>
 
 val tilbakedatering: TilbakedateringRule = { sykmelding, _ ->
@@ -53,16 +54,18 @@ val tilbakedateringInntil8Dager: TilbakedateringRule = { sykmelding, _ ->
 }
 
 val arbeidsgiverperiode: TilbakedateringRule = { sykmelding, metadata ->
-    val startDato = metadata.behandlerOgStartdato.startdato ?: sykmelding.perioder.sortedFOMDate().first()
+    val startDato =
+        metadata.behandlerOgStartdato.startdato ?: sykmelding.perioder.sortedFOMDate().first()
     val tom = sykmelding.perioder.sortedTOMDate().last()
     val arbeidsgiverperiode = ChronoUnit.DAYS.between(startDato, tom) < 16
     RuleResult(
-        ruleInputs = mapOf(
-            "syketilfelletStartdato" to startDato,
-            "fom" to sykmelding.perioder.sortedFOMDate().first(),
-            "tom" to tom,
-            "arbeidsgiverperiode" to arbeidsgiverperiode,
-        ),
+        ruleInputs =
+            mapOf(
+                "syketilfelletStartdato" to startDato,
+                "fom" to sykmelding.perioder.sortedFOMDate().first(),
+                "tom" to tom,
+                "arbeidsgiverperiode" to arbeidsgiverperiode,
+            ),
         rule = ARBEIDSGIVERPERIODE,
         ruleResult = arbeidsgiverperiode,
     )
@@ -93,9 +96,10 @@ val begrunnelse_min_3_ord: TilbakedateringRule = { sykmelding, _ ->
 val ettersending: TilbakedateringRule = { _, metadata ->
     val ettersendingAv = metadata.sykmeldingMetadataInfo.ettersendingAv
     val result = ettersendingAv != null
-    val ruleInputs = mutableMapOf<String, Any>(
-        "ettersending" to result,
-    )
+    val ruleInputs =
+        mutableMapOf<String, Any>(
+            "ettersending" to result,
+        )
     if (ettersendingAv != null) {
         ruleInputs["ettersendingAv"] = ettersendingAv
     }
@@ -125,10 +129,11 @@ val spesialisthelsetjenesten: TilbakedateringRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
     val spesialhelsetjenesten = hoveddiagnose?.isICD10() ?: false
     RuleResult(
-        ruleInputs = mapOf(
-            "hoveddiagnose" to (hoveddiagnose ?: ""),
-            "spesialisthelsetjenesten" to spesialhelsetjenesten,
-        ),
+        ruleInputs =
+            mapOf(
+                "hoveddiagnose" to (hoveddiagnose ?: ""),
+                "spesialisthelsetjenesten" to spesialhelsetjenesten,
+            ),
         rule = SPESIALISTHELSETJENESTEN,
         ruleResult = spesialhelsetjenesten,
     )
@@ -137,6 +142,7 @@ val spesialisthelsetjenesten: TilbakedateringRule = { sykmelding, _ ->
 fun getNumberOfWords(input: String?): Int {
     return input?.trim()?.split(" ")?.filter { containsLetters(it) }?.size ?: 0
 }
+
 fun containsLetters(text: String): Boolean {
     return text.contains("""[A-Za-z]""".toRegex())
 }

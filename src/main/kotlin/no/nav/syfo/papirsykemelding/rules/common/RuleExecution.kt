@@ -5,5 +5,8 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 interface RuleExecution<T> {
-    fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding): Pair<TreeOutput<T, RuleResult>, Juridisk>
+    fun runRules(
+        sykmelding: Sykmelding,
+        ruleMetadata: RuleMetadataSykmelding
+    ): Pair<TreeOutput<T, RuleResult>, Juridisk>
 }

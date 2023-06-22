@@ -22,34 +22,46 @@ class LegeSuspensjonClient(
     private val scope: String,
 ) {
 
-    suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry(
-        "lege_suspansjon",
-        retryIntervals = arrayOf(500L, 1000L),
-    ) {
-        val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
+    suspend fun checkTherapist(
+        therapistId: String,
+        ediloggid: String,
+        oppslagsdato: String
+    ): Suspendert =
+        retry(
+            "lege_suspansjon",
+            retryIntervals = arrayOf(500L, 1000L),
+        ) {
+            val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
 
-        val httpResponse = httpClient.get("$endpointUrl/btsys/api/v1/suspensjon/status") {
-            accept(ContentType.Application.Json)
-            val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
-            headers {
-                append("Nav-Call-Id", ediloggid)
-                append("Nav-Consumer-Id", "srvsyfosmpapirregler")
-                append("Nav-Personident", therapistId)
+            val httpResponse =
+                httpClient.get("$endpointUrl/btsys/api/v1/suspensjon/status") {
+                    accept(ContentType.Application.Json)
+                    val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
+                    headers {
+                        append("Nav-Call-Id", ediloggid)
+                        append("Nav-Consumer-Id", "srvsyfosmpapirregler")
+                        append("Nav-Personident", therapistId)
 
-                append("Authorization", "Bearer $accessToken")
+                        append("Authorization", "Bearer $accessToken")
+                    }
+                    parameter("oppslagsdato", oppslagsdato)
+                }
+
+            when (httpResponse.status) {
+                HttpStatusCode.OK -> {
+                    log.info("Hentet supensjonstatus for ediloggId {}", ediloggid)
+                    httpResponse.call.response.body<Suspendert>()
+                }
+                else -> {
+                    log.error(
+                        "Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}",
+                        httpResponse.status,
+                        ediloggid
+                    )
+                    throw IOException(
+                        "Btsys (smgcp-proxy) svarte med uventet kode ${httpResponse.status} for $ediloggid"
+                    )
+                }
             }
-            parameter("oppslagsdato", oppslagsdato)
         }
-
-        when (httpResponse.status) {
-            HttpStatusCode.OK -> {
-                log.info("Hentet supensjonstatus for ediloggId {}", ediloggid)
-                httpResponse.call.response.body<Suspendert>()
-            }
-            else -> {
-                log.error("Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}", httpResponse.status, ediloggid)
-                throw IOException("Btsys (smgcp-proxy) svarte med uventet kode ${httpResponse.status} for $ediloggid")
-            }
-        }
-    }
 }

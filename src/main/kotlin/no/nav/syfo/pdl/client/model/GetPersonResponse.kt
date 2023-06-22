@@ -12,7 +12,7 @@ data class Foedsel(
     val foedselsdato: String?,
 )
 
-data class GraphQLResponse<T> (
+data class GraphQLResponse<T>(
     val data: T,
     val errors: List<ResponseError>?,
 )

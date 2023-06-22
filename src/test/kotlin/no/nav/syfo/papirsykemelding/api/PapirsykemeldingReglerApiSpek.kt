@@ -23,48 +23,57 @@ import no.nav.syfo.papirsykemelding.service.PapirsykemeldingRegelService
 import org.amshove.kluent.shouldBeEqualTo
 
 @DelicateCoroutinesApi
-class PapirsykemeldingReglerApiSpek : FunSpec({
+class PapirsykemeldingReglerApiSpek :
+    FunSpec({
+        context("Validate papirsykemelding") {
+            with(TestApplicationEngine()) {
+                start()
 
-    context("Validate papirsykemelding") {
-        with(TestApplicationEngine()) {
-            start()
-
-            val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
-            io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getValidResult()
-            application.install(ContentNegotiation) {
-                jackson {
-                    registerModule(JavaTimeModule())
+                val papirsykemeldingRegelService: PapirsykemeldingRegelService = mockk()
+                io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns
+                    getValidResult()
+                application.install(ContentNegotiation) {
+                    jackson { registerModule(JavaTimeModule()) }
                 }
-            }
-            application.routing { registerPapirsykemeldingsRegler(papirsykemeldingRegelService) }
-
-            test("Should validate papirsykemelding") {
-                with(
-                    handleRequest(HttpMethod.Post, "/rules/validate") {
-                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                        setBody(
-                            getStringValue(
-                                generateReceivedSykemelding(),
-                            ),
-                        )
-                    },
-                ) {
-                    response.content shouldBeEqualTo getStringValue(getValidResult())
-                    response.status() shouldBeEqualTo HttpStatusCode.OK
+                application.routing {
+                    registerPapirsykemeldingsRegler(papirsykemeldingRegelService)
                 }
-            }
-            test("Should not validate papirsykemelding") {
-                with(
-                    handleRequest(HttpMethod.Post, "/rules/validate") {
-                        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                        io.mockk.coEvery { papirsykemeldingRegelService.validateSykemelding(any()) } returns getInvalidResult()
-                        setBody(getStringValue(generateReceivedSykemelding()))
-                    },
-                ) {
-                    response.content shouldBeEqualTo getStringValue(getInvalidResult())
-                    response.status() shouldBeEqualTo HttpStatusCode.OK
+
+                test("Should validate papirsykemelding") {
+                    with(
+                        handleRequest(HttpMethod.Post, "/rules/validate") {
+                            addHeader(
+                                HttpHeaders.ContentType,
+                                ContentType.Application.Json.toString()
+                            )
+                            setBody(
+                                getStringValue(
+                                    generateReceivedSykemelding(),
+                                ),
+                            )
+                        },
+                    ) {
+                        response.content shouldBeEqualTo getStringValue(getValidResult())
+                        response.status() shouldBeEqualTo HttpStatusCode.OK
+                    }
+                }
+                test("Should not validate papirsykemelding") {
+                    with(
+                        handleRequest(HttpMethod.Post, "/rules/validate") {
+                            addHeader(
+                                HttpHeaders.ContentType,
+                                ContentType.Application.Json.toString()
+                            )
+                            io.mockk.coEvery {
+                                papirsykemeldingRegelService.validateSykemelding(any())
+                            } returns getInvalidResult()
+                            setBody(getStringValue(generateReceivedSykemelding()))
+                        },
+                    ) {
+                        response.content shouldBeEqualTo getStringValue(getInvalidResult())
+                        response.status() shouldBeEqualTo HttpStatusCode.OK
+                    }
                 }
             }
         }
-    }
-})
+    })

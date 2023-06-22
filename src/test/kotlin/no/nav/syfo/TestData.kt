@@ -1,5 +1,8 @@
 package no.nav.syfo
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.syfo.client.norskhelsenett.Godkjenning
 import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.model.Adresse
@@ -21,9 +24,6 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
 import no.nav.syfo.sm.Diagnosekoder
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.UUID
 
 val behandletTidspunkt: LocalDateTime = LocalDateTime.now()
 val signaturDato: LocalDateTime = LocalDateTime.now()
@@ -101,6 +101,7 @@ fun generatePerioder(): List<Periode> {
         ),
     )
 }
+
 fun generatePeriode(
     fom: LocalDate = LocalDate.now(),
     tom: LocalDate = LocalDate.now().plusDays(10),
@@ -109,20 +110,28 @@ fun generatePeriode(
     behandlingsdager: Int? = null,
     gradert: Gradert? = null,
     reisetilskudd: Boolean = false,
-) = Periode(
-    fom = fom,
-    tom = tom,
-    aktivitetIkkeMulig = aktivitetIkkeMulig,
-    avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
-    behandlingsdager = behandlingsdager,
-    gradert = gradert,
-    reisetilskudd = reisetilskudd,
-)
+) =
+    Periode(
+        fom = fom,
+        tom = tom,
+        aktivitetIkkeMulig = aktivitetIkkeMulig,
+        avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
+        behandlingsdager = behandlingsdager,
+        gradert = gradert,
+        reisetilskudd = reisetilskudd,
+    )
 
 fun generateBehandler(): Behandler {
     return Behandler(
-        "test", null, "Tester", "1",
-        "12054475942", null, null, generateAdresse(), null,
+        "test",
+        null,
+        "Tester",
+        "1",
+        "12054475942",
+        null,
+        null,
+        generateAdresse(),
+        null,
     )
 }
 
@@ -130,7 +139,10 @@ fun generateAdresse(): Adresse {
     return Adresse(null, null, null, null, null)
 }
 
-fun generateKontaktMedPasient(begrunnelseIkkeKontakt: String? = null, localDateTime: LocalDate = LocalDateTime.now().toLocalDate()): KontaktMedPasient {
+fun generateKontaktMedPasient(
+    begrunnelseIkkeKontakt: String? = null,
+    localDateTime: LocalDate = LocalDateTime.now().toLocalDate()
+): KontaktMedPasient {
     return KontaktMedPasient(localDateTime, begrunnelseIkkeKontakt)
 }
 
@@ -142,7 +154,10 @@ fun generateArbeidsgiver(): Arbeidsgiver {
     return Arbeidsgiver(HarArbeidsgiver.EN_ARBEIDSGIVER, null, null, null)
 }
 
-fun generateMedisinskVurdering(diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(), biDiagnose: List<Diagnose>): MedisinskVurdering {
+fun generateMedisinskVurdering(
+    diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
+    biDiagnose: List<Diagnose>
+): MedisinskVurdering {
     return MedisinskVurdering(
         hovedDiagnose = diagnose,
         biDiagnoser = biDiagnose,
@@ -174,39 +189,44 @@ fun getInvalidResult(): ValidationResult {
 fun getBehandlerNotInHPRRule(): ValidationResult {
     return ValidationResult(
         status = Status.MANUAL_PROCESSING,
-        ruleHits = listOf(
-            RuleInfo(
-                ruleName = "BEHANLDER_IKKE_I_HPR",
-                messageForSender = "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
-                messageForUser = "Behandler er ikke register i HPR",
-                ruleStatus = Status.MANUAL_PROCESSING,
+        ruleHits =
+            listOf(
+                RuleInfo(
+                    ruleName = "BEHANLDER_IKKE_I_HPR",
+                    messageForSender =
+                        "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
+                    messageForUser = "Behandler er ikke register i HPR",
+                    ruleStatus = Status.MANUAL_PROCESSING,
+                ),
             ),
-        ),
     )
 }
 
 fun generateGradert(
     reisetilskudd: Boolean = false,
     grad: Int = 50,
-) = Gradert(
-    reisetilskudd = reisetilskudd,
-    grad = grad,
-)
+) =
+    Gradert(
+        reisetilskudd = reisetilskudd,
+        grad = grad,
+    )
 
 fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
     return no.nav.syfo.client.norskhelsenett.Behandler(
         listOf(
             Godkjenning(
-                autorisasjon = Kode(
-                    true,
-                    7704,
-                    "17",
-                ),
-                helsepersonellkategori = Kode(
-                    true,
-                    7702,
-                    HelsepersonellKategori.LEGE.verdi,
-                ),
+                autorisasjon =
+                    Kode(
+                        true,
+                        7704,
+                        "17",
+                    ),
+                helsepersonellkategori =
+                    Kode(
+                        true,
+                        7702,
+                        HelsepersonellKategori.LEGE.verdi,
+                    ),
             ),
         ),
     )
@@ -216,11 +236,12 @@ fun getUgyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
     return no.nav.syfo.client.norskhelsenett.Behandler(
         listOf(
             Godkjenning(
-                autorisasjon = Kode(
-                    false,
-                    2,
-                    "LE",
-                ),
+                autorisasjon =
+                    Kode(
+                        false,
+                        2,
+                        "LE",
+                    ),
             ),
         ),
     )
