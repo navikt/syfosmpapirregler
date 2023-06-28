@@ -11,7 +11,6 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.testing.TestApplicationEngine
 import java.nio.file.Paths
-import no.nav.syfo.application.authentication.setupAuth
 
 fun TestApplicationEngine.setUpTestApplication() {
     start(true)
@@ -25,15 +24,15 @@ fun TestApplicationEngine.setUpTestApplication() {
         exception<Throwable> { call, cause ->
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
 
-            log.error("Caught exception while trying to validate against rules", cause)
+            logger.error("Caught exception while trying to validate against rules", cause)
             throw cause
         }
     }
 }
 
-fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): Environment {
+fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): EnvironmentVariables {
     val env =
-        Environment(
+        EnvironmentVariables(
             helsenettproxyScope = "",
             norskHelsenettEndpointURL = "url",
             aadAccessTokenV2Url = "",

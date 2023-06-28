@@ -1,6 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.gradert
 
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
@@ -21,7 +21,7 @@ class GradertRulesExecution(val rootNode: TreeNode<GradertRules, RuleResult> = g
     RuleExecution<GradertRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.evaluate(sykmelding, ruleMetadata).also { gradertRulePath ->
-            log.info("Rules ${sykmelding.id}, ${gradertRulePath.printRulePath()}")
+            logger.info("Rules ${sykmelding.id}, ${gradertRulePath.printRulePath()}")
         } to
             MedJuridisk(
                 JuridiskHenvisning(

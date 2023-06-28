@@ -8,18 +8,18 @@ import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
-import no.nav.syfo.Environment
-import no.nav.syfo.application.exceptions.ServiceUnavailableException
+import no.nav.syfo.EnvironmentVariables
+import no.nav.syfo.ServiceUnavailableException
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.common.getSerializer
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 class ClientFactory {
     companion object {
         fun createSyketilfelleClient(
-            env: Environment,
+            env: EnvironmentVariables,
             accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient,
         ): SyketilfelleClient {
@@ -49,12 +49,12 @@ class ClientFactory {
                 install(HttpRequestRetry) {
                     constantDelay(100, 0, false)
                     retryOnExceptionIf(3) { request, throwable ->
-                        log.warn("Caught exception ${throwable.message}, for url ${request.url}")
+                        logger.warn("Caught exception ${throwable.message}, for url ${request.url}")
                         true
                     }
                     retryIf(maxRetries) { request, response ->
                         if (response.status.value.let { it in 500..599 }) {
-                            log.warn(
+                            logger.warn(
                                 "Retrying for statuscode ${response.status.value}, for url ${request.url}"
                             )
                             true
@@ -69,7 +69,7 @@ class ClientFactory {
         }
 
         fun createNorskHelsenettClient(
-            env: Environment,
+            env: EnvironmentVariables,
             accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient,
         ): NorskHelsenettClient {
@@ -82,7 +82,7 @@ class ClientFactory {
         }
 
         fun createLegeSuspensjonClient(
-            env: Environment,
+            env: EnvironmentVariables,
             accessTokenClientV2: AccessTokenClientV2,
             httpClient: HttpClient,
         ): LegeSuspensjonClient {

@@ -12,7 +12,7 @@ import io.ktor.http.Parameters
 import java.time.Instant
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 class AccessTokenClientV2(
     private val aadAccessTokenUrl: String,
@@ -29,7 +29,7 @@ class AccessTokenClientV2(
         return mutex.withLock {
             (tokenMap[resource]?.takeUnless { it.expiresOn.isBefore(omToMinutter) }
                     ?: run {
-                        log.debug("Henter nytt token fra Azure AD")
+                        logger.debug("Henter nytt token fra Azure AD")
                         val response: AadAccessTokenV2 =
                             httpClient
                                 .post(aadAccessTokenUrl) {
@@ -53,7 +53,7 @@ class AccessTokenClientV2(
                                 expiresOn = Instant.now().plusSeconds(response.expires_in.toLong()),
                             )
                         tokenMap[resource] = tokenMedExpiry
-                        log.debug("Har hentet accesstoken")
+                        logger.debug("Har hentet accesstoken")
                         return@run tokenMedExpiry
                     })
                 .access_token

@@ -4,9 +4,9 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import java.time.Duration
 import java.time.LocalDate
 import net.logstash.logback.argument.StructuredArguments
-import no.nav.syfo.application.metrics.FODSELSDATO_FRA_IDENT_COUNTER
-import no.nav.syfo.application.metrics.FODSELSDATO_FRA_PDL_COUNTER
-import no.nav.syfo.log
+import no.nav.syfo.logger
+import no.nav.syfo.metrics.FODSELSDATO_FRA_IDENT_COUNTER
+import no.nav.syfo.metrics.FODSELSDATO_FRA_PDL_COUNTER
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.pdl.client.PdlClient
 import no.nav.syfo.validering.extractBornDate
@@ -23,21 +23,21 @@ class FodselsdatoService(
     suspend fun getFodselsdato(fnr: String, loggingMeta: LoggingMeta): LocalDate {
         val cachedFodselsdato = cache.getIfPresent(fnr)
         if (cachedFodselsdato != null) {
-            log.info("Fant fødselsdato i cache")
+            logger.info("Fant fødselsdato i cache")
             return cachedFodselsdato
         }
 
         val pdlResponse = pdlClient.getPerson(fnr)
         if (pdlResponse.errors != null) {
             pdlResponse.errors.forEach {
-                log.error(
+                logger.error(
                     "PDL kastet error: ${it.message}, {}",
                     StructuredArguments.fields(loggingMeta)
                 )
             }
         }
         if (pdlResponse.data.hentPerson == null) {
-            log.error(
+            logger.error(
                 "Klarte ikke hente ut person fra PDL {}",
                 StructuredArguments.fields(loggingMeta)
             )
@@ -49,11 +49,17 @@ class FodselsdatoService(
                 pdlResponse.data.hentPerson.foedsel?.firstOrNull()?.foedselsdato?.isNotEmpty() ==
                     true
             ) {
-                log.info("Bruker fødselsdato fra PDL {}", StructuredArguments.fields(loggingMeta))
+                logger.info(
+                    "Bruker fødselsdato fra PDL {}",
+                    StructuredArguments.fields(loggingMeta)
+                )
                 FODSELSDATO_FRA_PDL_COUNTER.inc()
                 LocalDate.parse(pdlResponse.data.hentPerson.foedsel.first().foedselsdato)
             } else {
-                log.info("Utleder fødselsdato fra fnr {}", StructuredArguments.fields(loggingMeta))
+                logger.info(
+                    "Utleder fødselsdato fra fnr {}",
+                    StructuredArguments.fields(loggingMeta)
+                )
                 FODSELSDATO_FRA_IDENT_COUNTER.inc()
                 extractBornDate(fnr)
             }

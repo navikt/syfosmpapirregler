@@ -9,7 +9,7 @@ import io.ktor.http.ContentType
 import java.time.LocalDate
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.client.AccessTokenClientV2
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Periode
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
@@ -27,7 +27,7 @@ class SyketilfelleClient(
         periodeliste: List<Periode>,
         loggingMeta: LoggingMeta
     ): LocalDate? {
-        log.info(
+        logger.info(
             "Sjekker om nytt syketilfelle mot syfosyketilfelle {}",
             StructuredArguments.fields(loggingMeta)
         )
@@ -47,7 +47,7 @@ class SyketilfelleClient(
         val forsteFomIMottattSykmelding = periodeliste.sortedFOMDate().firstOrNull()
         val sisteTomIMottattSykmelding = periodeliste.sortedTOMDate().lastOrNull()
         if (forsteFomIMottattSykmelding == null || sisteTomIMottattSykmelding == null) {
-            log.warn(
+            logger.warn(
                 "Mangler fom eller tom for sykmeldingsperioder: {}",
                 StructuredArguments.fields(loggingMeta)
             )

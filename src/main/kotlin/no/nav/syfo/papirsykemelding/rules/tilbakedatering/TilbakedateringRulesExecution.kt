@@ -1,6 +1,6 @@
-package no.nav.syfo.rules.tilbakedatering
+package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
@@ -11,8 +11,10 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
-import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakeDatertJuridiskHenvisning
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
+import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules
+import no.nav.syfo.rules.tilbakedatering.getRule
+import no.nav.syfo.rules.tilbakedatering.tilbakedateringRuleTree
 
 typealias TilbakedateringTreeOutput = TreeOutput<TilbakedateringRules, RuleResult>
 
@@ -23,7 +25,7 @@ class TilbakedateringRulesExecution(
 ) : RuleExecution<TilbakedateringRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.evaluate(sykmelding, ruleMetadata).also { tilbakedateringRulePath ->
-            log.info("Rules ${sykmelding.id}, ${tilbakedateringRulePath.printRulePath()}")
+            logger.info("Rules ${sykmelding.id}, ${tilbakedateringRulePath.printRulePath()}")
         } to MedJuridisk(tilbakeDatertJuridiskHenvisning())
 }
 

@@ -8,7 +8,7 @@ import no.nav.syfo.client.RegelStatusDTO
 import no.nav.syfo.client.SmregisterClient
 import no.nav.syfo.client.SykmeldingDTO
 import no.nav.syfo.client.tilPeriodetypeDTO
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
@@ -48,14 +48,14 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
         loggingMeta: LoggingMeta
     ): String? {
         if (sykmelding.perioder.size > 1) {
-            log.info(
+            logger.info(
                 "Flere perioder i periodelisten returnerer false {}",
                 StructuredArguments.fields(loggingMeta)
             )
             return null
         }
         if (sykmelding.medisinskVurdering.hovedDiagnose?.kode.isNullOrEmpty()) {
-            log.info("Diagnosekode mangler {}", StructuredArguments.fields(loggingMeta))
+            logger.info("Diagnosekode mangler {}", StructuredArguments.fields(loggingMeta))
             return null
         }
         val periode = sykmelding.perioder.first()
@@ -69,7 +69,7 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
                 }
             }
         if (tidligereSykmelding != null) {
-            log.info(
+            logger.info(
                 "Sykmelding ${sykmelding.id} er ettersending av ${tidligereSykmelding.id} {}",
                 StructuredArguments.fields(loggingMeta)
             )

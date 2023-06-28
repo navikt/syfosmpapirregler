@@ -7,12 +7,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import net.logstash.logback.argument.StructuredArguments.fields
-import no.nav.syfo.application.metrics.RULE_NODE_RULE_HIT_COUNTER
-import no.nav.syfo.application.metrics.RULE_NODE_RULE_PATH_COUNTER
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
 import no.nav.syfo.client.syketilfelle.SyketilfelleClient
+import no.nav.syfo.metrics.RULE_NODE_RULE_HIT_COUNTER
+import no.nav.syfo.metrics.RULE_NODE_RULE_PATH_COUNTER
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.Status

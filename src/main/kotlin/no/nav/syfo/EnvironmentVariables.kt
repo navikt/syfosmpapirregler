@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 
-data class Environment(
+data class EnvironmentVariables(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val legeSuspensjonProxyEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL"),
     val legeSuspensjonProxyScope: String = getEnvVar("LEGE_SUSPENSJON_PROXY_SCOPE"),
