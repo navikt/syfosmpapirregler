@@ -21,8 +21,16 @@ val caffeineVersion = "3.1.6"
 val kotestVersion = "5.6.2"
 val ktfmtVersion = "0.44"
 
+application {
+    mainClass.set("no.nav.syfo.ApplicationKt")
+
+    val isDevelopment: Boolean = project.ext.has("development")
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+
 plugins {
     kotlin("jvm") version "1.8.22"
+    id("io.ktor.plugin") version "2.3.1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.19.0"
     id("org.cyclonedx.bom") version "1.7.4"
@@ -89,7 +97,7 @@ dependencies {
 
 tasks {
     withType<Jar> {
-        manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
+        manifest.attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
     }
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "17"
