@@ -18,7 +18,7 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
 fun Route.registerPapirsykemeldingsRegler(
     papirsykemeldingRegelService: PapirsykemeldingRegelService
 ) {
-    post("/rules/validate") {
+    post("/api/v2/rules/validate") {
         log.info("Got an request to validate papirregler")
         val receivedSykemleding: ReceivedSykmelding = call.receive()
         val result: ValidationResult =

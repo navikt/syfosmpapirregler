@@ -41,7 +41,7 @@ class PapirsykemeldingReglerApiSpek :
 
                 test("Should validate papirsykemelding") {
                     with(
-                        handleRequest(HttpMethod.Post, "/rules/validate") {
+                        handleRequest(HttpMethod.Post, "/api/v2/rules/validate") {
                             addHeader(
                                 HttpHeaders.ContentType,
                                 ContentType.Application.Json.toString()
@@ -59,7 +59,7 @@ class PapirsykemeldingReglerApiSpek :
                 }
                 test("Should not validate papirsykemelding") {
                     with(
-                        handleRequest(HttpMethod.Post, "/rules/validate") {
+                        handleRequest(HttpMethod.Post, "/api/v2/rules/validate") {
                             addHeader(
                                 HttpHeaders.ContentType,
                                 ContentType.Application.Json.toString()

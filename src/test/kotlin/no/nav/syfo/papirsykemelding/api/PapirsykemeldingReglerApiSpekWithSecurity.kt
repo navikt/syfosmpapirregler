@@ -41,7 +41,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity :
                 setUpTestApplication()
                 setUpAuth("http://localhost:$randomPort/fake.jwt")
                 application.routing {
-                    route("/v2") {
+                    route("/") {
                         authenticate("servicebrukerAADv2") {
                             registerPapirsykemeldingsRegler(papirsykemeldingRegelService)
                         }
@@ -49,7 +49,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity :
                 }
                 test("Should return 401 Unauthorized") {
                     with(
-                        handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        handleRequest(HttpMethod.Post, "/api/v2/rules/validate") {
                             addHeader(
                                 HttpHeaders.ContentType,
                                 ContentType.Application.Json.toString()
@@ -63,7 +63,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity :
 
                 test("should return 200 OK") {
                     with(
-                        handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        handleRequest(HttpMethod.Post, "/api/v2/rules/validate") {
                             addHeader(
                                 HttpHeaders.ContentType,
                                 ContentType.Application.Json.toString()
@@ -81,7 +81,7 @@ class PapirsykemeldingReglerApiSpekWithSecurity :
 
                 test("Should return 401 Unauthorized when wrong audience") {
                     with(
-                        handleRequest(HttpMethod.Post, "/v2/rules/validate") {
+                        handleRequest(HttpMethod.Post, "/api/v2/rules/validate") {
                             addHeader(
                                 HttpHeaders.ContentType,
                                 ContentType.Application.Json.toString()
