@@ -153,8 +153,9 @@ class PapirsykemeldingRegelService(
     }
 
     private fun erTilbakedatert(receivedSykmelding: ReceivedSykmelding): Boolean =
-        receivedSykmelding.sykmelding.behandletTidspunkt.toLocalDate() >
-            receivedSykmelding.sykmelding.perioder.sortedFOMDate().first().plusDays(8)
+        receivedSykmelding.sykmelding.signaturDato
+            .toLocalDate()
+            .isAfter(receivedSykmelding.sykmelding.perioder.sortedFOMDate().first().plusDays(3))
 
     private fun GlobalScope.getErNyttSyketilfelleAsync(
         receivedSykmelding: ReceivedSykmelding,
