@@ -6,20 +6,22 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion: String by project
-val ktorVersion: String by project
-val prometheusVersion: String by project
-val kluentVersion: String by project
-val logbackVersion: String by project
-val logstashEncoderVersion: String by project
-val mockkVersion: String by project
-val nimbusdsVersion: String by project
-val smCommonVersion: String by project
-val jacksonVersion: String by project
-val kotlinVersion: String by project
-val caffeineVersion: String by project
-val kotestVersion: String by project
-val ktfmtVersion: String by project
+val coroutinesVersion="1.7.3"
+val ktorVersion="2.3.3"
+val prometheusVersion="0.16.0"
+val kluentVersion="1.73"
+val logbackVersion="1.4.8"
+val logstashEncoderVersion= "7.4"
+val mockkVersion="1.13.5"
+val nimbusdsVersion="9.31"
+val smCommonVersion="1.0.10"
+val jacksonVersion="2.15.2"
+val kotlinVersion="1.9.0"
+val caffeineVersion="3.1.6"
+val kotestVersion="5.6.2"
+val ktfmtVersion="0.44"
+val jvmVersion="17"
+
 
 application {
     mainClass.set("no.nav.syfo.ApplicationKt")
@@ -100,7 +102,7 @@ tasks {
         manifest.attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
     }
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = jvmVersion
     }
 
     withType<ShadowJar> {
