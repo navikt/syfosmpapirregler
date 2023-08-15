@@ -101,9 +101,6 @@ tasks {
     withType<Jar> {
         manifest.attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
     }
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = jvmVersion
-    }
 
     withType<ShadowJar> {
         transform(ServiceFileTransformer::class.java) {
