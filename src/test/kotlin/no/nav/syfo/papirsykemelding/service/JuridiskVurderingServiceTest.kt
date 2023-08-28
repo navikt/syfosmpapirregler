@@ -3,7 +3,8 @@ package no.nav.syfo.papirsykemelding.service
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.mockk
 import io.mockk.verify
-import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.UUID
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.ReceivedSykmelding
@@ -78,7 +79,7 @@ class JuridiskVurderingServiceTest :
                                     ),
                                 input = result.first.ruleInputs,
                                 utfall = toJuridiskUtfall(result.first.treeResult.status),
-                                tidsstempel = LocalDateTime.now(),
+                                tidsstempel = ZonedDateTime.now(ZoneOffset.UTC),
                             ),
                         ),
                     )
