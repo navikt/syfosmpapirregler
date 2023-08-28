@@ -159,7 +159,7 @@ fun Application.module() {
         )
     val fodselsdatoService = FodselsdatoService(pdlClient)
 
-    val kafkaBaseConfig = KafkaUtils.getAivenKafkaConfig()
+    val kafkaBaseConfig = KafkaUtils.getAivenKafkaConfig("juridisk-producer")
     val kafkaProperties =
         kafkaBaseConfig.toProducerConfig(
             environmentVariables.applicationName,
