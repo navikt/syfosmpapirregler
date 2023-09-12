@@ -24,6 +24,7 @@ import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.pdl.FodselsdatoService
+import no.nav.syfo.securelog
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -102,6 +103,11 @@ class PapirsykemeldingRegelService(
                     behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato),
                     ettersendingOgForlengelse,
                 )
+
+            securelog.info(
+                "Rule input data: sykmelding: ${receivedSykmelding.sykmelding} ," +
+                    "ruleMetadataSykmelding: $ruleMetadataSykmelding"
+            )
 
             val result =
                 ruleExecutionService.runRules(receivedSykmelding.sykmelding, ruleMetadataSykmelding)

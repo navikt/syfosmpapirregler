@@ -28,7 +28,6 @@ spec:
     path: /internal/prometheus
   resources:
     limits:
-      cpu: 500m
       memory: 1Gi
     requests:
       cpu: 100m
@@ -57,6 +56,8 @@ spec:
         - host: smgcp-proxy.dev-fss-pub.nais.io
   kafka:
     pool: nav-dev
+  secureLogs:
+    enabled: true
   env:
     - name: HELSENETT_SCOPE
       value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default

@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 group = "no.nav.syfo"
@@ -16,7 +13,7 @@ val mockkVersion="1.13.5"
 val nimbusdsVersion="9.31"
 val smCommonVersion="1.0.14"
 val jacksonVersion="2.15.2"
-val kotlinVersion="1.9.0"
+val kotlinVersion="1.9.10"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.6.2"
 val ktfmtVersion="0.44"
@@ -31,10 +28,11 @@ application {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.0"
+    id("application")
+    kotlin("jvm") version "1.9.10"
     id("io.ktor.plugin") version "2.3.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.20.0"
+    id("com.diffplug.spotless") version "6.21.0"
     id("org.cyclonedx.bom") version "1.7.4"
 }
 
@@ -98,18 +96,20 @@ dependencies {
 }
 
 tasks {
-    withType<Jar> {
-        manifest.attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
-    }
-
-    withType<ShadowJar> {
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
+    shadowJar {
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        isZip64 = true
+        manifest {
+            attributes(
+                mapOf(
+                    "Main-Class" to "no.nav.syfo.ApplicationKt",
+                ),
+            )
         }
     }
 
-    withType<Test> {
+    test {
         useJUnitPlatform {
         }
         testLogging {
