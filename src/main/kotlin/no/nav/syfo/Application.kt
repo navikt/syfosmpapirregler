@@ -43,7 +43,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.smpapirregler")
-val securelog: Logger = LoggerFactory.getLogger("securelog")
 
 fun main() {
 
