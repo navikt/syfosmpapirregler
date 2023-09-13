@@ -130,7 +130,9 @@ class PapirsykemeldingRegelService(
 
             if (validationResult.status != Status.OK) {
                 securelog.info(
-                    "RuleResult for ${receivedSykmelding.sykmelding.id}: ${secureLogObjectMapper.writeValueAsString(result)}"
+                    "RuleResult for ${receivedSykmelding.sykmelding.id}: ${
+                        secureLogObjectMapper
+                        .writeValueAsString(result.filter { it.first.treeResult.status != Status.OK })}"
                 )
             }
             return validationResult
