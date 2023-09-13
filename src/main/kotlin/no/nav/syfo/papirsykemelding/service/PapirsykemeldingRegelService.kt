@@ -24,7 +24,8 @@ import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.pdl.FodselsdatoService
-import no.nav.syfo.securelog
+import no.nav.syfo.util.secureLogObjectMapper
+import no.nav.syfo.util.securelog
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -126,6 +127,12 @@ class PapirsykemeldingRegelService(
                         ?: validationResult.status.name,
                 )
                 .inc()
+
+            if (validationResult.status != Status.OK) {
+                securelog.info(
+                    "RuleResult for ${receivedSykmelding.sykmelding.id}: ${secureLogObjectMapper.writeValueAsString(result)}"
+                )
+            }
             return validationResult
         }
 
