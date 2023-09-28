@@ -18,7 +18,7 @@ val caffeineVersion="3.1.8"
 val kotestVersion="5.7.2"
 val ktfmtVersion="0.44"
 val jvmVersion="17"
-
+val snappyJavaVersion = "1.1.10.5"
 
 application {
     mainClass.set("no.nav.syfo.ApplicationKt")
@@ -70,6 +70,11 @@ dependencies {
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+    constraints {
+        implementation("org.xerial.snappy:snappy-java:$snappyJavaVersion") {
+            because("override transient from org.apache.kafka:kafka_2.12")
+        }
+    }
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
