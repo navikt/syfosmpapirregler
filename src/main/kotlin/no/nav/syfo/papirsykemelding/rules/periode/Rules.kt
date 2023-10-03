@@ -1,12 +1,12 @@
-package no.nav.syfo.rules.periode
+package no.nav.syfo.papirsykemelding.rules.periode
 
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Sykmelding
-import no.nav.syfo.rules.dsl.RuleResult
-import no.nav.syfo.rules.periodvalidering.sortedTOMDate
-import no.nav.syfo.services.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.sortedTOMDate
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 
@@ -25,7 +25,7 @@ val fremdatertOver30Dager: PeriodeRule = { sykmelding, ruleMetadata ->
                 "fom" to forsteFomDato,
                 "fremdatert" to fremdatert
             ),
-        rule = PeriodeRules.FREMDATERT_MER_ENN_30_DAGER,
+        rule = PeriodeRules.FREMDATERT,
         ruleResult = fremdatert,
     )
 }

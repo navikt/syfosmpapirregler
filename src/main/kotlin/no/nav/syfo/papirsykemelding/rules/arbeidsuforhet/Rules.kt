@@ -1,8 +1,8 @@
-package no.nav.syfo.rules.arbeidsuforhet
+package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
-import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Sykmelding
-import no.nav.syfo.rules.dsl.RuleResult
+import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 import no.nav.syfo.sm.Diagnosekoder
 import no.nav.syfo.sm.isICPC2
 

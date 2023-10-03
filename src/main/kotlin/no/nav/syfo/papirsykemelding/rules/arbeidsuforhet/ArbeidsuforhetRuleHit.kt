@@ -1,9 +1,9 @@
-package no.nav.syfo.rules.arbeidsuforhet
+package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
-import no.nav.syfo.rules.common.RuleHit
+import no.nav.syfo.papirsykemelding.rules.common.RuleHit
 
 private fun getJuridiskHenvisning(): JuridiskHenvisning =
     JuridiskHenvisning(
@@ -21,21 +21,18 @@ enum class ArbeidsuforhetRuleHit(
         ruleHit =
             RuleHit(
                 rule = "UKJENT_DIAGNOSEKODETYPE",
-                status = Status.INVALID,
-                messageForSender =
-                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                        "Ukjent kodeverk er benyttet for diagnosen.",
-                messageForUser = "Sykmeldingen må ha et kjent kodeverk for diagnosen.",
+                status = Status.MANUAL_PROCESSING,
+                messageForSender = "Ukjent diagnosekode er benyttet.",
+                messageForUser = "Den må ha en kjent diagnosekode.",
             ),
     ),
     ICPC_2_Z_DIAGNOSE(
         ruleHit =
             RuleHit(
                 rule = "ICPC_2_Z_DIAGNOSE",
-                status = Status.INVALID,
+                status = Status.MANUAL_PROCESSING,
                 messageForSender =
-                    "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger. Pasienten har fått beskjed.",
+                    "Angitt hoveddiagnose (z-diagnose) gir ikke rett til sykepenger.",
                 messageForUser = "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
             ),
     ),
@@ -43,11 +40,8 @@ enum class ArbeidsuforhetRuleHit(
         ruleHit =
             RuleHit(
                 rule = "HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER",
-                status = Status.INVALID,
-                messageForSender =
-                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                        "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
+                status = Status.MANUAL_PROCESSING,
+                messageForSender = "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler.",
                 messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
             ),
     ),
@@ -55,11 +49,9 @@ enum class ArbeidsuforhetRuleHit(
         ruleHit =
             RuleHit(
                 rule = "UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE",
-                status = Status.INVALID,
+                status = Status.MANUAL_PROCESSING,
                 messageForSender =
-                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                        "Kodeverk for hoveddiagnose er ikke angitt eller ukjent.",
+                    "Kodeverk for hoveddiagnose er feil. Prosesskoder ikke kan benyttes for å angi diagnose.",
                 messageForUser = "Den må ha riktig kode for hoveddiagnose.",
             ),
     ),
@@ -67,11 +59,9 @@ enum class ArbeidsuforhetRuleHit(
         ruleHit =
             RuleHit(
                 rule = "UGYLDIG_KODEVERK_FOR_BIDIAGNOSE",
-                status = Status.INVALID,
+                status = Status.MANUAL_PROCESSING,
                 messageForSender =
-                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                        "Kodeverk for bidiagnose er ikke angitt eller ukjent.",
+                    "Hvis kodeverk ikke er angitt eller korrekt for bidiagnose, avvises meldingen. Prosesskoder ikke kan benyttes for å angi diagnose.",
                 messageForUser = "Det er brukt eit ukjent kodeverk for bidiagnosen.",
             ),
     ),

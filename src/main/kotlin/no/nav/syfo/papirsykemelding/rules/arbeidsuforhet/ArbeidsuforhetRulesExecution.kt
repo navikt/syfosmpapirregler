@@ -1,20 +1,20 @@
-package no.nav.syfo.rules.arbeidsuforhet
+package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.logger
-import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
-import no.nav.syfo.rules.common.MedJuridisk
-import no.nav.syfo.rules.common.RuleExecution
-import no.nav.syfo.rules.common.RuleResult
-import no.nav.syfo.rules.dsl.ResultNode
-import no.nav.syfo.rules.dsl.RuleNode
-import no.nav.syfo.rules.dsl.TreeNode
-import no.nav.syfo.rules.dsl.TreeOutput
-import no.nav.syfo.rules.dsl.join
-import no.nav.syfo.rules.dsl.printRulePath
-import no.nav.syfo.services.RuleMetadataSykmelding
+import no.nav.syfo.papirsykemelding.model.RuleMetadata
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
+import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
+import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
+import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
+import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
+import no.nav.syfo.papirsykemelding.rules.dsl.join
+import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
+import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias ArbeidsuforhetTreeOutput = TreeOutput<ArbeidsuforhetRules, RuleResult>
 
@@ -34,7 +34,6 @@ class ArbeidsuforhetRulesExecution(
                     ledd = 1,
                     punktum = null,
                     bokstav = null,
-                    rundskriv = null
                 ),
             )
 }

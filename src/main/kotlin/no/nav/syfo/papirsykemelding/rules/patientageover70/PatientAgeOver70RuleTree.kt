@@ -1,11 +1,11 @@
-package no.nav.syfo.rules.patientageover70
+package no.nav.syfo.papirsykemelding.rules.patientageover70
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
-import no.nav.syfo.rules.common.RuleResult
-import no.nav.syfo.rules.dsl.RuleNode
-import no.nav.syfo.rules.dsl.tree
+import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
+import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
 enum class PatientAgeOver70Rules {
     PASIENT_ELDRE_ENN_70,

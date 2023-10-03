@@ -1,4 +1,4 @@
-package no.nav.syfo.rules.legesuspensjon
+package no.nav.syfo.papirsykemelding.rules.legesuspensjon
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit

@@ -1,25 +1,33 @@
 package no.nav.syfo.papirsykemelding.rules.common
 
 import no.nav.syfo.model.Status
+import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTree
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.gradert.gradertRuleTree
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
+import no.nav.syfo.papirsykemelding.rules.patientageover70.patientAgeOver70RuleTree
+import no.nav.syfo.papirsykemelding.rules.patientunder13.patientAgeUnder13RuleTree
+import no.nav.syfo.papirsykemelding.rules.periode.periodeRuleTree
+import no.nav.syfo.papirsykemelding.rules.periodlogic.periodLogicRuleTree
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.tilbakedateringRuleTree
 import no.nav.syfo.papirsykemelding.rules.validation.validationRuleTree
-import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
-import no.nav.syfo.rules.tilbakedatering.tilbakedateringRuleTree
 
 fun main() {
     val ruleTrees =
         listOf(
             "Lege suspensjon" to legeSuspensjonRuleTree,
-            "HPR" to hprRuleTree,
             "Validation" to validationRuleTree,
-            "Periode" to periodLogicRuleTree,
-            "Tilbakedatering" to tilbakedateringRuleTree,
+            "Periode validering" to periodLogicRuleTree,
+            "HPR" to hprRuleTree,
+            "Arbeidsuforhet" to arbeidsuforhetRuleTree,
+            "Pasient under 13" to patientAgeUnder13RuleTree,
+            "Pasient over 70" to patientAgeOver70RuleTree,
+            "Periode" to periodeRuleTree,
             "Gradert" to gradertRuleTree,
+            "Tilbakedatering" to tilbakedateringRuleTree,
         )
 
     ruleTrees.forEach {

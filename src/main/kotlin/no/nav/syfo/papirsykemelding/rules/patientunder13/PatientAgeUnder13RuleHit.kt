@@ -1,4 +1,4 @@
-package no.nav.syfo.rules.patientunder13
+package no.nav.syfo.papirsykemelding.rules.patientunder13
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit

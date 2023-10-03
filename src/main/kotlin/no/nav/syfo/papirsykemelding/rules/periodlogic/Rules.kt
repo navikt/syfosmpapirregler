@@ -1,16 +1,12 @@
 package no.nav.syfo.papirsykemelding.rules.periodlogic
 
-import java.time.LocalDate
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.model.daysBetween
 import no.nav.syfo.papirsykemelding.model.range
-import no.nav.syfo.papirsykemelding.model.sortedFOMDate
-import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.papirsykemelding.model.startedWeeksBetween
 import no.nav.syfo.papirsykemelding.model.workdaysBetween
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
-import no.nav.syfo.rules.periodlogic.PeriodLogicRules
 
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 
@@ -72,57 +68,6 @@ val oppholdMellomPerioder: PeriodLogicRule = { sykmelding, _ ->
         ruleInputs = mapOf("periodeRanges" to periodeRanges),
         rule = PeriodLogicRules.OPPHOLD_MELLOM_PERIODER,
         ruleResult = oppholdMellomPerioder,
-    )
-}
-
-val fremdatertOver30Dager: PeriodLogicRule = { sykmelding, ruleMetadata ->
-    val forsteFomDato = sykmelding.perioder.sortedFOMDate().firstOrNull()
-    val behandletTidspunkt = ruleMetadata.behandletTidspunkt
-
-    val fremdatert =
-        when (forsteFomDato) {
-            null -> false
-            else -> forsteFomDato > behandletTidspunkt.plusDays(30).toLocalDate()
-        }
-
-    RuleResult(
-        ruleInputs = mapOf("fremdatert" to fremdatert),
-        rule = PeriodLogicRules.FREMDATERT,
-        ruleResult = fremdatert,
-    )
-}
-val tilbakeDatertOver3Ar: PeriodLogicRule = { sykmelding, _ ->
-    val forsteFomDato = sykmelding.perioder.sortedFOMDate().first()
-    val tilbakeDatertMerEnn3AAr =
-        forsteFomDato.atStartOfDay().isBefore(LocalDate.now().minusYears(3).atStartOfDay())
-
-    RuleResult(
-        ruleInputs =
-            mapOf(
-                "tilbakeDatertMerEnn3AAr" to tilbakeDatertMerEnn3AAr,
-            ),
-        rule = PeriodLogicRules.TILBAKEDATERT_MER_ENN_3_AR,
-        ruleResult = tilbakeDatertMerEnn3AAr,
-    )
-}
-
-val varighetOver1AAr: PeriodLogicRule = { sykmelding, _ ->
-    val forsteFomDato = sykmelding.perioder.sortedFOMDate().firstOrNull()
-    val sisteTomDato = sykmelding.perioder.sortedTOMDate().lastOrNull()
-
-    val varighetOver1AAr =
-        if (forsteFomDato == null || sisteTomDato == null) {
-            false
-        } else {
-            val firstFomDate = forsteFomDato.atStartOfDay().toLocalDate()
-            val lastFomDate = sisteTomDato.atStartOfDay().toLocalDate()
-            (firstFomDate..lastFomDate).daysBetween() > 365
-        }
-
-    RuleResult(
-        ruleInputs = mapOf("varighetOver1AAr" to varighetOver1AAr),
-        rule = PeriodLogicRules.TOTAL_VARIGHET_OVER_ETT_AAR,
-        ruleResult = varighetOver1AAr,
     )
 }
 

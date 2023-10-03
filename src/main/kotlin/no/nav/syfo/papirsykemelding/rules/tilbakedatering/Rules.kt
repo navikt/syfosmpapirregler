@@ -5,17 +5,16 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.ARBEIDSGIVERPERIODE
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_1_ORD
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_3_ORD
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.ETTERSENDING
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.FORLENGELSE
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.SPESIALISTHELSETJENESTEN
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_30_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.ARBEIDSGIVERPERIODE
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_1_ORD
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.BEGRUNNELSE_MIN_3_ORD
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.ETTERSENDING
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.FORLENGELSE
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.SPESIALISTHELSETJENESTEN
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_30_DAGER
-import no.nav.syfo.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.sm.isICD10
 
 typealias Rule<T> = (sykmelding: Sykmelding, metadata: RuleMetadataSykmelding) -> RuleResult<T>

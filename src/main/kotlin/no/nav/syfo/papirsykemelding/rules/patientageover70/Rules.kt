@@ -1,9 +1,9 @@
-package no.nav.syfo.rules.patientageover70
+package no.nav.syfo.papirsykemelding.rules.patientageover70
 
 import no.nav.syfo.model.Sykmelding
-import no.nav.syfo.rules.dsl.RuleResult
-import no.nav.syfo.services.RuleMetadataSykmelding
-import no.nav.syfo.services.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
+import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias Rule<T> =
     (sykmelding: Sykmelding, ruleMetadataSykmelding: RuleMetadataSykmelding) -> RuleResult<T>

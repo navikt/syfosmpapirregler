@@ -1,11 +1,11 @@
-package no.nav.syfo.rules.arbeidsuforhet
+package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
-import no.nav.syfo.rules.common.RuleResult
-import no.nav.syfo.rules.dsl.RuleNode
-import no.nav.syfo.rules.dsl.tree
+import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
+import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
 enum class ArbeidsuforhetRules {
     UKJENT_DIAGNOSEKODETYPE,

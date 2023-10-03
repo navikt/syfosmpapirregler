@@ -19,7 +19,6 @@ val validationRuleTree =
         no(OK)
     }
 
-
 internal fun RuleNode<ValidationRules, RuleResult>.yes(
     status: Status,
     ruleHit: ValidationRuleHit? = null

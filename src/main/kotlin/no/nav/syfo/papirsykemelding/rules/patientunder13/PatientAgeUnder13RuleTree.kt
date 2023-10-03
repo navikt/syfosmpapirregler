@@ -1,11 +1,11 @@
-package no.nav.syfo.rules.patientunder13
+package no.nav.syfo.papirsykemelding.rules.patientunder13
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
-import no.nav.syfo.rules.common.RuleResult
-import no.nav.syfo.rules.dsl.RuleNode
-import no.nav.syfo.rules.dsl.tree
+import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
+import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
 enum class PatientAgeUnder13Rules {
     PASIENT_YNGRE_ENN_13,

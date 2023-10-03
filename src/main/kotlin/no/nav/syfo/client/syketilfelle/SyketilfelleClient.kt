@@ -66,10 +66,7 @@ class SyketilfelleClient(
     private fun SimpleSykmelding.erSammeOppfolgingstilfelle(
         periodeRange: ClosedRange<LocalDate>
     ): Boolean {
-        if (fom.minusDays(16) in periodeRange || tom.plusDays(16) in periodeRange) {
-            return true
-        }
-        return false
+        return fom.minusDays(16) in periodeRange || tom.plusDays(16) in periodeRange
     }
 
     private suspend fun hentSykeforloep(fnr: String): List<Sykeforloep> =

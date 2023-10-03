@@ -1,4 +1,4 @@
-package no.nav.syfo.rules.patientunder13
+package no.nav.syfo.papirsykemelding.rules.patientunder13
 
 import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
@@ -11,9 +11,9 @@ import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
+import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-
 
 typealias PatientAgeUnder13TreeOutput = TreeOutput<PatientAgeUnder13Rules, RuleResult>
 

@@ -51,7 +51,7 @@ enum class MerknadType {
 
     companion object {
         fun contains(type: String): Boolean {
-            return values().any { it.name == type }
+            return entries.any { it.name == type }
         }
     }
 }

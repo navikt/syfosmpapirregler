@@ -3,13 +3,21 @@ package no.nav.syfo.papirsykemelding.service
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
 import io.mockk.mockk
+import java.time.LocalDate
+import no.nav.syfo.client.norskhelsenett.Behandler
+import no.nav.syfo.client.norskhelsenett.Godkjenning
+import no.nav.syfo.client.norskhelsenett.Kode
+import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
+import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.common.UtenJuridisk
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
+import no.nav.syfo.papirsykemelding.rules.validation.ruleMetadataSykmelding
+import no.nav.syfo.toRuleMetadata
 import org.amshove.kluent.shouldBeEqualTo
 
 enum class TestRules {
@@ -22,7 +30,48 @@ class RuleExecutionServiceTest :
         val ruleMetadataSykmelding = mockk<RuleMetadataSykmelding>(relaxed = true)
         val rulesExecution = mockk<RuleExecution<TestRules>>(relaxed = true)
         val ruleExecutionService = RuleExecutionService()
+        test("Should include all rules") {
+            val sykmelding = generateSykemelding()
+            val behandler =
+                Behandler(
+                    listOf(
+                        Godkjenning(
+                            autorisasjon =
+                                Kode(
+                                    aktiv = true,
+                                    oid = 7704,
+                                    verdi = "1",
+                                ),
+                            helsepersonellkategori =
+                                Kode(
+                                    aktiv = true,
+                                    oid = 0,
+                                    verdi = "LE",
+                                ),
+                        ),
+                    ),
+                )
+            val result =
+                ruleExecutionService.runRules(
+                    generateSykemelding(),
+                    ruleMetadataSykmelding(
+                            sykmelding
+                                .toRuleMetadata()
+                                .copy(
+                                    pasientFodselsdato = LocalDate.now().minusYears(20),
+                                ),
+                        )
+                        .copy(
+                            behandlerOgStartdato =
+                                BehandlerOgStartdato(
+                                    behandler,
+                                    sykmelding.perioder.sortedFOMDate().first(),
+                                ),
+                        ),
+                )
 
+            result.size shouldBeEqualTo 10
+        }
         test("Run ruleTrees") {
             every {
                 rulesExecution.runRules(
