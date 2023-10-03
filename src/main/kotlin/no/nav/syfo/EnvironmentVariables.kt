@@ -8,7 +8,7 @@ data class EnvironmentVariables(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val legeSuspensjonProxyEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL"),
     val legeSuspensjonProxyScope: String = getEnvVar("LEGE_SUSPENSJON_PROXY_SCOPE"),
-    val norskHelsenettEndpointURL: String = getEnvVar("HELSENETT_ENDPOINT_URL"),
+    val norskHelsenettEndpointURL: String = "http://syfohelsenettproxy",
     val syketilfelleEndpointURL: String =
         getEnvVar("SYKETILLFELLE_ENDPOINT_URL", "http://flex-syketilfelle.flex"),
     val syketilfelleScope: String = getEnvVar("SYKETILLFELLE_SCOPE"),

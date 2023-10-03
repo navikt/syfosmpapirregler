@@ -50,8 +50,8 @@ spec:
         - application: flex-syketilfelle
           namespace: flex
           cluster: prod-gcp
+        - application: syfohelsenettproxy
       external:
-        - host: syfohelsenettproxy.prod-fss-pub.nais.io
         - host: pdl-api.prod-fss-pub.nais.io
         - host: smgcp-proxy.prod-fss-pub.nais.io
   kafka:
@@ -60,9 +60,7 @@ spec:
     enabled: true
   env:
     - name: HELSENETT_SCOPE
-      value: api://prod-fss.teamsykmelding.syfohelsenettproxy/.default
-    - name: HELSENETT_ENDPOINT_URL
-      value: https://syfohelsenettproxy.prod-fss-pub.nais.io
+      value: api://prod-gcp.teamsykmelding.syfohelsenettproxy/.default
     - name: SYKETILLFELLE_SCOPE
       value: api://prod-gcp.flex.flex-syketilfelle/.default
     - name: PDL_GRAPHQL_PATH
