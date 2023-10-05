@@ -5,7 +5,6 @@ import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
-import no.nav.syfo.rules.legesuspensjon.LegeSuspensjonRuleHit
 
 enum class LegeSuspensjonRules {
     BEHANDLER_SUSPENDERT,

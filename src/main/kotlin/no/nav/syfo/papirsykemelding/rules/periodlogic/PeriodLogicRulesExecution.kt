@@ -12,9 +12,6 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-import no.nav.syfo.rules.periodlogic.PeriodLogicRules
-import no.nav.syfo.rules.periodlogic.getRule
-import no.nav.syfo.rules.periodlogic.periodLogicRuleTree
 
 typealias PeriodLogicTreeOutput = TreeOutput<PeriodLogicRules, RuleResult>
 

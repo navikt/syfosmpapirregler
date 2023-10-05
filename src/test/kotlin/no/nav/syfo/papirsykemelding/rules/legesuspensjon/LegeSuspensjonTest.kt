@@ -9,7 +9,6 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.ruleMetadataSykmelding
-import no.nav.syfo.rules.legesuspensjon.LegeSuspensjonRuleHit
 import org.amshove.kluent.shouldBeEqualTo
 
 class LegeSuspensjonTest :

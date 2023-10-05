@@ -1,26 +1,21 @@
-package no.nav.syfo.papirsykemelding.rules.validation
+package no.nav.syfo.papirsykemelding.rules.patientageover70
 
 import io.kotest.core.spec.style.FunSpec
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
-import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
-import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
+import no.nav.syfo.papirsykemelding.rules.validation.ruleMetadataSykmelding
 import no.nav.syfo.validering.validatePersonAndDNumber
 import org.amshove.kluent.shouldBeEqualTo
 
-val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
-
-class ValidationTest :
+class PatientAgeOver70Test :
     FunSpec({
-        val ruleTree = ValidationRulesExecution()
+        val ruleTree = PatientAgeOver70RulesExecution()
 
-        context("Testing validation rules and checking the rule outcomes") {
+        context("Testing patient age over 70 rule and checking the rule outcomes") {
             test("Alt ok, Status OK") {
                 val person14Years = LocalDate.now().minusYears(14)
 
@@ -46,26 +41,22 @@ class ValidationTest :
                         pasientFodselsdato = person14Years,
                     )
 
-                val ruleMetadataSykmelding = ruleMetadataSykmelding(ruleMetadata)
-
-                val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
+                val status =
+                    ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
                 status.treeResult.status shouldBeEqualTo Status.OK
                 status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                     listOf(
-                        ValidationRules.UGYLDIG_ORGNR_LENGDE to false,
+                        PatientAgeOver70Rules.PASIENT_ELDRE_ENN_70 to false,
                     )
 
-                mapOf(
-                    "legekontorOrgnummer" to "",
-                    "ugyldingOrgNummerLengde" to false,
-                ) shouldBeEqualTo status.ruleInputs
+                mapOf("pasientOver70Aar" to false) shouldBeEqualTo status.ruleInputs
 
                 status.treeResult.ruleHit shouldBeEqualTo null
             }
 
-            test("ugyldig orgnummer legende, Status MANUAL_PROCESSING") {
-                val person31Years = LocalDate.now().minusYears(31)
+            test("Pasient over 70, Status OK") {
+                val person70Years = LocalDate.now().minusYears(71)
 
                 val sykmelding =
                     generateSykemelding(
@@ -82,43 +73,32 @@ class ValidationTest :
                         signatureDate = LocalDate.now().atStartOfDay(),
                         receivedDate = LocalDate.now().atStartOfDay(),
                         behandletTidspunkt = LocalDate.now().atStartOfDay(),
-                        patientPersonNumber = generatePersonNumber(person31Years, false),
-                        rulesetVersion = "2",
-                        legekontorOrgnr = "1232344231",
+                        patientPersonNumber = generatePersonNumber(person70Years, false),
+                        rulesetVersion = null,
+                        legekontorOrgnr = null,
                         tssid = null,
-                        pasientFodselsdato = person31Years,
+                        pasientFodselsdato = person70Years,
                     )
 
                 val status =
                     ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+                status.treeResult.status shouldBeEqualTo Status.INVALID
                 status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                     listOf(
-                        ValidationRules.UGYLDIG_ORGNR_LENGDE to true,
+                        PatientAgeOver70Rules.PASIENT_ELDRE_ENN_70 to true,
                     )
 
-                mapOf(
-                    "legekontorOrgnummer" to ruleMetadata.legekontorOrgnr,
-                    "ugyldingOrgNummerLengde" to true,
-                ) shouldBeEqualTo status.ruleInputs
+                mapOf("pasientOver70Aar" to true) shouldBeEqualTo status.ruleInputs
 
                 status.treeResult.ruleHit shouldBeEqualTo
-                    ValidationRuleHit.UGYLDIG_ORGNR_LENGDE.ruleHit
+                    PatientAgeOver70RuleHit.PASIENT_ELDRE_ENN_70.ruleHit
             }
         }
     })
 
-fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) =
-    RuleMetadataSykmelding(
-        ruleMetadata = ruleMetadata,
-        erNyttSyketilfelle = false,
-        doctorSuspensjon = false,
-        behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-        sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
-    )
-
 fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {
+    val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
     val personDate =
         bornDate.format(personNumberDateFormat).let {
             if (useDNumber) "${it[0] + 4}${it.substring(1)}" else it

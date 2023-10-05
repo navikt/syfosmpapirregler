@@ -1,9 +1,10 @@
-package no.nav.syfo.papirsykemelding.rules.hpr
+package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.model.juridisk.Lovverk
+import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
@@ -13,39 +14,40 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
-import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
-typealias HPRTreeOutput = TreeOutput<HPRRules, RuleResult>
+typealias ArbeidsuforhetTreeOutput = TreeOutput<ArbeidsuforhetRules, RuleResult>
 
-typealias HPRTreeNode = TreeNode<HPRRules, RuleResult>
+typealias ArbeidsuforhetTreeNode = TreeNode<ArbeidsuforhetRules, RuleResult>
 
-class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleExecution<HPRRules> {
+class ArbeidsuforhetRulesExecution(
+    private val rootNode: ArbeidsuforhetTreeNode = arbeidsuforhetRuleTree
+) : RuleExecution<ArbeidsuforhetRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode.evaluate(sykmelding, ruleMetadata.behandlerOgStartdato).also { hprRulePath ->
-            logger.info("Rules ${sykmelding.id}, ${hprRulePath.printRulePath()}")
+        rootNode.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->
+            logger.info("Rules ${sykmelding.id}, ${validationRulePath.printRulePath()}")
         } to
             MedJuridisk(
                 JuridiskHenvisning(
-                    lovverk = Lovverk.HELSEPERSONELLOVEN,
-                    paragraf = "3",
-                    ledd = null,
+                    lovverk = Lovverk.FOLKETRYGDLOVEN,
+                    paragraf = "8-4",
+                    ledd = 1,
                     punktum = null,
                     bokstav = null,
-                )
+                ),
             )
 }
 
-private fun TreeNode<HPRRules, RuleResult>.evaluate(
+private fun TreeNode<ArbeidsuforhetRules, RuleResult>.evaluate(
     sykmelding: Sykmelding,
-    behandlerOgStartdato: BehandlerOgStartdato,
-): HPRTreeOutput =
+    ruleMetadata: RuleMetadata,
+): ArbeidsuforhetTreeOutput =
     when (this) {
-        is ResultNode -> HPRTreeOutput(treeResult = result)
+        is ResultNode -> ArbeidsuforhetTreeOutput(treeResult = result)
         is RuleNode -> {
             val rule = getRule(rule)
-            val result = rule(sykmelding, behandlerOgStartdato)
+            val result = rule(sykmelding, ruleMetadata)
             val childNode = if (result.ruleResult) yes else no
-            result join childNode.evaluate(sykmelding, behandlerOgStartdato)
+            result join childNode.evaluate(sykmelding, ruleMetadata)
         }
     }

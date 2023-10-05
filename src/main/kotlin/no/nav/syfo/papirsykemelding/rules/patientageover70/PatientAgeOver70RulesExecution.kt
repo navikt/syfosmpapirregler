@@ -1,4 +1,4 @@
-package no.nav.syfo.papirsykemelding.rules.hpr
+package no.nav.syfo.papirsykemelding.rules.patientageover70
 
 import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
@@ -13,39 +13,38 @@ import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.join
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
-import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
-typealias HPRTreeOutput = TreeOutput<HPRRules, RuleResult>
+typealias PatientAgeOver70TreeOutput = TreeOutput<PatientAgeOver70Rules, RuleResult>
 
-typealias HPRTreeNode = TreeNode<HPRRules, RuleResult>
-
-class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleExecution<HPRRules> {
+class PatientAgeOver70RulesExecution(
+    val rootNode: TreeNode<PatientAgeOver70Rules, RuleResult> = patientAgeOver70RuleTree
+) : RuleExecution<PatientAgeOver70Rules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode.evaluate(sykmelding, ruleMetadata.behandlerOgStartdato).also { hprRulePath ->
-            logger.info("Rules ${sykmelding.id}, ${hprRulePath.printRulePath()}")
+        rootNode.evaluate(sykmelding, ruleMetadata).also { patientAgeOver70RulePath ->
+            logger.info("Rules ${sykmelding.id}, ${patientAgeOver70RulePath.printRulePath()}")
         } to
             MedJuridisk(
                 JuridiskHenvisning(
-                    lovverk = Lovverk.HELSEPERSONELLOVEN,
-                    paragraf = "3",
-                    ledd = null,
-                    punktum = null,
+                    lovverk = Lovverk.FOLKETRYGDLOVEN,
+                    paragraf = "8-3",
+                    ledd = 1,
+                    punktum = 2,
                     bokstav = null,
-                )
+                ),
             )
 }
 
-private fun TreeNode<HPRRules, RuleResult>.evaluate(
+private fun TreeNode<PatientAgeOver70Rules, RuleResult>.evaluate(
     sykmelding: Sykmelding,
-    behandlerOgStartdato: BehandlerOgStartdato,
-): HPRTreeOutput =
+    ruleMetadata: RuleMetadataSykmelding,
+): PatientAgeOver70TreeOutput =
     when (this) {
-        is ResultNode -> HPRTreeOutput(treeResult = result)
+        is ResultNode -> PatientAgeOver70TreeOutput(treeResult = result)
         is RuleNode -> {
             val rule = getRule(rule)
-            val result = rule(sykmelding, behandlerOgStartdato)
+            val result = rule(sykmelding, ruleMetadata)
             val childNode = if (result.ruleResult) yes else no
-            result join childNode.evaluate(sykmelding, behandlerOgStartdato)
+            result join childNode.evaluate(sykmelding, ruleMetadata)
         }
     }
