@@ -75,7 +75,7 @@ class PationAgeUnder13Test :
 
                 val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
 
-                status.treeResult.status shouldBeEqualTo Status.INVALID
+                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
                 status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                     listOf(
                         PatientAgeUnder13Rules.PASIENT_YNGRE_ENN_13 to true,
