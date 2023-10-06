@@ -55,7 +55,7 @@ class ArbeidsuforhetTest :
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                 listOf(
                     ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE to true,
@@ -98,7 +98,7 @@ class ArbeidsuforhetTest :
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                 listOf(
                     ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE to false,
@@ -141,7 +141,7 @@ class ArbeidsuforhetTest :
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                 listOf(
                     ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE to false,
@@ -194,7 +194,7 @@ class ArbeidsuforhetTest :
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                 listOf(
                     ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE to false,
@@ -251,7 +251,7 @@ class ArbeidsuforhetTest :
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-            status.first.treeResult.status shouldBeEqualTo Status.INVALID
+            status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
             status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                 listOf(
                     ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE to false,

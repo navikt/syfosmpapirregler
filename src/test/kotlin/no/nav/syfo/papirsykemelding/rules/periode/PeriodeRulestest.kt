@@ -57,7 +57,7 @@ class PeriodeRulestest :
                 val status =
                     periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-                status.treeResult.status shouldBeEqualTo Status.INVALID
+                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
                 status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                     listOf(
                         PeriodeRules.FREMDATERT to true,
@@ -94,7 +94,7 @@ class PeriodeRulestest :
                 val status =
                     periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-                status.treeResult.status shouldBeEqualTo Status.INVALID
+                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
                 status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
                     listOf(
                         PeriodeRules.FREMDATERT to false,

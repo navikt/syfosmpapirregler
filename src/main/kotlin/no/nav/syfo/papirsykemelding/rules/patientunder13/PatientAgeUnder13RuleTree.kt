@@ -1,7 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.patientunder13
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
@@ -13,7 +12,7 @@ enum class PatientAgeUnder13Rules {
 
 val patientAgeUnder13RuleTree =
     tree<PatientAgeUnder13Rules, RuleResult>(PatientAgeUnder13Rules.PASIENT_YNGRE_ENN_13) {
-        yes(INVALID, PatientAgeUnder13RuleHit.PASIENT_YNGRE_ENN_13)
+        yes(Status.MANUAL_PROCESSING, PatientAgeUnder13RuleHit.PASIENT_YNGRE_ENN_13)
         no(OK)
     }
 

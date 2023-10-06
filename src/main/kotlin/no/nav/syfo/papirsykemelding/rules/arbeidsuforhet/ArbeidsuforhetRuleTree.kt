@@ -1,7 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.Status.INVALID
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
@@ -17,15 +16,24 @@ enum class ArbeidsuforhetRules {
 
 val arbeidsuforhetRuleTree =
     tree<ArbeidsuforhetRules, RuleResult>(ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE) {
-        yes(INVALID, ArbeidsuforhetRuleHit.UKJENT_DIAGNOSEKODETYPE)
+        yes(Status.MANUAL_PROCESSING, ArbeidsuforhetRuleHit.UKJENT_DIAGNOSEKODETYPE)
         no(ArbeidsuforhetRules.ICPC_2_Z_DIAGNOSE) {
-            yes(INVALID, ArbeidsuforhetRuleHit.ICPC_2_Z_DIAGNOSE)
+            yes(Status.MANUAL_PROCESSING, ArbeidsuforhetRuleHit.ICPC_2_Z_DIAGNOSE)
             no(ArbeidsuforhetRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER) {
-                yes(INVALID, ArbeidsuforhetRuleHit.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER)
+                yes(
+                    Status.MANUAL_PROCESSING,
+                    ArbeidsuforhetRuleHit.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER
+                )
                 no(ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE) {
-                    yes(INVALID, ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE)
+                    yes(
+                        Status.MANUAL_PROCESSING,
+                        ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE
+                    )
                     no(ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE) {
-                        yes(INVALID, ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE)
+                        yes(
+                            Status.MANUAL_PROCESSING,
+                            ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE
+                        )
                         no(OK)
                     }
                 }
