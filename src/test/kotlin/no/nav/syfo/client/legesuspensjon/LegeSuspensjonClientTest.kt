@@ -51,7 +51,7 @@ class LegeSuspensjonClientTest :
                         }
                     }
                     routing {
-                        get("/legeSuspensjonClient/btsys/api/v1/suspensjon/status") {
+                        get("/legeSuspensjonClient/api/v1/suspensjon/status") {
                             when {
                                 call.request.headers["Nav-Personident"] == fnr ->
                                     call.respond(Suspendert(true))

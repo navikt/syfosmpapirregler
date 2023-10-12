@@ -34,7 +34,7 @@ class LegeSuspensjonClient(
             val log: Logger = LoggerFactory.getLogger(LegeSuspensjonClient::class.java)
 
             val httpResponse =
-                httpClient.get("$endpointUrl/btsys/api/v1/suspensjon/status") {
+                httpClient.get("$endpointUrl/api/v1/suspensjon/status") {
                     accept(ContentType.Application.Json)
                     val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
                     headers {
@@ -54,12 +54,12 @@ class LegeSuspensjonClient(
                 }
                 else -> {
                     log.error(
-                        "Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}",
+                        "Btsys svarte med kode {} for ediloggId {}",
                         httpResponse.status,
                         ediloggid
                     )
                     throw IOException(
-                        "Btsys (smgcp-proxy) svarte med uventet kode ${httpResponse.status} for $ediloggid"
+                        "Btsys svarte med uventet kode ${httpResponse.status} for $ediloggid"
                     )
                 }
             }
