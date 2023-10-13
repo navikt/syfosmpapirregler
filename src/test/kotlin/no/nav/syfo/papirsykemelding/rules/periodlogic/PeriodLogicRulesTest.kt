@@ -289,7 +289,7 @@ class PeriodLogicRulesTest :
                     PeriodLogicRuleHit.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER.ruleHit
             }
 
-            test("Avventende over 16 dager, Status INVALID") {
+            test("Avventende over 16 dager, Status MANUAL_PROCESSING") {
                 val sykmelding =
                     generateSykemelding(
                         perioder =

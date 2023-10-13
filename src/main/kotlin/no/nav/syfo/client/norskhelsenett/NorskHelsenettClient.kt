@@ -10,6 +10,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import java.io.IOException
+import java.time.LocalDateTime
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.helpers.retry
@@ -90,7 +91,18 @@ data class Behandler(
 data class Godkjenning(
     val helsepersonellkategori: Kode? = null,
     val autorisasjon: Kode? = null,
+    val tillegskompetanse: List<Tilleggskompetanse>? = null,
 )
+
+data class Tilleggskompetanse(
+    val avsluttetStatus: Kode?,
+    val eTag: String?,
+    val gyldig: Periode?,
+    val id: Int?,
+    val type: Kode?
+)
+
+data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
 
 data class Kode(
     val aktiv: Boolean,

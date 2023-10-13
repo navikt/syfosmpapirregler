@@ -15,10 +15,12 @@ import no.nav.syfo.model.Gradert
 import no.nav.syfo.model.HarArbeidsgiver
 import no.nav.syfo.model.KontaktMedPasient
 import no.nav.syfo.model.MedisinskVurdering
+import no.nav.syfo.model.MeldingTilNAV
 import no.nav.syfo.model.Periode
 import no.nav.syfo.model.Prognose
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.RuleInfo
+import no.nav.syfo.model.SporsmalSvar
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
@@ -54,6 +56,67 @@ fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): Received
         utenlandskSykmelding = null,
     )
 }
+
+fun generateSykmelding(
+    fom: LocalDate = LocalDate.now(),
+    tom: LocalDate = LocalDate.now().plusDays(10),
+    id: String = UUID.randomUUID().toString(),
+    pasientAktoerId: String = UUID.randomUUID().toString(),
+    syketilfelleStartDato: LocalDate = LocalDate.now(),
+    diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
+    biDiagnose: List<Diagnose> = emptyList(),
+    medisinskVurdering: MedisinskVurdering =
+        generateMedisinskVurdering(diagnose = diagnose, biDiagnose = biDiagnose),
+    skjermetForPasient: Boolean = false,
+    perioder: List<Periode> = listOf(generatePeriode(fom = fom, tom = tom)),
+    prognose: Prognose = generatePrognose(),
+    utdypendeOpplysninger: Map<String, Map<String, SporsmalSvar>> = mapOf(),
+    tiltakArbeidsplassen: String? = null,
+    tiltakNAV: String? = null,
+    andreTiltak: String? = null,
+    meldingTilNAV: MeldingTilNAV? = null,
+    meldingTilArbeidsgiver: String? = null,
+    kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
+    behandletTidspunkt: LocalDateTime = LocalDateTime.now(),
+    behandler: Behandler = generateBehandler(),
+    avsenderSystem: AvsenderSystem = generateAvsenderSystem(),
+    arbeidsgiver: Arbeidsgiver = generateArbeidsgiver(),
+    msgid: String = UUID.randomUUID().toString(),
+    navnFastlege: String? = null,
+    signaturDato: LocalDateTime = behandletTidspunkt,
+) =
+    Sykmelding(
+        id = id,
+        msgId = msgid,
+        pasientAktoerId = pasientAktoerId,
+        signaturDato = signaturDato,
+        syketilfelleStartDato = syketilfelleStartDato,
+        medisinskVurdering = medisinskVurdering,
+        skjermesForPasient = skjermetForPasient,
+        perioder = perioder,
+        prognose = prognose,
+        utdypendeOpplysninger = utdypendeOpplysninger,
+        tiltakArbeidsplassen = tiltakArbeidsplassen,
+        tiltakNAV = tiltakNAV,
+        andreTiltak = andreTiltak,
+        meldingTilNAV = meldingTilNAV,
+        meldingTilArbeidsgiver = meldingTilArbeidsgiver,
+        kontaktMedPasient = kontaktMedPasient,
+        behandletTidspunkt = behandletTidspunkt,
+        behandler = behandler,
+        avsenderSystem = avsenderSystem,
+        arbeidsgiver = arbeidsgiver,
+        navnFastlege = navnFastlege,
+    )
+
+fun generateAvsenderSystem(
+    navn: String = "test",
+    versjon: String = "1.2.3",
+) =
+    AvsenderSystem(
+        navn = navn,
+        versjon = versjon,
+    )
 
 fun generateSykemelding(
     perioder: List<Periode> = generatePerioder(),

@@ -19,7 +19,7 @@ class ArbeidsuforhetTest :
     FunSpec({
         val ruleTree = ArbeidsuforhetRulesExecution()
 
-        test("Ukjent diagnoseKodeType, Status INVALID") {
+        test("Ukjent diagnoseKodeType, Status MANUAL_PROSESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding =
@@ -49,8 +49,7 @@ class ArbeidsuforhetTest :
                     ruleMetadata = ruleMetadata,
                     sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
                     doctorSuspensjon = false,
-                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-                    erNyttSyketilfelle = false
+                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
                 )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -69,7 +68,7 @@ class ArbeidsuforhetTest :
                 ArbeidsuforhetRuleHit.UKJENT_DIAGNOSEKODETYPE.ruleHit
         }
 
-        test("Diagnosen er icpz 2 z diagnose, Status INVALID") {
+        test("Diagnosen er icpz 2 z diagnose, Status MANUAL_PROSESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding =
@@ -92,8 +91,7 @@ class ArbeidsuforhetTest :
                     ruleMetadata = ruleMetadata,
                     sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
                     doctorSuspensjon = false,
-                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-                    erNyttSyketilfelle = false
+                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
                 )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -113,7 +111,7 @@ class ArbeidsuforhetTest :
             status.first.treeResult.ruleHit shouldBeEqualTo
                 ArbeidsuforhetRuleHit.ICPC_2_Z_DIAGNOSE.ruleHit
         }
-        test("HouvedDiagnose eller fraversgrunn mangler, Status INVALID") {
+        test("HouvedDiagnose eller fraversgrunn mangler, Status MANUAL_PROSESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding = generateSykemelding(diagnose = null)
@@ -135,8 +133,7 @@ class ArbeidsuforhetTest :
                     ruleMetadata = ruleMetadata,
                     sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
                     doctorSuspensjon = false,
-                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-                    erNyttSyketilfelle = false
+                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
                 )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -158,7 +155,7 @@ class ArbeidsuforhetTest :
             status.first.treeResult.ruleHit shouldBeEqualTo
                 ArbeidsuforhetRuleHit.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER.ruleHit
         }
-        test("Ugyldig KodeVerk for houvedDiagnose, Status INVALID") {
+        test("Ugyldig KodeVerk for houvedDiagnose, Status MANUAL_PROSESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding =
@@ -188,8 +185,7 @@ class ArbeidsuforhetTest :
                     ruleMetadata = ruleMetadata,
                     sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
                     doctorSuspensjon = false,
-                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-                    erNyttSyketilfelle = false
+                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
                 )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
@@ -213,7 +209,7 @@ class ArbeidsuforhetTest :
             status.first.treeResult.ruleHit shouldBeEqualTo
                 ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE.ruleHit
         }
-        test("Ugyldig kodeVerk for biDiagnose, Status INVALID") {
+        test("Ugyldig kodeVerk for biDiagnose, Status MANUAL_PROSESSING") {
             val person31Years = LocalDate.now().minusYears(31)
 
             val sykmelding =
@@ -245,8 +241,7 @@ class ArbeidsuforhetTest :
                     ruleMetadata = ruleMetadata,
                     sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
                     doctorSuspensjon = false,
-                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-                    erNyttSyketilfelle = false
+                    behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null)
                 )
 
             val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
