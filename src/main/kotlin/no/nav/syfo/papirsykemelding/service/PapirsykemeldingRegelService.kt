@@ -99,7 +99,6 @@ class PapirsykemeldingRegelService(
             val ruleMetadataSykmelding =
                 RuleMetadataSykmelding(
                     ruleMetadata = ruleMetadata,
-                    erNyttSyketilfelle = syketilfelleStartdato == null,
                     doctorSuspensjon = doctorSuspendedAsync.await(),
                     behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato),
                     ettersendingOgForlengelse,
@@ -234,7 +233,6 @@ data class BehandlerOgStartdato(
 
 data class RuleMetadataSykmelding(
     val ruleMetadata: RuleMetadata,
-    val erNyttSyketilfelle: Boolean,
     val doctorSuspensjon: Boolean,
     val behandlerOgStartdato: BehandlerOgStartdato,
     val sykmeldingMetadataInfo: SykmeldingMetadataInfo,

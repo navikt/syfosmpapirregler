@@ -112,7 +112,6 @@ class ValidationTest :
 fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) =
     RuleMetadataSykmelding(
         ruleMetadata = ruleMetadata,
-        erNyttSyketilfelle = false,
         doctorSuspensjon = false,
         behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
         sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
