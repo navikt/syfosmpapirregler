@@ -13,7 +13,7 @@ val mockkVersion="1.13.8"
 val nimbusdsVersion="9.37"
 val smCommonVersion="2.0.4"
 val jacksonVersion="2.15.3"
-val kotlinVersion="1.9.10"
+val kotlinVersion="1.9.20"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.7.2"
 val ktfmtVersion="0.44"
@@ -29,7 +29,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.9.20"
     id("io.ktor.plugin") version "2.3.5"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.22.0"
