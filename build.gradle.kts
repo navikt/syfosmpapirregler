@@ -4,18 +4,18 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion="1.7.3"
-val ktorVersion="2.3.5"
+val ktorVersion="2.3.6"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.4.11"
 val logstashEncoderVersion= "7.4"
 val mockkVersion="1.13.8"
-val nimbusdsVersion="9.37"
-val smCommonVersion="2.0.4"
-val jacksonVersion="2.15.3"
-val kotlinVersion="1.9.20"
+val nimbusdsVersion="9.37.1"
+val smCommonVersion="2.0.6"
+val jacksonVersion="2.16.0"
+val kotlinVersion="1.9.21"
 val caffeineVersion="3.1.8"
-val kotestVersion="5.7.2"
+val kotestVersion="5.8.0"
 val ktfmtVersion="0.44"
 val jvmVersion="17"
 val snappyJavaVersion = "1.1.10.5"
@@ -29,10 +29,10 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.20"
-    id("io.ktor.plugin") version "2.3.5"
+    kotlin("jvm") version "1.9.21"
+    id("io.ktor.plugin") version "2.3.6"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.22.0"
+    id("com.diffplug.spotless") version "6.23.0"
 }
 
 
