@@ -12,8 +12,8 @@ val logstashEncoderVersion= "7.4"
 val mockkVersion="1.13.8"
 val nimbusdsVersion="9.37.3"
 val smCommonVersion="2.0.8"
-val jacksonVersion="2.16.0"
-val kotlinVersion="1.9.21"
+val jacksonVersion="2.16.1"
+val kotlinVersion="1.9.22"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.8.0"
 val ktfmtVersion="0.44"
@@ -29,7 +29,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     id("io.ktor.plugin") version "2.3.7"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.23.3"
