@@ -3,6 +3,7 @@ package no.nav.syfo.papirsykemelding.rules.validation
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.common.UtenJuridisk
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
@@ -17,7 +18,7 @@ val validationRuleTree =
             ValidationRuleHit.UGYLDIG_ORGNR_LENGDE,
         )
         no(OK)
-    }
+    } to UtenJuridisk
 
 internal fun RuleNode<ValidationRules, RuleResult>.yes(
     status: Status,

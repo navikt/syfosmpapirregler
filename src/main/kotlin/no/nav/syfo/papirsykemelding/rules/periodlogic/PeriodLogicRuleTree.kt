@@ -4,6 +4,7 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.MANUAL_PROCESSING
 import no.nav.syfo.model.Status.OK
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
+import no.nav.syfo.papirsykemelding.rules.common.UtenJuridisk
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
@@ -59,7 +60,7 @@ val periodLogicRuleTree =
                 }
             }
         }
-    }
+    } to UtenJuridisk
 
 internal fun RuleNode<PeriodLogicRules, RuleResult>.yes(
     status: Status,

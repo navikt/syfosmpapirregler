@@ -12,6 +12,7 @@ import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.juridisk.JuridiskUtfall
 import no.nav.syfo.model.juridisk.JuridiskVurdering
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.gradert.GradertRulesExecution
 import no.nav.syfo.ruleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
@@ -73,7 +74,8 @@ class JuridiskVurderingServiceTest :
                                 kilde = JuridiskVurderingService.KILDE,
                                 versjonAvKode = "versjon",
                                 fodselsnummer = receivedSykmelding.personNrPasient,
-                                juridiskHenvisning = result.second.juridiskHenvisning,
+                                juridiskHenvisning =
+                                    (result.second as MedJuridisk).juridiskHenvisning,
                                 sporing =
                                     mapOf(
                                         "sykmelding" to receivedSykmelding.sykmelding.id,

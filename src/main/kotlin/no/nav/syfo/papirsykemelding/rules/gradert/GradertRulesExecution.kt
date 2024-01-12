@@ -2,9 +2,7 @@ package no.nav.syfo.papirsykemelding.rules.gradert
 
 import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
-import no.nav.syfo.model.juridisk.JuridiskHenvisning
-import no.nav.syfo.model.juridisk.Lovverk
-import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
+import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
@@ -17,21 +15,17 @@ import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias GradertTreeOutput = TreeOutput<GradertRules, RuleResult>
 
-class GradertRulesExecution(val rootNode: TreeNode<GradertRules, RuleResult> = gradertRuleTree) :
+typealias GradertTreeNode = Pair<TreeNode<GradertRules, RuleResult>, Juridisk>
+
+class GradertRulesExecution(val rootNode: GradertTreeNode = gradertRuleTree) :
     RuleExecution<GradertRules> {
-    override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode.evaluate(sykmelding, ruleMetadata).also { gradertRulePath ->
+    override fun runRules(
+        sykmelding: Sykmelding,
+        ruleMetadata: RuleMetadataSykmelding
+    ): Pair<GradertTreeOutput, Juridisk> =
+        rootNode.first.evaluate(sykmelding, ruleMetadata).also { gradertRulePath ->
             logger.info("Rules ${sykmelding.id}, ${gradertRulePath.printRulePath()}")
-        } to
-            MedJuridisk(
-                JuridiskHenvisning(
-                    lovverk = Lovverk.FOLKETRYGDLOVEN,
-                    paragraf = "8-13",
-                    ledd = 1,
-                    punktum = null,
-                    bokstav = null,
-                ),
-            )
+        } to rootNode.second
 }
 
 private fun TreeNode<GradertRules, RuleResult>.evaluate(

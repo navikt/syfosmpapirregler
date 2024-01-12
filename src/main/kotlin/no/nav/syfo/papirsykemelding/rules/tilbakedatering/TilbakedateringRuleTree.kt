@@ -3,6 +3,9 @@ package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.MANUAL_PROCESSING
 import no.nav.syfo.model.Status.OK
+import no.nav.syfo.model.juridisk.JuridiskHenvisning
+import no.nav.syfo.model.juridisk.Lovverk
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
@@ -69,7 +72,16 @@ val tilbakedateringRuleTree =
             }
         }
         no(OK)
-    }
+    } to
+        MedJuridisk(
+            JuridiskHenvisning(
+                lovverk = Lovverk.FOLKETRYGDLOVEN,
+                paragraf = "8-7",
+                ledd = 2,
+                punktum = null,
+                bokstav = null,
+            ),
+        )
 
 internal fun RuleNode<TilbakedateringRules, RuleResult>.yes(
     status: Status,

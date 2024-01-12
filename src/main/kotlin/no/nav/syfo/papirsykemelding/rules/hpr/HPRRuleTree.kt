@@ -2,6 +2,9 @@ package no.nav.syfo.papirsykemelding.rules.hpr
 
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.*
+import no.nav.syfo.model.juridisk.JuridiskHenvisning
+import no.nav.syfo.model.juridisk.Lovverk
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
@@ -41,7 +44,16 @@ val hprRuleTree =
                 }
             }
         }
-    }
+    } to
+        MedJuridisk(
+            JuridiskHenvisning(
+                lovverk = Lovverk.HELSEPERSONELLOVEN,
+                paragraf = "3",
+                ledd = null,
+                punktum = null,
+                bokstav = null,
+            )
+        )
 
 private fun checkSykefravarOver12Uker(): RuleNode<HPRRules, RuleResult>.() -> Unit = {
     yes(MANUAL_PROCESSING, BEHANDLER_MT_FT_KI_OVER_12_UKER)
