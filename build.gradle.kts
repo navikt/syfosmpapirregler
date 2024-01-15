@@ -9,7 +9,7 @@ val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.4.14"
 val logstashEncoderVersion= "7.4"
-val mockkVersion="1.13.8"
+val mockkVersion="1.13.9"
 val nimbusdsVersion="9.37.3"
 val smCommonVersion="2.0.8"
 val jacksonVersion="2.16.1"
@@ -32,7 +32,7 @@ plugins {
     kotlin("jvm") version "1.9.22"
     id("io.ktor.plugin") version "2.3.7"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.23.3"
+    id("com.diffplug.spotless") version "6.24.0"
 }
 
 
