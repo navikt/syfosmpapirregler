@@ -1,6 +1,9 @@
 package no.nav.syfo.papirsykemelding.rules.gradert
 
 import no.nav.syfo.model.Status
+import no.nav.syfo.model.juridisk.JuridiskHenvisning
+import no.nav.syfo.model.juridisk.Lovverk
+import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
@@ -9,7 +12,16 @@ val gradertRuleTree =
     tree<GradertRules, RuleResult>(GradertRules.GRADERT_UNDER_20_PROSENT) {
         yes(Status.MANUAL_PROCESSING, GradertRuleHit.GRADERT_SYKMELDING_UNDER_20_PROSENT)
         no(Status.OK)
-    }
+    } to
+        MedJuridisk(
+            JuridiskHenvisning(
+                lovverk = Lovverk.FOLKETRYGDLOVEN,
+                paragraf = "8-13",
+                ledd = 1,
+                punktum = null,
+                bokstav = null,
+            ),
+        )
 
 internal fun RuleNode<GradertRules, RuleResult>.yes(
     status: Status,

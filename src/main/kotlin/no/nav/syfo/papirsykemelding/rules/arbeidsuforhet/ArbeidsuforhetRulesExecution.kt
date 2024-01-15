@@ -2,10 +2,8 @@ package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
-import no.nav.syfo.model.juridisk.JuridiskHenvisning
-import no.nav.syfo.model.juridisk.Lovverk
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
-import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
+import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
@@ -18,24 +16,15 @@ import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
 typealias ArbeidsuforhetTreeOutput = TreeOutput<ArbeidsuforhetRules, RuleResult>
 
-typealias ArbeidsuforhetTreeNode = TreeNode<ArbeidsuforhetRules, RuleResult>
+typealias ArbeidsuforhetTreeNode = Pair<TreeNode<ArbeidsuforhetRules, RuleResult>, Juridisk>
 
 class ArbeidsuforhetRulesExecution(
     private val rootNode: ArbeidsuforhetTreeNode = arbeidsuforhetRuleTree
 ) : RuleExecution<ArbeidsuforhetRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
-        rootNode.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->
+        rootNode.first.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->
             logger.info("Rules ${sykmelding.id}, ${validationRulePath.printRulePath()}")
-        } to
-            MedJuridisk(
-                JuridiskHenvisning(
-                    lovverk = Lovverk.FOLKETRYGDLOVEN,
-                    paragraf = "8-4",
-                    ledd = 1,
-                    punktum = null,
-                    bokstav = null,
-                ),
-            )
+        } to rootNode.second
 }
 
 private fun TreeNode<ArbeidsuforhetRules, RuleResult>.evaluate(
