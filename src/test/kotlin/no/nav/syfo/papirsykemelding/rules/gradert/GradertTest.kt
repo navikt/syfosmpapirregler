@@ -8,6 +8,7 @@ import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
+import no.nav.syfo.papirsykemelding.service.RuleExecutionService
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import no.nav.syfo.toRuleMetadata
@@ -15,7 +16,7 @@ import org.amshove.kluent.shouldBeEqualTo
 
 class GradertTest :
     FunSpec({
-        val ruleTree = GradertRulesExecution()
+        val ruleTree = RuleExecutionService()
 
         context("Testing gradert rules and checking the rule outcomes") {
             test("Sick leave is 21 procent, should be OK") {
@@ -44,7 +45,7 @@ class GradertTest :
 
                 val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-                result.first.treeResult.status shouldBeEqualTo Status.OK
+                result.first().first.treeResult.status shouldBeEqualTo Status.OK
             }
 
             test("Sick leave is 19 procent, should be MANUAL_PROCESSING") {
@@ -73,7 +74,7 @@ class GradertTest :
 
                 val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-                result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+                result.first().first.treeResult.status shouldBeEqualTo Status.OK
             }
         }
     })

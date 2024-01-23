@@ -12,8 +12,8 @@ import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.juridisk.JuridiskUtfall
 import no.nav.syfo.model.juridisk.JuridiskVurdering
+import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.ArbeidsuforhetRulesExecution
 import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
-import no.nav.syfo.papirsykemelding.rules.gradert.GradertRulesExecution
 import no.nav.syfo.ruleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -56,7 +56,7 @@ class JuridiskVurderingServiceTest :
                     ruleMetadataSykmelding(receivedSykmelding.sykmelding.toRuleMetadata())
 
                 val result =
-                    GradertRulesExecution()
+                    ArbeidsuforhetRulesExecution()
                         .runRules(
                             sykmelding = receivedSykmelding.sykmelding,
                             ruleMetadata = ruleMetadata,

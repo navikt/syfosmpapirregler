@@ -8,8 +8,6 @@ import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
-import no.nav.syfo.papirsykemelding.rules.gradert.GradertRulesExecution
-import no.nav.syfo.papirsykemelding.rules.gradert.gradertRuleTree
 import no.nav.syfo.papirsykemelding.rules.hpr.HPRRulesExecution
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.LegeSuspensjonRulesExecution
@@ -39,7 +37,6 @@ class RuleExecutionService {
             PatientAgeUnder13RulesExecution(patientAgeUnder13RuleTree),
             PatientAgeOver70RulesExecution(patientAgeOver70RuleTree),
             PeriodeRulesExecution(periodeRuleTree),
-            GradertRulesExecution(gradertRuleTree),
             TilbakedateringRulesExecution(tilbakedateringRuleTree),
         )
 

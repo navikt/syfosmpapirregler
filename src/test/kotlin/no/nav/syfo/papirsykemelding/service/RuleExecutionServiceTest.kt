@@ -70,7 +70,7 @@ class RuleExecutionServiceTest :
                         ),
                 )
 
-            result.size shouldBeEqualTo 10
+            result.size shouldBeEqualTo 9
         }
         test("Run ruleTrees") {
             every {
