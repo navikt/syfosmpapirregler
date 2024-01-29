@@ -12,8 +12,6 @@ import no.nav.syfo.papirsykemelding.rules.hpr.HPRRulesExecution
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.LegeSuspensjonRulesExecution
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
-import no.nav.syfo.papirsykemelding.rules.patientageover70.PatientAgeOver70RulesExecution
-import no.nav.syfo.papirsykemelding.rules.patientageover70.patientAgeOver70RuleTree
 import no.nav.syfo.papirsykemelding.rules.patientunder13.PatientAgeUnder13RulesExecution
 import no.nav.syfo.papirsykemelding.rules.patientunder13.patientAgeUnder13RuleTree
 import no.nav.syfo.papirsykemelding.rules.periode.PeriodeRulesExecution
@@ -35,7 +33,6 @@ class RuleExecutionService {
             HPRRulesExecution(hprRuleTree),
             ArbeidsuforhetRulesExecution(arbeidsuforhetRuleTree),
             PatientAgeUnder13RulesExecution(patientAgeUnder13RuleTree),
-            PatientAgeOver70RulesExecution(patientAgeOver70RuleTree),
             PeriodeRulesExecution(periodeRuleTree),
             TilbakedateringRulesExecution(tilbakedateringRuleTree),
         )
