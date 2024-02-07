@@ -5,10 +5,8 @@ import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTree
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
-import no.nav.syfo.papirsykemelding.rules.gradert.gradertRuleTree
 import no.nav.syfo.papirsykemelding.rules.hpr.hprRuleTree
 import no.nav.syfo.papirsykemelding.rules.legesuspensjon.legeSuspensjonRuleTree
-import no.nav.syfo.papirsykemelding.rules.patientageover70.patientAgeOver70RuleTree
 import no.nav.syfo.papirsykemelding.rules.patientunder13.patientAgeUnder13RuleTree
 import no.nav.syfo.papirsykemelding.rules.periode.periodeRuleTree
 import no.nav.syfo.papirsykemelding.rules.periodlogic.periodLogicRuleTree
@@ -24,9 +22,7 @@ fun main() {
             "HPR" to hprRuleTree,
             "Arbeidsuforhet" to arbeidsuforhetRuleTree,
             "Pasient under 13" to patientAgeUnder13RuleTree,
-            "Pasient over 70" to patientAgeOver70RuleTree,
             "Periode" to periodeRuleTree,
-            "Gradert" to gradertRuleTree,
             "Tilbakedatering" to tilbakedateringRuleTree,
         )
 

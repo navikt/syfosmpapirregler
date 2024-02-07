@@ -195,29 +195,7 @@ graph TD
 ```
 
 
-## 7. Pasient over 70
-
----
-
-- ### Juridisk Henvisning:
-  - **Lovverk**: FOLKETRYGDLOVEN
-  - **Paragraf**: 8-3
-  - **Ledd**: 1
-  - **Punktum**: 2
-
----
-
-```mermaid
-graph TD
-    root(PASIENT_ELDRE_ENN_70) -->|Yes| root_PASIENT_ELDRE_ENN_70_MANUAL_PROCESSING(MANUAL_PROCESSING):::manuell
-    root(PASIENT_ELDRE_ENN_70) -->|No| root_PASIENT_ELDRE_ENN_70_OK(OK):::ok
-    classDef ok fill:#c3ff91,stroke:#004a00,color: black;
-    classDef invalid fill:#ff7373,stroke:#ff0000,color: black;
-    classDef manuell fill:#ffe24f,stroke:#ffd500,color: #473c00;
-```
-
-
-## 8. Periode
+## 7. Periode
 
 ---
 
@@ -238,28 +216,7 @@ graph TD
 ```
 
 
-## 9. Gradert
-
----
-
-- ### Juridisk Henvisning:
-  - **Lovverk**: FOLKETRYGDLOVEN
-  - **Paragraf**: 8-13
-  - **Ledd**: 1
-
----
-
-```mermaid
-graph TD
-    root(GRADERT_UNDER_20_PROSENT) -->|Yes| root_GRADERT_UNDER_20_PROSENT_MANUAL_PROCESSING(MANUAL_PROCESSING):::manuell
-    root(GRADERT_UNDER_20_PROSENT) -->|No| root_GRADERT_UNDER_20_PROSENT_OK(OK):::ok
-    classDef ok fill:#c3ff91,stroke:#004a00,color: black;
-    classDef invalid fill:#ff7373,stroke:#ff0000,color: black;
-    classDef manuell fill:#ffe24f,stroke:#ffd500,color: #473c00;
-```
-
-
-## 10. Tilbakedatering
+## 8. Tilbakedatering
 
 ---
 
