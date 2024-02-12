@@ -4,7 +4,7 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion="1.7.3"
-val ktorVersion="2.3.7"
+val ktorVersion="2.3.8"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.4.14"
@@ -30,7 +30,7 @@ application {
 plugins {
     id("application")
     kotlin("jvm") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.7"
+    id("io.ktor.plugin") version "2.3.8"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.25.0"
 }
