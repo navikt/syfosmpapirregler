@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion="1.7.3"
+val coroutinesVersion="1.8.0"
 val ktorVersion="2.3.8"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
