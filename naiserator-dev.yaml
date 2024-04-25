@@ -68,6 +68,6 @@ spec:
     - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
       value: https://btsys-api.intern.dev.nav.no
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
-      value: api://dev-gcp.team-rocket.btsys-api/.defaul
+      value: api://dev-gcp.team-rocket.btsys-api/.default
     - name: SMREGISTER_AUDIENCE
       value: api://dev-gcp.teamsykmelding.syfosmregister/.default
