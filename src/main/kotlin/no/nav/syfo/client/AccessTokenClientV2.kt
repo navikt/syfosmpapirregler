@@ -22,43 +22,53 @@ class AccessTokenClientV2(
 ) {
     private val mutex = Mutex()
 
-    @Volatile private var tokenMap = HashMap<String, AadAccessTokenMedExpiry>()
+    @Volatile
+    private var tokenMap = HashMap<String, AadAccessTokenMedExpiry>()
 
     suspend fun getAccessTokenV2(resource: String): String {
         val omToMinutter = Instant.now().plusSeconds(120L)
+
         return mutex.withLock {
-            (tokenMap[resource]?.takeUnless { it.expiresOn.isBefore(omToMinutter) }
-                    ?: run {
-                        logger.debug("Henter nytt token fra Azure AD")
-                        val response: AadAccessTokenV2 =
-                            httpClient
-                                .post(aadAccessTokenUrl) {
-                                    accept(ContentType.Application.Json)
-                                    setBody(
-                                        FormDataContent(
-                                            Parameters.build {
-                                                append("client_id", clientId)
-                                                append("scope", resource)
-                                                append("grant_type", "client_credentials")
-                                                append("client_secret", clientSecret)
-                                            },
-                                        ),
-                                    )
-                                }
-                                .body()
-                        val tokenMedExpiry =
-                            AadAccessTokenMedExpiry(
-                                access_token = response.access_token,
-                                expires_in = response.expires_in,
-                                expiresOn = Instant.now().plusSeconds(response.expires_in.toLong()),
-                            )
-                        tokenMap[resource] = tokenMedExpiry
-                        logger.debug("Har hentet accesstoken")
-                        return@run tokenMedExpiry
-                    })
-                .access_token
+            val token = tokenMap[resource];
+            if (token != null && !token.expiresOn.isBefore(omToMinutter)) {
+                return token.access_token
+            }
+
+            logger.debug("Henter nytt token fra Azure AD")
+            val response = exchangeToken(resource)
+
+            if (!(200..299).contains(response.status.value)) {
+                throw RuntimeException("Failed to get access token from Azure AD: ${response.status}, text: ${response.body<String>()}")
+            }
+
+            val result: AadAccessTokenV2 = response.body()
+            val tokenMedExpiry = AadAccessTokenMedExpiry(
+                access_token = result.access_token,
+                expires_in = result.expires_in,
+                expiresOn = Instant.now().plusSeconds(result.expires_in.toLong()),
+            )
+
+            tokenMap[resource] = tokenMedExpiry
+            logger.debug("Har hentet accesstoken")
+            tokenMedExpiry.access_token
         }
     }
+
+    private suspend fun exchangeToken(resource: String) =
+        httpClient
+            .post(aadAccessTokenUrl) {
+                accept(ContentType.Application.Json)
+                setBody(
+                    FormDataContent(
+                        Parameters.build {
+                            append("client_id", clientId)
+                            append("scope", resource)
+                            append("grant_type", "client_credentials")
+                            append("client_secret", clientSecret)
+                        },
+                    ),
+                )
+            }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
