@@ -3,19 +3,19 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion="1.8.0"
-val ktorVersion="2.3.10"
+val coroutinesVersion="1.8.1"
+val ktorVersion="2.3.11"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.6"
 val logstashEncoderVersion= "7.4"
 val mockkVersion="1.13.10"
-val nimbusdsVersion="9.37.3"
+val nimbusdsVersion="9.39"
 val smCommonVersion="2.0.8"
-val jacksonVersion="2.17.0"
-val kotlinVersion="1.9.23"
+val jacksonVersion="2.17.1"
+val kotlinVersion="1.9.24"
 val caffeineVersion="3.1.8"
-val kotestVersion="5.8.1"
+val kotestVersion="5.9.0"
 val ktfmtVersion="0.44"
 val jvmVersion="17"
 val snappyJavaVersion = "1.1.10.5"
@@ -29,8 +29,8 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.23"
-    id("io.ktor.plugin") version "2.3.10"
+    kotlin("jvm") version "1.9.24"
+    id("io.ktor.plugin") version "2.3.11"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.25.0"
 }
