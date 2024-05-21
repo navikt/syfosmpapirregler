@@ -9,11 +9,11 @@ val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.6"
 val logstashEncoderVersion= "7.4"
-val mockkVersion="1.13.10"
-val nimbusdsVersion="9.39"
+val mockkVersion="1.13.11"
+val nimbusdsVersion="9.39.1"
 val smCommonVersion="2.0.8"
 val jacksonVersion="2.17.1"
-val kotlinVersion="1.9.24"
+val kotlinVersion="2.0.0"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.9.0"
 val ktfmtVersion="0.44"
@@ -29,7 +29,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.24"
+    kotlin("jvm") version "2.0.0"
     id("io.ktor.plugin") version "2.3.11"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.25.0"
