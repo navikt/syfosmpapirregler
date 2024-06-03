@@ -12,7 +12,7 @@ This project contains just the rules for validating whether a user is supposed t
 
 #### Requirements
 
-* JDK 17
+* JDK 21
 
 ## Getting started
 ### Building the application

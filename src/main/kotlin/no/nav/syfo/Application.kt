@@ -17,7 +17,8 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.prometheus.client.hotspot.DefaultExports
-import java.net.URL
+import java.net.URI
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.DelicateCoroutinesApi
 import net.logstash.logback.argument.StructuredArguments
@@ -112,8 +113,8 @@ fun Application.module() {
     }
 
     val jwkProviderAadV2 =
-        JwkProviderBuilder(URL(environmentVariables.jwkKeysUrlV2))
-            .cached(10, 24, TimeUnit.HOURS)
+        JwkProviderBuilder(URI.create(environmentVariables.jwkKeysUrlV2).toURL())
+            .cached(10, Duration.ofHours(24))
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
 

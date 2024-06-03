@@ -1,4 +1,5 @@
 import java.io.ByteArrayOutputStream
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "no.nav.syfo"
 version = "1.0.0"
@@ -17,8 +18,8 @@ val kotlinVersion="2.0.0"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.9.0"
 val ktfmtVersion="0.44"
-val jvmVersion="17"
 val snappyJavaVersion = "1.1.10.5"
+val jvmVersion = JvmTarget.JVM_21
 
 application {
     mainClass.set("no.nav.syfo.ApplicationKt")
@@ -90,6 +91,12 @@ dependencies {
     testImplementation("io.kotest:kotest-property:$kotestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = jvmVersion
     }
 }
 

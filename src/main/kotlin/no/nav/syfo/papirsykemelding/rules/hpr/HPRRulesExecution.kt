@@ -21,7 +21,7 @@ typealias HPRTreeNode = Pair<TreeNode<HPRRules, RuleResult>, Juridisk>
 class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleExecution<HPRRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata.behandlerOgStartdato).also { hprRulePath ->
-            logger.info("Rules ${sykmelding.id}, ${hprRulePath.printRulePath()}")
+            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${hprRulePath.printRulePath()}")
         } to rootNode.second
 }
 
