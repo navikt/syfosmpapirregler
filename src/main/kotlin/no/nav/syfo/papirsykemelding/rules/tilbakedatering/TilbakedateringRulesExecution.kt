@@ -22,7 +22,7 @@ class TilbakedateringRulesExecution(
 ) : RuleExecution<TilbakedateringRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata).also { tilbakedateringRulePath ->
-            logger.info("Rules ${sykmelding.id}, ${tilbakedateringRulePath.printRulePath()}")
+            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${tilbakedateringRulePath.printRulePath()}")
         } to rootNode.second
 }
 

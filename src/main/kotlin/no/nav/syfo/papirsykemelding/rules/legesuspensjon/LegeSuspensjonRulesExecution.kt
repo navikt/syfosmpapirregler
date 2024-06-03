@@ -26,7 +26,7 @@ class LegeSuspensjonRulesExecution(
     ): Pair<LegeSuspensjonTreeOutput, Juridisk> =
         rootNode.first.evaluate(sykmelding.id, ruleMetadata.doctorSuspensjon).also {
             legeSuspensjonRulePath ->
-            logger.info("Rules ${sykmelding.id}, ${legeSuspensjonRulePath.printRulePath()}")
+            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${legeSuspensjonRulePath.printRulePath()}")
         } to rootNode.second
 }
 
