@@ -19,6 +19,7 @@ val caffeineVersion="3.1.8"
 val kotestVersion="5.9.1"
 val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.5"
+val diagnosekoderVersion = "1.2024.0"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
@@ -69,8 +70,8 @@ dependencies {
 
     implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-diagnosis-codes:$smCommonVersion")
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+    implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
     constraints {
         implementation("org.xerial.snappy:snappy-java:$snappyJavaVersion") {
             because("override transient from org.apache.kafka:kafka_2.12")
