@@ -1,10 +1,9 @@
 package no.nav.syfo
 
+import no.nav.helse.diagnosekoder.Diagnosekoder
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
-import no.nav.syfo.client.norskhelsenett.Godkjenning
-import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.Arbeidsgiver
@@ -24,13 +23,11 @@ import no.nav.syfo.model.SporsmalSvar
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.model.ValidationResult
-import no.nav.syfo.papirsykemelding.model.HelsepersonellKategori
-import no.nav.syfo.sm.Diagnosekoder
 
 val behandletTidspunkt: LocalDateTime = LocalDateTime.now()
 val signaturDato: LocalDateTime = LocalDateTime.now()
 
-fun Diagnosekoder.DiagnosekodeType.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
+fun Diagnosekoder.ICPC2.toDiagnose() = Diagnose(system = oid, kode = code, tekst = text)
 
 fun generateReceivedSykemelding(perioder: List<Periode> = emptyList()): ReceivedSykmelding {
     return ReceivedSykmelding(
@@ -249,22 +246,6 @@ fun getInvalidResult(): ValidationResult {
     )
 }
 
-fun getBehandlerNotInHPRRule(): ValidationResult {
-    return ValidationResult(
-        status = Status.MANUAL_PROCESSING,
-        ruleHits =
-            listOf(
-                RuleInfo(
-                    ruleName = "BEHANLDER_IKKE_I_HPR",
-                    messageForSender =
-                        "Den som har skrevet sykmeldingen din har ikke autorisasjon til dette.",
-                    messageForUser = "Behandler er ikke register i HPR",
-                    ruleStatus = Status.MANUAL_PROCESSING,
-                ),
-            ),
-    )
-}
-
 fun generateGradert(
     reisetilskudd: Boolean = false,
     grad: Int = 50,
@@ -273,39 +254,3 @@ fun generateGradert(
         reisetilskudd = reisetilskudd,
         grad = grad,
     )
-
-fun getGyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
-    return no.nav.syfo.client.norskhelsenett.Behandler(
-        listOf(
-            Godkjenning(
-                autorisasjon =
-                    Kode(
-                        true,
-                        7704,
-                        "17",
-                    ),
-                helsepersonellkategori =
-                    Kode(
-                        true,
-                        7702,
-                        HelsepersonellKategori.LEGE.verdi,
-                    ),
-            ),
-        ),
-    )
-}
-
-fun getUgyldigBehandler(): no.nav.syfo.client.norskhelsenett.Behandler {
-    return no.nav.syfo.client.norskhelsenett.Behandler(
-        listOf(
-            Godkjenning(
-                autorisasjon =
-                    Kode(
-                        false,
-                        2,
-                        "LE",
-                    ),
-            ),
-        ),
-    )
-}

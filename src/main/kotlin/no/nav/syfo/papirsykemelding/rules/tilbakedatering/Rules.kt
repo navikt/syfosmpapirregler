@@ -1,5 +1,7 @@
 package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
+import no.nav.helse.diagnosekoder.Diagnosekoder
+import no.nav.syfo.model.Diagnose
 import java.time.temporal.ChronoUnit
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
@@ -15,7 +17,6 @@ import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.T
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_30_DAGER
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
-import no.nav.syfo.sm.isICD10
 
 typealias Rule<T> = (sykmelding: Sykmelding, metadata: RuleMetadataSykmelding) -> RuleResult<T>
 
@@ -145,3 +146,5 @@ fun getNumberOfWords(input: String?): Int {
 fun containsLetters(text: String): Boolean {
     return text.contains("""[A-Za-z]""".toRegex())
 }
+
+fun Diagnose.isICD10(): Boolean = system == Diagnosekoder.ICD10_CODE

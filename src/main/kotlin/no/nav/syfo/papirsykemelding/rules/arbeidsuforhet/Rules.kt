@@ -1,10 +1,10 @@
 package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
+import no.nav.helse.diagnosekoder.Diagnosekoder
+import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
-import no.nav.syfo.sm.Diagnosekoder
-import no.nav.syfo.sm.isICPC2
 
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 
@@ -90,3 +90,5 @@ val ugyldigKodeVerkBiDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
         ruleResult = ugyldigKodeVerkBiDiagnose,
     )
 }
+
+private fun Diagnose.isICPC2(): Boolean = system == Diagnosekoder.ICPC2_CODE
