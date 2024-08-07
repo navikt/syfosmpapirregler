@@ -9,16 +9,16 @@ val ktorVersion="2.3.12"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.6"
-val logstashEncoderVersion= "7.4"
-val mockkVersion="1.13.11"
+val logstashEncoderVersion= "8.0"
+val mockkVersion="1.13.12"
 val nimbusdsVersion="9.40"
 val smCommonVersion="2.0.8"
-val jacksonVersion="2.17.1"
-val kotlinVersion="2.0.0"
+val jacksonVersion="2.17.2"
+val kotlinVersion="2.0.10"
 val caffeineVersion="3.1.8"
 val kotestVersion="5.9.1"
 val ktfmtVersion="0.44"
-val snappyJavaVersion = "1.1.10.5"
+val snappyJavaVersion = "1.1.10.6"
 val diagnosekoderVersion = "1.2024.0"
 val jvmVersion = JvmTarget.JVM_21
 
@@ -31,7 +31,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.10"
     id("io.ktor.plugin") version "2.3.12"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.25.0"
