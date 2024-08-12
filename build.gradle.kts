@@ -12,7 +12,6 @@ val logbackVersion="1.5.6"
 val logstashEncoderVersion= "8.0"
 val mockkVersion="1.13.12"
 val nimbusdsVersion="9.40"
-val smCommonVersion="2.0.8"
 val jacksonVersion="2.17.2"
 val kotlinVersion="2.0.10"
 val caffeineVersion="3.1.8"
@@ -20,6 +19,7 @@ val kotestVersion="5.9.1"
 val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.6"
 val diagnosekoderVersion = "1.2024.0"
+val kafkaVersion = "3.8.0"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
@@ -68,9 +68,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
-    implementation("no.nav.helse:syfosm-common-models:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+    implementation("org.apache.kafka:kafka_2.12:$kafkaVersion")
+
     implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
     constraints {
         implementation("org.xerial.snappy:snappy-java:$snappyJavaVersion") {

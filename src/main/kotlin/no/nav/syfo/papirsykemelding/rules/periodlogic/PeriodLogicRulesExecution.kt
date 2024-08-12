@@ -21,7 +21,9 @@ class PeriodLogicRulesExecution(private val rootNode: PeriodLogicRuleTree = peri
     RuleExecution<PeriodLogicRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata).also { periodLogicRulePath ->
-            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${periodLogicRulePath.printRulePath()}")
+            logger.info(
+                "Rules for sykmeldingid ${sykmelding.id}, ${periodLogicRulePath.printRulePath()}"
+            )
         } to rootNode.second
 }
 

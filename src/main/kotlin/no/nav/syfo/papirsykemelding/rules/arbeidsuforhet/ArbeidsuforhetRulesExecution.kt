@@ -23,7 +23,9 @@ class ArbeidsuforhetRulesExecution(
 ) : RuleExecution<ArbeidsuforhetRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->
-            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${validationRulePath.printRulePath()}")
+            logger.info(
+                "Rules for sykmeldingid ${sykmelding.id}, ${validationRulePath.printRulePath()}"
+            )
         } to rootNode.second
 }
 

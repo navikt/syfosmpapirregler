@@ -22,7 +22,9 @@ class PatientAgeUnder13RulesExecution(
 ) : RuleExecution<PatientAgeUnder13Rules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata).also { patientAgeUnder13 ->
-            logger.info("Rules for sykmeldingid ${sykmelding.id}, ${patientAgeUnder13.printRulePath()}")
+            logger.info(
+                "Rules for sykmeldingid ${sykmelding.id}, ${patientAgeUnder13.printRulePath()}"
+            )
         } to rootNode.second
 }
 
