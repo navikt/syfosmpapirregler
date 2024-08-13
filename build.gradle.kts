@@ -20,6 +20,7 @@ val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.6"
 val diagnosekoderVersion = "1.2024.0"
 val kafkaVersion = "3.8.0"
+val commonsCompressVersion = "1.27.0"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
@@ -91,6 +92,12 @@ dependencies {
     testImplementation("io.kotest:kotest-property:$kotestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
+    }
+
+    constraints {
+        implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
+            because("Due to vulnerabilities, see CVE-2024-25710")
+        }
     }
 }
 
