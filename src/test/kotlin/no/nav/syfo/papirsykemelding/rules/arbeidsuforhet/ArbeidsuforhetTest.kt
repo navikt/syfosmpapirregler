@@ -1,8 +1,8 @@
 package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import io.kotest.core.spec.style.FunSpec
-import no.nav.helse.diagnosekoder.Diagnosekoder
 import java.time.LocalDate
+import no.nav.helse.diagnosekoder.Diagnosekoder
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Diagnose

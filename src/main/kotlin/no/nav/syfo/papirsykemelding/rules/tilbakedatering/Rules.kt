@@ -1,8 +1,8 @@
 package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
+import java.time.temporal.ChronoUnit
 import no.nav.helse.diagnosekoder.Diagnosekoder
 import no.nav.syfo.model.Diagnose
-import java.time.temporal.ChronoUnit
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.model.sortedTOMDate
