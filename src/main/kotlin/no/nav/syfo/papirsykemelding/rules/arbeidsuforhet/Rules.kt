@@ -44,7 +44,7 @@ val houvedDiagnoseEllerFraversgrunnMangler: ArbeidsuforhetRule = { sykmelding, _
     RuleResult(
         ruleInputs =
             mapOf(
-                "houvedDiagnoseEllerFraversgrunnMangler" to houvedDiagnoseEllerFraversgrunnMangler
+                "houvedDiagnoseEllerFraversgrunnMangler" to houvedDiagnoseEllerFraversgrunnMangler,
             ),
         rule = ArbeidsuforhetRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
         ruleResult = houvedDiagnoseEllerFraversgrunnMangler,
@@ -53,17 +53,14 @@ val houvedDiagnoseEllerFraversgrunnMangler: ArbeidsuforhetRule = { sykmelding, _
 
 val ugyldigKodeVerkHouvedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
-    val annenFravarsArsak = sykmelding.medisinskVurdering.annenFraversArsak
-
     val ugyldigKodeVerkHouvedDiagnose =
-        (hoveddiagnose?.system !in arrayOf(Diagnosekoder.ICPC2_CODE, Diagnosekoder.ICD10_CODE) ||
-            hoveddiagnose?.let { diagnose ->
-                if (diagnose.isICPC2()) {
-                    Diagnosekoder.icpc2.containsKey(diagnose.kode)
-                } else {
-                    Diagnosekoder.icd10.containsKey(diagnose.kode)
-                }
-            } != true) && annenFravarsArsak == null
+        hoveddiagnose?.let { diagnose ->
+            if (diagnose.isICPC2()) {
+                Diagnosekoder.icpc2.containsKey(diagnose.kode)
+            } else {
+                Diagnosekoder.icd10.containsKey(diagnose.kode)
+            }
+        } != true
 
     RuleResult(
         ruleInputs = mapOf("ugyldigKodeVerkHouvedDiagnose" to ugyldigKodeVerkHouvedDiagnose),
@@ -74,7 +71,6 @@ val ugyldigKodeVerkHouvedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
 
 val ugyldigKodeVerkBiDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
     val biDiagnoser = sykmelding.medisinskVurdering.biDiagnoser
-
     val ugyldigKodeVerkBiDiagnose =
         !biDiagnoser.all { diagnose ->
             if (diagnose.isICPC2()) {

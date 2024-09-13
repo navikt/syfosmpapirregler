@@ -6,6 +6,7 @@ import java.util.UUID
 import no.nav.helse.diagnosekoder.Diagnosekoder
 import no.nav.syfo.model.Adresse
 import no.nav.syfo.model.AktivitetIkkeMulig
+import no.nav.syfo.model.AnnenFraversArsak
 import no.nav.syfo.model.Arbeidsgiver
 import no.nav.syfo.model.AvsenderSystem
 import no.nav.syfo.model.Behandler
@@ -122,12 +123,13 @@ fun generateSykemelding(
     kontaktMedPasient: KontaktMedPasient = generateKontaktMedPasient(),
     diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
     biDiagnose: List<Diagnose> = emptyList(),
+    annenFravarArsak: AnnenFraversArsak? = null,
 ): Sykmelding {
     return Sykmelding(
         "1",
         "1",
         "2",
-        generateMedisinskVurdering(diagnose = diagnose, biDiagnose = biDiagnose),
+        generateMedisinskVurdering(diagnose = diagnose, biDiagnose = biDiagnose, annenFravarArsak),
         false,
         generateArbeidsgiver(),
         perioder,
@@ -216,14 +218,15 @@ fun generateArbeidsgiver(): Arbeidsgiver {
 
 fun generateMedisinskVurdering(
     diagnose: Diagnose? = Diagnosekoder.icpc2.values.stream().findFirst().get().toDiagnose(),
-    biDiagnose: List<Diagnose>
+    biDiagnose: List<Diagnose>,
+    annenFraversArsak: AnnenFraversArsak? = null,
 ): MedisinskVurdering {
     return MedisinskVurdering(
         hovedDiagnose = diagnose,
         biDiagnoser = biDiagnose,
+        annenFraversArsak = annenFraversArsak,
         svangerskap = false,
         yrkesskadeDato = null,
-        annenFraversArsak = null,
         yrkesskade = false,
     )
 }
