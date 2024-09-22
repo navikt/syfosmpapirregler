@@ -18,6 +18,7 @@ enum class PeriodLogicRules {
     AVVENTENDE_SYKMELDING_OVER_16_DAGER,
     FOR_MANGE_BEHANDLINGSDAGER_PER_UKE,
     GRADERT_SYKMELDING_OVER_99_PROSENT,
+    GRADERT_SYKMELDING_0_PROSENT,
 }
 
 val periodLogicRuleTree =
@@ -51,7 +52,13 @@ val periodLogicRuleTree =
                                             MANUAL_PROCESSING,
                                             PeriodLogicRuleHit.GRADERT_SYKMELDING_OVER_99_PROSENT
                                         )
-                                        no(OK)
+                                        no(PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT) {
+                                            yes(
+                                                MANUAL_PROCESSING,
+                                                PeriodLogicRuleHit.GRADERT_SYKMELDING_O_PROSENT
+                                            )
+                                            no(OK)
+                                        }
                                     }
                                 }
                             }
@@ -87,5 +94,7 @@ fun getRule(rules: PeriodLogicRules): Rule<PeriodLogicRules> {
         PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER -> avventendeOver16Dager
         PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE -> forMangeBehandlingsDagerPrUke
         PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT -> gradertOver99Prosent
+        PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT -> gradert0Prosent
+
     }
 }

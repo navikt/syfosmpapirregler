@@ -141,3 +141,15 @@ val gradertOver99Prosent: PeriodLogicRule = { sykmelding, _ ->
         ruleResult = gradertOver99Prosent,
     )
 }
+
+val gradert0Prosent: PeriodLogicRule = { sykmelding, _ ->
+    val perioder = sykmelding.perioder
+
+    val gradert0Prosent = perioder.mapNotNull { it.gradert }.any { it.grad == 0 }
+
+    RuleResult(
+        ruleInputs = mapOf("gradert0Prosent" to gradert0Prosent),
+        rule = PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT,
+        ruleResult = gradert0Prosent,
+    )
+}
