@@ -95,6 +95,5 @@ fun getRule(rules: PeriodLogicRules): Rule<PeriodLogicRules> {
         PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE -> forMangeBehandlingsDagerPrUke
         PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT -> gradertOver99Prosent
         PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT -> gradert0Prosent
-
     }
 }

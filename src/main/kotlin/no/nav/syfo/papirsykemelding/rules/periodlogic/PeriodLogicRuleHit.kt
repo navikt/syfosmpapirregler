@@ -107,15 +107,15 @@ enum class PeriodLogicRuleHit(
     ),
     GRADERT_SYKMELDING_O_PROSENT(
         ruleHit =
-        RuleHit(
-            rule = "GRADERT_SYKMELDING_O_PROSENT",
-            status = Status.MANUAL_PROCESSING,
-            messageForSender =
-            "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                "Hvis sykmeldingsgrad er 0% for delvis sykmelding avvises meldingen",
-            messageForUser =
-            "Sykmeldingsgraden kan ikke være lik 0% fordi det er en gradert sykmelding.",
-        ),
+            RuleHit(
+                rule = "GRADERT_SYKMELDING_O_PROSENT",
+                status = Status.MANUAL_PROCESSING,
+                messageForSender =
+                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
+                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
+                        "Hvis sykmeldingsgrad er 0% for delvis sykmelding avvises meldingen",
+                messageForUser =
+                    "Sykmeldingsgraden kan ikke være lik 0% fordi det er en gradert sykmelding.",
+            ),
     ),
 }

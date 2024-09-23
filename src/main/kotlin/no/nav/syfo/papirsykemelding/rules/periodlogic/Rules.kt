@@ -131,24 +131,24 @@ val forMangeBehandlingsDagerPrUke: PeriodLogicRule = { sykmelding, _ ->
 }
 
 val gradertOver99Prosent: PeriodLogicRule = { sykmelding, _ ->
-    val perioder = sykmelding.perioder
+    val gradertePerioder = sykmelding.perioder.mapNotNull { it.gradert }
 
-    val gradertOver99Prosent = perioder.mapNotNull { it.gradert }.any { it.grad > 99 }
+    val gradertOver99Prosent = gradertePerioder.any { it.grad > 99 }
 
     RuleResult(
-        ruleInputs = mapOf("gradertOver99Prosent" to gradertOver99Prosent),
+        ruleInputs = mapOf("gradertePerioder" to gradertePerioder),
         rule = PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT,
         ruleResult = gradertOver99Prosent,
     )
 }
 
 val gradert0Prosent: PeriodLogicRule = { sykmelding, _ ->
-    val perioder = sykmelding.perioder
+    val gradertePerioder = sykmelding.perioder.mapNotNull { it.gradert }
 
-    val gradert0Prosent = perioder.mapNotNull { it.gradert }.any { it.grad == 0 }
+    val gradert0Prosent = gradertePerioder.any { it.grad == 0 }
 
     RuleResult(
-        ruleInputs = mapOf("gradert0Prosent" to gradert0Prosent),
+        ruleInputs = mapOf("gradertePerioder" to gradertePerioder),
         rule = PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT,
         ruleResult = gradert0Prosent,
     )
