@@ -45,6 +45,7 @@ class PeriodLogicRulesTest :
                         PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
                         PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE to false,
                         PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false,
+                        PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT to false,
                     )
 
                 mapOf(
@@ -55,7 +56,7 @@ class PeriodLogicRulesTest :
                     "manglendeInnspillArbeidsgiver" to false,
                     "avventendeOver16Dager" to false,
                     "forMangeBehandlingsDagerPrUke" to false,
-                    "gradertOver99Prosent" to false,
+                    "gradertePerioder" to sykmelding.perioder.mapNotNull { it.gradert },
                 ) shouldBeEqualTo status.ruleInputs
 
                 status.treeResult.ruleHit shouldBeEqualTo null
@@ -379,8 +380,55 @@ class PeriodLogicRulesTest :
                 status.treeResult.ruleHit shouldBeEqualTo
                     PeriodLogicRuleHit.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE.ruleHit
             }
+            test("Gradert 0 prosent, Status MANUAL") {
+                val sykmelding =
+                    generateSykemelding(
+                        perioder =
+                            listOf(
+                                generatePeriode(
+                                    fom = LocalDate.now(),
+                                    tom = LocalDate.now(),
+                                    gradert = generateGradert(grad = 0),
+                                ),
+                            ),
+                    )
 
-            test("Gradert over 99 prosent, Status INVALID") {
+                val ruleMetadata = sykmelding.toRuleMetadata()
+
+                val status =
+                    ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
+
+                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+                status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+                    listOf(
+                        PeriodLogicRules.PERIODER_MANGLER to false,
+                        PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
+                        PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
+                        PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                        PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
+                        PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
+                        PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
+                        PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE to false,
+                        PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false,
+                        PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT to true,
+                    )
+
+                mapOf(
+                    "perioder" to sykmelding.perioder,
+                    "periodeRanges" to
+                        sykmelding.perioder.sortedBy { it.fom }.map { it.fom to it.tom },
+                    "perioder" to sykmelding.perioder,
+                    "avventendeKombinert" to false,
+                    "manglendeInnspillArbeidsgiver" to false,
+                    "avventendeOver16Dager" to false,
+                    "forMangeBehandlingsDagerPrUke" to false,
+                    "gradertePerioder" to sykmelding.perioder.mapNotNull { it.gradert },
+                ) shouldBeEqualTo status.ruleInputs
+
+                status.treeResult.ruleHit shouldBeEqualTo
+                    PeriodLogicRuleHit.GRADERT_SYKMELDING_O_PROSENT.ruleHit
+            }
+            test("Gradert over 99 prosent, Status MANUAL") {
                 val sykmelding =
                     generateSykemelding(
                         perioder =
@@ -421,7 +469,7 @@ class PeriodLogicRulesTest :
                     "manglendeInnspillArbeidsgiver" to false,
                     "avventendeOver16Dager" to false,
                     "forMangeBehandlingsDagerPrUke" to false,
-                    "gradertOver99Prosent" to true,
+                    "gradertePerioder" to sykmelding.perioder.mapNotNull { it.gradert },
                 ) shouldBeEqualTo status.ruleInputs
 
                 status.treeResult.ruleHit shouldBeEqualTo
