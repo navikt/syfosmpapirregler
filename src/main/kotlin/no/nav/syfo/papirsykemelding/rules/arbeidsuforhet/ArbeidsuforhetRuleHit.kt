@@ -17,15 +17,6 @@ private fun getJuridiskHenvisning(): JuridiskHenvisning =
 enum class ArbeidsuforhetRuleHit(
     val ruleHit: RuleHit,
 ) {
-    UKJENT_DIAGNOSEKODETYPE(
-        ruleHit =
-            RuleHit(
-                rule = "UKJENT_DIAGNOSEKODETYPE",
-                status = Status.MANUAL_PROCESSING,
-                messageForSender = "Ukjent diagnosekode er benyttet.",
-                messageForUser = "Den må ha en kjent diagnosekode.",
-            ),
-    ),
     ICPC_2_Z_DIAGNOSE(
         ruleHit =
             RuleHit(
@@ -36,14 +27,17 @@ enum class ArbeidsuforhetRuleHit(
                 messageForUser = "Den må ha en gyldig diagnosekode som gir rett til sykepenger.",
             ),
     ),
-    HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER(
+    FRAVAERSGRUNN_MANGLER(
         ruleHit =
-            RuleHit(
-                rule = "HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER",
-                status = Status.MANUAL_PROCESSING,
-                messageForSender = "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler.",
-                messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
-            ),
+        RuleHit(
+            rule = "FRAVAERSGRUNN_MANGLER",
+            status = Status.MANUAL_PROCESSING,
+            messageForSender =
+            "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
+                "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
+                "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
+            messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
+        ),
     ),
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
         ruleHit =
