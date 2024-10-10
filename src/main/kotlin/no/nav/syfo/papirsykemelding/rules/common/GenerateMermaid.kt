@@ -1,7 +1,7 @@
 package no.nav.syfo.papirsykemelding.rules.common
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTree
+import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTreeNew
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeNode
@@ -20,7 +20,7 @@ fun main() {
             "Validation" to validationRuleTree,
             "Periode validering" to periodLogicRuleTree,
             "HPR" to hprRuleTree,
-            "Arbeidsuforhet" to arbeidsuforhetRuleTree,
+            "Arbeidsuforhet" to arbeidsuforhetRuleTreeNew,
             "Pasient under 13" to patientAgeUnder13RuleTree,
             "Periode" to periodeRuleTree,
             "Tilbakedatering" to tilbakedateringRuleTree,

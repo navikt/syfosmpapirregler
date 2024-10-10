@@ -3,7 +3,7 @@ package no.nav.syfo.papirsykemelding.service
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.ArbeidsuforhetRulesExecution
-import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTree
+import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTreeNew
 import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
@@ -31,7 +31,7 @@ class RuleExecutionService {
             ValidationRulesExecution(validationRuleTree),
             PeriodLogicRulesExecution(periodLogicRuleTree),
             HPRRulesExecution(hprRuleTree),
-            ArbeidsuforhetRulesExecution(arbeidsuforhetRuleTree),
+            ArbeidsuforhetRulesExecution(arbeidsuforhetRuleTreeNew),
             PatientAgeUnder13RulesExecution(patientAgeUnder13RuleTree),
             PeriodeRulesExecution(periodeRuleTree),
             TilbakedateringRulesExecution(tilbakedateringRuleTree),

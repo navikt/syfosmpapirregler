@@ -19,7 +19,7 @@ typealias ArbeidsuforhetTreeOutput = TreeOutput<ArbeidsuforhetRules, RuleResult>
 typealias ArbeidsuforhetTreeNode = Pair<TreeNode<ArbeidsuforhetRules, RuleResult>, Juridisk>
 
 class ArbeidsuforhetRulesExecution(
-    private val rootNode: ArbeidsuforhetTreeNode = arbeidsuforhetRuleTree
+    private val rootNode: ArbeidsuforhetTreeNode = arbeidsuforhetRuleTreeNew
 ) : RuleExecution<ArbeidsuforhetRules> {
     override fun runRules(sykmelding: Sykmelding, ruleMetadata: RuleMetadataSykmelding) =
         rootNode.first.evaluate(sykmelding, ruleMetadata.ruleMetadata).also { validationRulePath ->

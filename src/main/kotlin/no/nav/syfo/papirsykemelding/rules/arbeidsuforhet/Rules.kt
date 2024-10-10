@@ -6,21 +6,11 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 
+object EmptyObject {}
+
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 
 typealias ArbeidsuforhetRule = Rule<ArbeidsuforhetRules>
-
-val ukjentDiagnoseKodeType: ArbeidsuforhetRule = { sykmelding, _ ->
-    val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
-
-    val ukjentDiagnoseKodeType = hoveddiagnose != null && hoveddiagnose.system !in Diagnosekoder
-
-    RuleResult(
-        ruleInputs = mapOf("ukjentDiagnoseKodeType" to ukjentDiagnoseKodeType),
-        rule = ArbeidsuforhetRules.UKJENT_DIAGNOSEKODETYPE,
-        ruleResult = ukjentDiagnoseKodeType,
-    )
-}
 
 val icpc2ZDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
@@ -35,25 +25,38 @@ val icpc2ZDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
     )
 }
 
-val houvedDiagnoseEllerFraversgrunnMangler: ArbeidsuforhetRule = { sykmelding, _ ->
-    val annenFraversArsak = sykmelding.medisinskVurdering.annenFraversArsak
-    val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
-
-    val houvedDiagnoseEllerFraversgrunnMangler = annenFraversArsak == null && hoveddiagnose == null
+val manglerHovedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
+    val hovedDiagnose = sykmelding.medisinskVurdering.hovedDiagnose
 
     RuleResult(
         ruleInputs =
-            mapOf(
-                "houvedDiagnoseEllerFraversgrunnMangler" to houvedDiagnoseEllerFraversgrunnMangler,
-            ),
-        rule = ArbeidsuforhetRules.HOVEDDIAGNOSE_ELLER_FRAVAERSGRUNN_MANGLER,
-        ruleResult = houvedDiagnoseEllerFraversgrunnMangler,
+        mapOf(
+            "hovedDiagnose" to (hovedDiagnose ?: EmptyObject),
+        ),
+        rule = ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER,
+        ruleResult = hovedDiagnose == null,
     )
 }
 
-val ugyldigKodeVerkHouvedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
+val manglerAnnenFravarsArsak: ArbeidsuforhetRule = { sykmelding, _ ->
+    val annenFraversArsak = sykmelding.medisinskVurdering.annenFraversArsak
+
+    val fraversgrunnMangler =
+        (annenFraversArsak?.let { it.grunn.isEmpty() && it.beskrivelse.isNullOrBlank() } ?: true)
+
+    RuleResult(
+        ruleInputs =
+        mapOf(
+            "annenFraversArsak" to (annenFraversArsak ?: EmptyObject),
+        ),
+        rule = ArbeidsuforhetRules.FRAVAERSGRUNN_MANGLER,
+        ruleResult = fraversgrunnMangler,
+    )
+}
+
+val ugyldigKodeVerkHovedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
     val hoveddiagnose = sykmelding.medisinskVurdering.hovedDiagnose
-    val ugyldigKodeVerkHouvedDiagnose =
+    val ugyldigKodeVerkHovedDiagnose =
         hoveddiagnose?.let { diagnose ->
             if (diagnose.isICPC2()) {
                 Diagnosekoder.icpc2.containsKey(diagnose.kode)
@@ -63,9 +66,9 @@ val ugyldigKodeVerkHouvedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
         } != true
 
     RuleResult(
-        ruleInputs = mapOf("ugyldigKodeVerkHouvedDiagnose" to ugyldigKodeVerkHouvedDiagnose),
+        ruleInputs = mapOf("ugyldigKodeverkHovedDiagnose" to ugyldigKodeVerkHovedDiagnose),
         rule = ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE,
-        ruleResult = ugyldigKodeVerkHouvedDiagnose,
+        ruleResult = ugyldigKodeVerkHovedDiagnose,
     )
 }
 
@@ -81,7 +84,7 @@ val ugyldigKodeVerkBiDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
         }
 
     RuleResult(
-        ruleInputs = mapOf("ugyldigKodeVerkBiDiagnose" to ugyldigKodeVerkBiDiagnose),
+        ruleInputs = mapOf("ugyldigKodeVerkBiDiagnose" to biDiagnoser),
         rule = ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE,
         ruleResult = ugyldigKodeVerkBiDiagnose,
     )
