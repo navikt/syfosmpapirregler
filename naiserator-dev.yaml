@@ -57,9 +57,11 @@ spec:
           namespace: flex
           cluster: dev-gcp
         - application: syfohelsenettproxy
+        - application: btsys-api
+          namespace: team-rocket
+          cluster: dev-gcp
       external:
         - host: pdl-api.dev-fss-pub.nais.io
-        - host: btsys-api.intern.dev.nav.no
   kafka:
     pool: nav-dev
   secureLogs:
@@ -73,8 +75,6 @@ spec:
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: PDL_SCOPE
       value: api://dev-fss.pdl.pdl-api/.default
-    - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
-      value: https://btsys-api.intern.dev.nav.no
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
       value: api://dev-gcp.team-rocket.btsys-api/.default
     - name: SMREGISTER_AUDIENCE
