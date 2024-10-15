@@ -9,28 +9,29 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.*
 import java.nio.file.Paths
 
-fun TestApplicationEngine.setUpTestApplication() {
-    start(true)
-    application.install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+fun ApplicationTestBuilder.setUpTestApplication() {
+    application {
+        install(ContentNegotiation) {
+            jackson {
+                registerModule(JavaTimeModule())
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            }
         }
-    }
-    application.install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
+        install(StatusPages) {
+            exception<Throwable> { call, cause ->
+                call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
 
-            logger.error("Caught exception while trying to validate against rules", cause)
-            throw cause
+                logger.error("Caught exception while trying to validate against rules", cause)
+                throw cause
+            }
         }
     }
 }
 
-fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): EnvironmentVariables {
+fun ApplicationTestBuilder.setUpAuth(jwkKeysUrl: String = "url"): EnvironmentVariables {
     val env =
         EnvironmentVariables(
             helsenettproxyScope = "",
@@ -52,7 +53,6 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url"): EnvironmentVari
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()
     val jwkProvider = JwkProviderBuilder(uri).build()
-
-    application.setupAuth(env, jwkProvider)
+    application { setupAuth(env, jwkProvider) }
     return env
 }

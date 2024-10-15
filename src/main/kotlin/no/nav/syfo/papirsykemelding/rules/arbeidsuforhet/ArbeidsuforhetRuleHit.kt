@@ -29,15 +29,15 @@ enum class ArbeidsuforhetRuleHit(
     ),
     FRAVAERSGRUNN_MANGLER(
         ruleHit =
-        RuleHit(
-            rule = "FRAVAERSGRUNN_MANGLER",
-            status = Status.MANUAL_PROCESSING,
-            messageForSender =
-            "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
-                "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
-                "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
-            messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
-        ),
+            RuleHit(
+                rule = "FRAVAERSGRUNN_MANGLER",
+                status = Status.MANUAL_PROCESSING,
+                messageForSender =
+                    "Sykmeldingen kan ikke rettes, det må skrives en ny. " +
+                        "Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
+                        "Hoveddiagnose eller annen lovfestet fraværsgrunn mangler. ",
+                messageForUser = "Den må ha en hoveddiagnose eller en annen gyldig fraværsgrunn.",
+            ),
     ),
     UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE(
         ruleHit =

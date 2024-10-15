@@ -1,6 +1,5 @@
 package no.nav.syfo.papirsykemelding.service
 
-import io.kotest.core.spec.style.FunSpec
 import io.mockk.mockk
 import io.mockk.verify
 import java.time.LocalDateTime
@@ -18,89 +17,85 @@ import no.nav.syfo.ruleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.junit.jupiter.api.Test
 
-class JuridiskVurderingServiceTest :
-    FunSpec({
-        val kafkaProducer = mockk<KafkaProducer<String, JuridiskVurderingResult>>(relaxed = true)
-        val juridiskVurderingTopic = "topic"
-        val juridiskVurderingService =
-            JuridiskVurderingService(kafkaProducer, juridiskVurderingTopic, "versjon")
+internal class JuridiskVurderingServiceTest {
 
-        context("Test juridiskVudering") {
-            test("Returns juridiskVurderingResult is OK") {
-                val receivedSykmelding =
-                    ReceivedSykmelding(
-                        sykmelding = generateSykemelding(),
-                        personNrPasient = "1231231",
-                        tlfPasient = "1323423424",
-                        personNrLege = "123134",
-                        legeHprNr = "123219",
-                        legeHelsepersonellkategori = "LE",
-                        navLogId = "4d3fad98-6c40-47ec-99b6-6ca7c98aa5ad",
-                        msgId = "06b2b55f-c2c5-4ee0-8e0a-6e252ec2a550",
-                        legekontorOrgNr = "444333",
-                        legekontorOrgName = "Helese sentar",
-                        legekontorHerId = "33",
-                        legekontorReshId = "1313",
-                        mottattDato = LocalDateTime.now(),
-                        rulesetVersion = "2",
-                        fellesformat = "",
-                        tssid = "13415",
-                        merknader = null,
-                        partnerreferanse = "16524",
-                        vedlegg = null,
-                        utenlandskSykmelding = null,
-                    )
+    val kafkaProducer = mockk<KafkaProducer<String, JuridiskVurderingResult>>(relaxed = true)
+    val juridiskVurderingTopic = "topic"
+    val juridiskVurderingService =
+        JuridiskVurderingService(kafkaProducer, juridiskVurderingTopic, "versjon")
 
-                val ruleMetadata =
-                    ruleMetadataSykmelding(receivedSykmelding.sykmelding.toRuleMetadata())
+    @Test
+    internal fun `juridiskVudering returns juridiskVurderingResult is OK`() {
+        val receivedSykmelding =
+            ReceivedSykmelding(
+                sykmelding = generateSykemelding(),
+                personNrPasient = "1231231",
+                tlfPasient = "1323423424",
+                personNrLege = "123134",
+                legeHprNr = "123219",
+                legeHelsepersonellkategori = "LE",
+                navLogId = "4d3fad98-6c40-47ec-99b6-6ca7c98aa5ad",
+                msgId = "06b2b55f-c2c5-4ee0-8e0a-6e252ec2a550",
+                legekontorOrgNr = "444333",
+                legekontorOrgName = "Helese sentar",
+                legekontorHerId = "33",
+                legekontorReshId = "1313",
+                mottattDato = LocalDateTime.now(),
+                rulesetVersion = "2",
+                fellesformat = "",
+                tssid = "13415",
+                merknader = null,
+                partnerreferanse = "16524",
+                vedlegg = null,
+                utenlandskSykmelding = null,
+            )
 
-                val result =
-                    ArbeidsuforhetRulesExecution()
-                        .runRules(
-                            sykmelding = receivedSykmelding.sykmelding,
-                            ruleMetadata = ruleMetadata,
-                        )
-                val results = listOf(result)
-                juridiskVurderingService.processRuleResults(receivedSykmelding, results)
+        val ruleMetadata = ruleMetadataSykmelding(receivedSykmelding.sykmelding.toRuleMetadata())
 
-                val juridiskVurderingResult =
-                    JuridiskVurderingResult(
-                        listOf(
-                            JuridiskVurdering(
-                                id = UUID.randomUUID().toString(),
-                                eventName = JuridiskVurderingService.EVENT_NAME,
-                                version = JuridiskVurderingService.VERSION,
-                                kilde = JuridiskVurderingService.KILDE,
-                                versjonAvKode = "versjon",
-                                fodselsnummer = receivedSykmelding.personNrPasient,
-                                juridiskHenvisning =
-                                    (result.second as MedJuridisk).juridiskHenvisning,
-                                sporing =
-                                    mapOf(
-                                        "sykmelding" to receivedSykmelding.sykmelding.id,
-                                    ),
-                                input = result.first.ruleInputs,
-                                utfall = toJuridiskUtfall(result.first.treeResult.status),
-                                tidsstempel = ZonedDateTime.now(ZoneOffset.UTC),
+        val result =
+            ArbeidsuforhetRulesExecution()
+                .runRules(
+                    sykmelding = receivedSykmelding.sykmelding,
+                    ruleMetadata = ruleMetadata,
+                )
+        val results = listOf(result)
+        juridiskVurderingService.processRuleResults(receivedSykmelding, results)
+
+        val juridiskVurderingResult =
+            JuridiskVurderingResult(
+                listOf(
+                    JuridiskVurdering(
+                        id = UUID.randomUUID().toString(),
+                        eventName = JuridiskVurderingService.EVENT_NAME,
+                        version = JuridiskVurderingService.VERSION,
+                        kilde = JuridiskVurderingService.KILDE,
+                        versjonAvKode = "versjon",
+                        fodselsnummer = receivedSykmelding.personNrPasient,
+                        juridiskHenvisning = (result.second as MedJuridisk).juridiskHenvisning,
+                        sporing =
+                            mapOf(
+                                "sykmelding" to receivedSykmelding.sykmelding.id,
                             ),
-                        ),
-                    )
-                verify {
-                    kafkaProducer.send(
-                        match<ProducerRecord<String, JuridiskVurderingResult>> {
-                            val firstResult = it.value().juridiskeVurderinger.first()
-                            firstResult.juridiskHenvisning ==
-                                juridiskVurderingResult.juridiskeVurderinger
-                                    .first()
-                                    .juridiskHenvisning &&
-                                firstResult.utfall == toJuridiskUtfall(Status.OK)
-                        },
-                    )
-                }
-            }
+                        input = result.first.ruleInputs,
+                        utfall = toJuridiskUtfall(result.first.treeResult.status),
+                        tidsstempel = ZonedDateTime.now(ZoneOffset.UTC),
+                    ),
+                ),
+            )
+        verify {
+            kafkaProducer.send(
+                match<ProducerRecord<String, JuridiskVurderingResult>> {
+                    val firstResult = it.value().juridiskeVurderinger.first()
+                    firstResult.juridiskHenvisning ==
+                        juridiskVurderingResult.juridiskeVurderinger.first().juridiskHenvisning &&
+                        firstResult.utfall == toJuridiskUtfall(Status.OK)
+                },
+            )
         }
-    })
+    }
+}
 
 fun toJuridiskUtfall(status: Status) =
     when (status) {
