@@ -5,7 +5,7 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion="1.9.0"
-val ktorVersion="2.3.12"
+val ktorVersion="3.0.0"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.8"
@@ -13,14 +13,13 @@ val logstashEncoderVersion= "8.0"
 val mockkVersion="1.13.12"
 val nimbusdsVersion="9.41.2"
 val jacksonVersion="2.18.0"
-val kotlinVersion="2.0.20"
+val kotlinVersion="2.0.21"
 val caffeineVersion="3.1.8"
-val kotestVersion="5.9.1"
 val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.7"
 val diagnosekoderVersion = "1.2024.0"
 val kafkaVersion = "3.8.0"
-val commonsCompressVersion = "1.27.1"
+val junitJupiterVersion = "5.11.1"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
@@ -32,8 +31,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.0.20"
-    id("io.ktor.plugin") version "2.3.12"
+    kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version "8.3.3"
     id("com.diffplug.spotless") version "6.25.0"
 }
@@ -70,13 +68,13 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("org.apache.kafka:kafka_2.12:$kafkaVersion")
-
-    implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
     constraints {
         implementation("org.xerial.snappy:snappy-java:$snappyJavaVersion") {
             because("override transient from org.apache.kafka:kafka_2.12")
         }
     }
+
+    implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -87,18 +85,11 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-    testImplementation("io.kotest:kotest-property:$kotestVersion")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
-        exclude(group = "org.eclipse.jetty")
-    }
-
-    constraints {
-        implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
-            because("Due to vulnerabilities, see CVE-2024-25710")
-        }
-    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
 
 kotlin {

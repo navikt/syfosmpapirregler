@@ -30,9 +30,9 @@ val manglerHovedDiagnose: ArbeidsuforhetRule = { sykmelding, _ ->
 
     RuleResult(
         ruleInputs =
-        mapOf(
-            "hovedDiagnose" to (hovedDiagnose ?: EmptyObject),
-        ),
+            mapOf(
+                "hovedDiagnose" to (hovedDiagnose ?: EmptyObject),
+            ),
         rule = ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER,
         ruleResult = hovedDiagnose == null,
     )
@@ -46,9 +46,9 @@ val manglerAnnenFravarsArsak: ArbeidsuforhetRule = { sykmelding, _ ->
 
     RuleResult(
         ruleInputs =
-        mapOf(
-            "annenFraversArsak" to (annenFraversArsak ?: EmptyObject),
-        ),
+            mapOf(
+                "annenFraversArsak" to (annenFraversArsak ?: EmptyObject),
+            ),
         rule = ArbeidsuforhetRules.FRAVAERSGRUNN_MANGLER,
         ruleResult = fraversgrunnMangler,
     )

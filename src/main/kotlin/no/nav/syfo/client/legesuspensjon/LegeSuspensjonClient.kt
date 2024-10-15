@@ -8,7 +8,6 @@ import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.utils.io.errors.IOException
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.legesuspensjon.model.Suspendert
 import no.nav.syfo.helpers.retry
@@ -58,7 +57,7 @@ class LegeSuspensjonClient(
                         httpResponse.status,
                         ediloggid
                     )
-                    throw IOException(
+                    throw kotlinx.io.IOException(
                         "Btsys svarte med uventet kode ${httpResponse.status} for $ediloggid"
                     )
                 }

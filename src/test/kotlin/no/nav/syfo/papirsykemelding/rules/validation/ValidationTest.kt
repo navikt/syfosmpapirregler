@@ -1,6 +1,5 @@
 package no.nav.syfo.papirsykemelding.rules.validation
 
-import io.kotest.core.spec.style.FunSpec
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import no.nav.syfo.client.norskhelsenett.Behandler
@@ -12,102 +11,109 @@ import no.nav.syfo.papirsykemelding.service.BehandlerOgStartdato
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 import no.nav.syfo.papirsykemelding.service.SykmeldingMetadataInfo
 import no.nav.syfo.validering.validatePersonAndDNumber
-import org.amshove.kluent.shouldBeEqualTo
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
 
-class ValidationTest :
-    FunSpec({
-        val ruleTree = ValidationRulesExecution()
+internal class ValidationTest {
 
-        context("Testing validation rules and checking the rule outcomes") {
-            test("Alt ok, Status OK") {
-                val person14Years = LocalDate.now().minusYears(14)
+    private val ruleTree = ValidationRulesExecution()
 
-                val sykmelding =
-                    generateSykemelding(
-                        diagnose =
-                            Diagnose(
-                                system = "2.16.578.1.12.4.1.1.7170",
-                                kode = "R24",
-                                tekst = "Blodig oppspytt/hemoptyse",
-                            ),
-                    )
+    @Test
+    internal fun `Testing validation rules and checking the rule outcomes alt ok, Status OK`() {
 
-                val ruleMetadata =
-                    RuleMetadata(
-                        signatureDate = LocalDate.now().atStartOfDay(),
-                        receivedDate = LocalDate.now().atStartOfDay(),
-                        behandletTidspunkt = LocalDate.now().atStartOfDay(),
-                        patientPersonNumber = generatePersonNumber(person14Years, false),
-                        rulesetVersion = null,
-                        legekontorOrgnr = null,
-                        tssid = null,
-                        pasientFodselsdato = person14Years,
-                    )
+        val person14Years = LocalDate.now().minusYears(14)
 
-                val ruleMetadataSykmelding = ruleMetadataSykmelding(ruleMetadata)
+        val sykmelding =
+            generateSykemelding(
+                diagnose =
+                    Diagnose(
+                        system = "2.16.578.1.12.4.1.1.7170",
+                        kode = "R24",
+                        tekst = "Blodig oppspytt/hemoptyse",
+                    ),
+            )
 
-                val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
+        val ruleMetadata =
+            RuleMetadata(
+                signatureDate = LocalDate.now().atStartOfDay(),
+                receivedDate = LocalDate.now().atStartOfDay(),
+                behandletTidspunkt = LocalDate.now().atStartOfDay(),
+                patientPersonNumber = generatePersonNumber(person14Years, false),
+                rulesetVersion = null,
+                legekontorOrgnr = null,
+                tssid = null,
+                pasientFodselsdato = person14Years,
+            )
 
-                status.treeResult.status shouldBeEqualTo Status.OK
-                status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
-                    listOf(
-                        ValidationRules.UGYLDIG_ORGNR_LENGDE to false,
-                    )
+        val ruleMetadataSykmelding = ruleMetadataSykmelding(ruleMetadata)
 
-                mapOf(
-                    "legekontorOrgnummer" to "",
-                    "ugyldingOrgNummerLengde" to false,
-                ) shouldBeEqualTo status.ruleInputs
+        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
 
-                status.treeResult.ruleHit shouldBeEqualTo null
-            }
+        assertEquals(Status.OK, status.treeResult.status)
+        assertEquals(
+            listOf(
+                ValidationRules.UGYLDIG_ORGNR_LENGDE to false,
+            ),
+            status.rulePath.map { it.rule to it.ruleResult },
+        )
+        assertEquals(
+            mapOf(
+                "legekontorOrgnummer" to "",
+                "ugyldingOrgNummerLengde" to false,
+            ),
+            status.ruleInputs,
+        )
+        assertEquals(null, status.treeResult.ruleHit)
+    }
 
-            test("ugyldig orgnummer legende, Status MANUAL_PROCESSING") {
-                val person31Years = LocalDate.now().minusYears(31)
+    @Test
+    internal fun `Testing validation rules and checking the rule outcomes ugyldig orgnummer legende, Status MANUAL_PROCESSING`() {
 
-                val sykmelding =
-                    generateSykemelding(
-                        diagnose =
-                            Diagnose(
-                                system = "2.16.578.1.12.4.1.1.7170",
-                                kode = "R24",
-                                tekst = "Blodig oppspytt/hemoptyse",
-                            ),
-                    )
+        val person31Years = LocalDate.now().minusYears(31)
 
-                val ruleMetadata =
-                    RuleMetadata(
-                        signatureDate = LocalDate.now().atStartOfDay(),
-                        receivedDate = LocalDate.now().atStartOfDay(),
-                        behandletTidspunkt = LocalDate.now().atStartOfDay(),
-                        patientPersonNumber = generatePersonNumber(person31Years, false),
-                        rulesetVersion = "2",
-                        legekontorOrgnr = "1232344231",
-                        tssid = null,
-                        pasientFodselsdato = person31Years,
-                    )
+        val sykmelding =
+            generateSykemelding(
+                diagnose =
+                    Diagnose(
+                        system = "2.16.578.1.12.4.1.1.7170",
+                        kode = "R24",
+                        tekst = "Blodig oppspytt/hemoptyse",
+                    ),
+            )
 
-                val status =
-                    ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
+        val ruleMetadata =
+            RuleMetadata(
+                signatureDate = LocalDate.now().atStartOfDay(),
+                receivedDate = LocalDate.now().atStartOfDay(),
+                behandletTidspunkt = LocalDate.now().atStartOfDay(),
+                patientPersonNumber = generatePersonNumber(person31Years, false),
+                rulesetVersion = "2",
+                legekontorOrgnr = "1232344231",
+                tssid = null,
+                pasientFodselsdato = person31Years,
+            )
 
-                status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-                status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
-                    listOf(
-                        ValidationRules.UGYLDIG_ORGNR_LENGDE to true,
-                    )
+        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
 
-                mapOf(
-                    "legekontorOrgnummer" to ruleMetadata.legekontorOrgnr,
-                    "ugyldingOrgNummerLengde" to true,
-                ) shouldBeEqualTo status.ruleInputs
-
-                status.treeResult.ruleHit shouldBeEqualTo
-                    ValidationRuleHit.UGYLDIG_ORGNR_LENGDE.ruleHit
-            }
-        }
-    })
+        assertEquals(Status.MANUAL_PROCESSING, status.treeResult.status)
+        assertEquals(
+            listOf(
+                ValidationRules.UGYLDIG_ORGNR_LENGDE to true,
+            ),
+            status.rulePath.map { it.rule to it.ruleResult },
+        )
+        assertEquals(
+            mapOf(
+                "legekontorOrgnummer" to ruleMetadata.legekontorOrgnr,
+                "ugyldingOrgNummerLengde" to true,
+            ),
+            status.ruleInputs,
+        )
+        assertEquals(ValidationRuleHit.UGYLDIG_ORGNR_LENGDE.ruleHit, status.treeResult.ruleHit)
+    }
+}
 
 fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) =
     RuleMetadataSykmelding(
