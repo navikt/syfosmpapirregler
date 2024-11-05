@@ -11,7 +11,7 @@ val kluentVersion="1.73"
 val logbackVersion="1.5.12"
 val logstashEncoderVersion= "8.0"
 val mockkVersion="1.13.13"
-val nimbusdsVersion="9.44"
+val nimbusdsVersion="9.45"
 val jacksonVersion="2.18.1"
 val kotlinVersion="2.0.21"
 val caffeineVersion="3.1.8"
@@ -32,7 +32,7 @@ application {
 plugins {
     id("application")
     kotlin("jvm") version "2.0.21"
-    id("com.gradleup.shadow") version "8.3.4"
+    id("com.gradleup.shadow") version "8.3.5"
     id("com.diffplug.spotless") version "6.25.0"
 }
 
