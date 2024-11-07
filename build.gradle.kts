@@ -18,7 +18,7 @@ val caffeineVersion="3.1.8"
 val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.7"
 val diagnosekoderVersion = "1.2024.1"
-val kafkaVersion = "3.8.1"
+val kafkaVersion = "3.9.0"
 val junitJupiterVersion = "5.11.3"
 val jvmVersion = JvmTarget.JVM_21
 
