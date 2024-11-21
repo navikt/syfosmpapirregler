@@ -47,6 +47,7 @@ spec:
       rules:
         - application: syfosmpapirmottak
         - application: smregistrering-backend
+        - application: syk-dig-backend
     outbound:
       rules:
         - application: syfosmregister

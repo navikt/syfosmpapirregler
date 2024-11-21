@@ -48,6 +48,7 @@ spec:
         - application: syfosmpapirmottak
         - application: smregistrering-backend
         - application: teamsykmelding-mock
+        - application: syk-dig-backend
     outbound:
       rules:
         - application: syfosmregister
