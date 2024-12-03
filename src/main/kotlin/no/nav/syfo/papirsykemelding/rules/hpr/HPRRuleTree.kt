@@ -48,8 +48,8 @@ val hprRuleTree =
         MedJuridisk(
             JuridiskHenvisning(
                 lovverk = Lovverk.HELSEPERSONELLOVEN,
-                paragraf = "3",
-                ledd = null,
+                paragraf = "8-7",
+                ledd = 1,
                 punktum = null,
                 bokstav = null,
             )
