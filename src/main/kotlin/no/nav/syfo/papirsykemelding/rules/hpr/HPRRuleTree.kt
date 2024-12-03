@@ -47,7 +47,7 @@ val hprRuleTree =
     } to
         MedJuridisk(
             JuridiskHenvisning(
-                lovverk = Lovverk.HELSEPERSONELLOVEN,
+                lovverk = Lovverk.FOLKETRYGDLOVEN,
                 paragraf = "8-7",
                 ledd = 1,
                 punktum = null,
