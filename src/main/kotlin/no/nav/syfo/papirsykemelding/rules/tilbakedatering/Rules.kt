@@ -14,7 +14,7 @@ import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.E
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.FORLENGELSE
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.SPESIALISTHELSETJENESTEN
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
-import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_30_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_1_MAANED
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
 
@@ -38,8 +38,8 @@ val tilbakedateringInntil30Dager: TilbakedateringRule = { sykmelding, _ ->
     val genereringstidspunkt = sykmelding.signaturDato.toLocalDate()
     RuleResult(
         ruleInputs = mapOf("fom" to fom, "genereringstidspunkt" to genereringstidspunkt),
-        rule = TILBAKEDATERT_INNTIL_30_DAGER,
-        ruleResult = genereringstidspunkt.isBefore(fom.plusDays(31)),
+        rule = TILBAKEDATERT_INNTIL_1_MAANED,
+        ruleResult = genereringstidspunkt.isBefore(fom.plusMonths(1).plusDays(1)),
     )
 }
 
