@@ -30,10 +30,10 @@ enum class TilbakedateringRuleHit(
                     "Sykmeldingen er tilbakedatert uten tilstrekkelig begrunnelse fra den som sykmeldte deg.",
             ),
     ),
-    INNTIL_30_DAGER(
+    INNTIL_1_MAANED(
         ruleHit =
             RuleHit(
-                rule = "INNTIL_30_DAGER",
+                rule = "INNTIL_1_MAANED",
                 status = Status.MANUAL_PROCESSING,
                 messageForSender =
                     "Sykmeldingen kan ikke rettes, det må skrives en ny. Pasienten har fått beskjed om å vente på ny sykmelding fra deg. Grunnet følgende:" +
@@ -42,20 +42,20 @@ enum class TilbakedateringRuleHit(
                     "Sykmeldingen er tilbakedatert uten tilstrekkelig begrunnelse fra den som sykmeldte deg.",
             ),
     ),
-    INNTIL_30_DAGER_MED_BEGRUNNELSE(
+    INNTIL_1_MAANED_MED_BEGRUNNELSE(
         ruleHit =
             RuleHit(
-                rule = "INNTIL_30_DAGER_MED_BEGRUNNELSE",
+                rule = "INNTIL_1_MAANED_MED_BEGRUNNELSE",
                 status = Status.MANUAL_PROCESSING,
                 messageForSender =
                     "Første sykmelding er tilbakedatert og felt 11.2 (begrunnelse) er utfylt",
                 messageForUser = "Sykmeldingen blir manuelt behandlet fordi den er tilbakedatert",
             ),
     ),
-    OVER_30_DAGER(
+    OVER_1_MAANED(
         ruleHit =
             RuleHit(
-                rule = "OVER_30_DAGER",
+                rule = "OVER_1_MAANED",
                 status = Status.MANUAL_PROCESSING,
                 messageForSender =
                     "Sykmeldingen kan ikke rettes, det må skrives en ny. Pasienten har fått beskjed om å vente på ny sykmelding fra deg. " +
