@@ -2,6 +2,8 @@ package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
 import java.time.temporal.ChronoUnit
 import no.nav.helse.diagnosekoder.Diagnosekoder
+import no.nav.syfo.logger
+import no.nav.syfo.metrics.ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER
 import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
@@ -58,13 +60,37 @@ val arbeidsgiverperiode: TilbakedateringRule = { sykmelding, metadata ->
         metadata.behandlerOgStartdato.startdato ?: sykmelding.perioder.sortedFOMDate().first()
     val tom = sykmelding.perioder.sortedTOMDate().last()
     val arbeidsgiverperiode = ChronoUnit.DAYS.between(startDato, tom) < 16
+
+    val dager = metadata.sykmeldingMetadataInfo.arbeidsgiverperiodeDager
+    val arbeidsgiverperiodeNy = dager.size < 17
+    val arbeidsgiverperiodeGammel = arbeidsgiverperiode
+
+    ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER.labels("ny", if (arbeidsgiverperiodeNy) "ja" else "nei")
+        .inc()
+    ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER.labels(
+            "gammel",
+            if (arbeidsgiverperiodeGammel) "ja" else "nei"
+        )
+        .inc()
+
+    if (!arbeidsgiverperiodeNy && arbeidsgiverperiodeGammel) {
+        logger.warn(
+            "ny arbeidsgiverperioderegel ikke godkjent, men gammel regel gir godkjent for sykmeldingId: ${sykmelding.id}"
+        )
+    } else if (arbeidsgiverperiodeNy && !arbeidsgiverperiodeGammel) {
+        logger.info("Ny arbeidsgiverperioderegel gokjent, men ikke gammel for ${sykmelding.id}")
+    } else {
+        logger.info("Ny og gammel arbeidsgiverperiode gir samme utslag $arbeidsgiverperiodeNy")
+    }
+
     RuleResult(
         ruleInputs =
             mapOf(
                 "syketilfelletStartdato" to startDato,
                 "fom" to sykmelding.perioder.sortedFOMDate().first(),
                 "tom" to tom,
-                "arbeidsgiverperiode" to arbeidsgiverperiode,
+                "dagerForArbeidsgiverperiode" to dager.sorted(),
+                "arbeidsgiverperiode" to arbeidsgiverperiodeNy,
             ),
         rule = ARBEIDSGIVERPERIODE,
         ruleResult = arbeidsgiverperiode,

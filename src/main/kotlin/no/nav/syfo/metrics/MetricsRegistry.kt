@@ -41,3 +41,11 @@ val FODSELSDATO_FRA_IDENT_COUNTER: Counter =
         .name("fodselsdato_fra_ident_counter")
         .help("Antall fodselsdatoer utledet fra fnr/dnr")
         .register()
+
+val ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER: Counter =
+    Counter.Builder()
+        .namespace(NAMESPACE)
+        .labelNames("version", "status")
+        .name("arbeidsgiverperiode_count")
+        .help("Counts number of cases of arbeidsgiverperiode rule")
+        .register()

@@ -31,6 +31,7 @@ class SmregisterClient(
 
 data class SykmeldingDTO(
     val id: String,
+    val sykmeldingStatus: SykmeldingStatusDTO,
     val behandlingsutfall: BehandlingsutfallDTO,
     val sykmeldingsperioder: List<SykmeldingsperiodeDTO>,
     val behandletTidspunkt: OffsetDateTime,
@@ -41,6 +42,11 @@ data class SykmeldingDTO(
 data class Merknad(
     val type: String,
     val beskrivelse: String?,
+)
+
+data class SykmeldingStatusDTO(
+    val statusEvent: String,
+    val timestamp: OffsetDateTime,
 )
 
 enum class MerknadType {

@@ -12,23 +12,95 @@ import no.nav.syfo.logger
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
+import no.nav.syfo.papirsykemelding.model.sortedTOMDate
+import no.nav.syfo.util.allDaysBetween
+import no.nav.syfo.util.isWorkingDaysBetween
+import no.nav.syfo.util.sortedFOMDate
+import no.nav.syfo.util.sortedTOMDate
 
 data class Forlengelse(val sykmeldingId: String, val fom: LocalDate, val tom: LocalDate)
 
 data class SykmeldingMetadataInfo(
     val ettersendingAv: String?,
     val forlengelseAv: List<Forlengelse> = emptyList(),
+    val arbeidsgiverperiodeDager: List<LocalDate> = emptyList()
 )
 
 class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
+    private fun filterDates(
+        startdato: LocalDate,
+        sykmeldingerFromRegister: List<SykmeldingDTO>
+    ): List<LocalDate> {
+        return sykmeldingerFromRegister
+            .filter {
+                it.sykmeldingsperioder.sortedTOMDate().last() >
+                    startdato.minusWeeks(40).minusDays(0)
+            }
+            .filter { it.sykmeldingsperioder.sortedFOMDate().first() < startdato }
+            .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
+            .filterNot {
+                !it.merknader.isNullOrEmpty() &&
+                    it.merknader.any { merknad ->
+                        merknad.type == MerknadType.UGYLDIG_TILBAKEDATERING.toString() ||
+                            merknad.type ==
+                                MerknadType.TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER.toString()
+                    }
+            }
+            .filter { it.sykmeldingStatus.statusEvent != "AVBRUTT" }
+            .map { it ->
+                it.sykmeldingsperioder
+                    .filter { it.type != PeriodetypeDTO.AVVENTENDE }
+                    .flatMap { allDaysBetween(it.fom, it.tom) }
+            }
+            .flatten()
+            .distinct()
+            .sortedDescending()
+    }
+
+    fun getSykedagerForArbeidsgiverperiode(
+        fom: LocalDate,
+        tom: LocalDate,
+        allDates: List<LocalDate>
+    ): List<LocalDate> {
+        val datoer = allDates.sortedDescending()
+        val antallSykdagerForArbeidsgiverPeriode = allDaysBetween(fom, tom).toMutableList()
+
+        if (antallSykdagerForArbeidsgiverPeriode.size > 16) {
+            return antallSykdagerForArbeidsgiverPeriode.subList(0, 17)
+        }
+
+        val dager =
+            antallSykdagerForArbeidsgiverPeriode.toMutableList().sortedDescending().toMutableList()
+        var lastDate = fom
+        for (currentDate in datoer) {
+            if (!isWorkingDaysBetween(lastDate, currentDate)) {
+                dager.addAll(allDaysBetween(currentDate, lastDate.minusDays(1)))
+            } else {
+                dager.add(currentDate)
+            }
+            lastDate = currentDate
+            if (dager.size > 16) {
+                break
+            }
+        }
+        return dager
+    }
+
     suspend fun getSykmeldingMetadataInfo(
         fnr: String,
         sykmelding: Sykmelding,
         loggingMetadata: LoggingMeta
     ): SykmeldingMetadataInfo {
+
+        val sykmeldingerFraRegister = syfosmregisterClient.getSykmeldinger(fnr)
+        val fom = sykmelding.perioder.sortedFOMDate().first()
+        val tom = sykmelding.perioder.sortedTOMDate().last()
+        val dates =
+            filterDates(sykmelding.perioder.sortedFOMDate().first(), sykmeldingerFraRegister)
+        val antallSykdagerForArbeidsgiverPeriode =
+            getSykedagerForArbeidsgiverperiode(fom, tom, dates)
         val tidligereSykmeldinger =
-            syfosmregisterClient
-                .getSykmeldinger(fnr)
+            sykmeldingerFraRegister
                 .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
                 .filterNot { harTilbakedatertMerknad(it) }
                 .filter { it.medisinskVurdering?.hovedDiagnose?.kode != null }
@@ -39,6 +111,7 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
         return SykmeldingMetadataInfo(
             ettersendingAv = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
             forlengelseAv = erForlengelse(sykmelding, tidligereSykmeldinger),
+            arbeidsgiverperiodeDager = antallSykdagerForArbeidsgiverPeriode
         )
     }
 
