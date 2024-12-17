@@ -1,6 +1,7 @@
 package no.nav.syfo.papirsykemelding.service
 
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.client.MerknadType
 import no.nav.syfo.client.PeriodetypeDTO
@@ -25,6 +26,8 @@ data class SykmeldingMetadataInfo(
     val forlengelseAv: List<Forlengelse> = emptyList(),
     val arbeidsgiverperiodeDager: List<LocalDate> = emptyList()
 )
+
+data class StartdatoOgDager(val startDato: LocalDate, val dager: List<LocalDate>)
 
 class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
     private fun filterDates(
@@ -58,11 +61,12 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
     }
 
     fun getSykedagerForArbeidsgiverperiode(
+        startdato: LocalDate,
         fom: LocalDate,
         tom: LocalDate,
         allDates: List<LocalDate>
     ): List<LocalDate> {
-        val datoer = allDates.sortedDescending()
+        val datoer = allDates.sortedDescending().filter { it < fom && it >= startdato }
         val antallSykdagerForArbeidsgiverPeriode = allDaysBetween(fom, tom).toMutableList()
 
         if (antallSykdagerForArbeidsgiverPeriode.size > 16) {
@@ -97,8 +101,8 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
         val tom = sykmelding.perioder.sortedTOMDate().last()
         val dates =
             filterDates(sykmelding.perioder.sortedFOMDate().first(), sykmeldingerFraRegister)
-        val antallSykdagerForArbeidsgiverPeriode =
-            getSykedagerForArbeidsgiverperiode(fom, tom, dates)
+        val arbeidsgiverPeriodeDatoer =
+            getArbeidsgiverperiodeDatoer(sykmeldingerFraRegister, sykmelding)
         val tidligereSykmeldinger =
             sykmeldingerFraRegister
                 .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
@@ -111,8 +115,26 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
         return SykmeldingMetadataInfo(
             ettersendingAv = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
             forlengelseAv = erForlengelse(sykmelding, tidligereSykmeldinger),
-            arbeidsgiverperiodeDager = antallSykdagerForArbeidsgiverPeriode
+            arbeidsgiverperiodeDager = arbeidsgiverPeriodeDatoer
         )
+    }
+
+    private fun getArbeidsgiverperiodeDatoer(
+        sykmeldingerFromRegister: List<SykmeldingDTO>,
+        sykmelding: Sykmelding
+    ): List<LocalDate> {
+        val fom = sykmelding.perioder.sortedFOMDate().first()
+        val tom = sykmelding.perioder.sortedTOMDate().last()
+        val datoer = filterDates(fom, sykmeldingerFromRegister)
+        var startdato = fom
+        datoer.forEach {
+            if (ChronoUnit.DAYS.between(it, startdato) > 16) {
+                return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+            } else {
+                startdato = it
+            }
+        }
+        return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
     }
 
     private fun erEttersending(
