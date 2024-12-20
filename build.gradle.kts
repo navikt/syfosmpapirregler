@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion="1.9.0"
-val ktorVersion="3.0.1"
+val coroutinesVersion="1.10.0"
+val ktorVersion="3.0.3"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
-val logbackVersion="1.5.12"
+val logbackVersion="1.5.14"
 val logstashEncoderVersion= "8.0"
 val mockkVersion="1.13.13"
 val nimbusdsVersion="9.47"
@@ -17,9 +17,9 @@ val kotlinVersion="2.1.0"
 val caffeineVersion="3.1.8"
 val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.7"
-val diagnosekoderVersion = "1.2024.1"
+val diagnosekoderVersion = "1.2025.0"
 val kafkaVersion = "3.9.0"
-val junitJupiterVersion = "5.11.3"
+val junitJupiterVersion = "5.11.4"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
