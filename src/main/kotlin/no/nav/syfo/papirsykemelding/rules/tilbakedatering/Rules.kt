@@ -4,6 +4,7 @@ import java.time.temporal.ChronoUnit
 import no.nav.helse.diagnosekoder.Diagnosekoder
 import no.nav.syfo.logger
 import no.nav.syfo.metrics.ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER
+import no.nav.syfo.metrics.TILBAKEDATERING_RULE_DAYS_COUNTER
 import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
@@ -36,14 +37,16 @@ val tilbakedatering: TilbakedateringRule = { sykmelding, _ ->
     )
 }
 
-val tilbakedateringOver4Dager: TilbakedateringRule = { sykmelding, _ ->
+val tilbakedateringInntil4Dager: TilbakedateringRule = { sykmelding, _ ->
     val fom = sykmelding.perioder.sortedFOMDate().first()
     val genereringstidspunkt = sykmelding.signaturDato.toLocalDate()
+    val daysBetween = ChronoUnit.DAYS.between(fom, genereringstidspunkt)
+    TILBAKEDATERING_RULE_DAYS_COUNTER.labels("papir", daysBetween.toString()).inc()
 
     RuleResult(
         ruleInputs = mapOf("fom" to fom, "genereringstidspunkt" to genereringstidspunkt),
         rule = TILBAKEDATERING_INNTIL_4_DAGER,
-        ruleResult = genereringstidspunkt.isAfter(fom.plusDays(3)),
+        ruleResult = daysBetween <= 4,
     )
 }
 
