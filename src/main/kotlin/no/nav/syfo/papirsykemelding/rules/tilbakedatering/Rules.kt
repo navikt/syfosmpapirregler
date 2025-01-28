@@ -16,7 +16,7 @@ import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.E
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.FORLENGELSE
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.SPESIALISTHELSETJENESTEN
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
-import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING_OVER_4_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING_INNTIL_4_DAGER
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_1_MAANED
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 import no.nav.syfo.papirsykemelding.service.RuleMetadataSykmelding
@@ -42,7 +42,7 @@ val tilbakedateringOver4Dager: TilbakedateringRule = { sykmelding, _ ->
 
     RuleResult(
         ruleInputs = mapOf("fom" to fom, "genereringstidspunkt" to genereringstidspunkt),
-        rule = TILBAKEDATERING_OVER_4_DAGER,
+        rule = TILBAKEDATERING_INNTIL_4_DAGER,
         ruleResult = genereringstidspunkt.isAfter(fom.plusDays(3)),
     )
 }

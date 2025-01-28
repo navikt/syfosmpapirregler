@@ -20,7 +20,7 @@ import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.E
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.FORLENGELSE
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.SPESIALISTHELSETJENESTEN
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING
-import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING_OVER_4_DAGER
+import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERING_INNTIL_4_DAGER
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_1_MAANED
 import no.nav.syfo.papirsykemelding.rules.tilbakedatering.TilbakedateringRules.TILBAKEDATERT_INNTIL_8_DAGER
 
@@ -32,7 +32,7 @@ enum class TilbakedateringRules {
     FORLENGELSE,
     SPESIALISTHELSETJENESTEN,
     TILBAKEDATERING,
-    TILBAKEDATERING_OVER_4_DAGER,
+    TILBAKEDATERING_INNTIL_4_DAGER,
     TILBAKEDATERT_INNTIL_8_DAGER,
     TILBAKEDATERT_INNTIL_1_MAANED,
 }
@@ -41,9 +41,9 @@ val tilbakedateringRuleTree =
     tree<TilbakedateringRules, RuleResult>(TILBAKEDATERING) {
         yes(ETTERSENDING) {
             yes(OK)
-            no(TILBAKEDATERING_OVER_4_DAGER) {
-                no(OK)
-                yes(TILBAKEDATERT_INNTIL_8_DAGER) {
+            no(TILBAKEDATERING_INNTIL_4_DAGER) {
+                yes(OK)
+                no(TILBAKEDATERT_INNTIL_8_DAGER) {
                     yes(BEGRUNNELSE_MIN_1_ORD) {
                         yes(OK)
                         no(FORLENGELSE) {
@@ -111,7 +111,7 @@ fun getRule(rules: TilbakedateringRules): Rule<TilbakedateringRules> {
         FORLENGELSE -> forlengelse
         SPESIALISTHELSETJENESTEN -> spesialisthelsetjenesten
         TILBAKEDATERING -> tilbakedatering
-        TILBAKEDATERING_OVER_4_DAGER -> tilbakedateringOver4Dager
+        TILBAKEDATERING_INNTIL_4_DAGER -> tilbakedateringOver4Dager
         TILBAKEDATERT_INNTIL_8_DAGER -> tilbakedateringInntil8Dager
         TILBAKEDATERT_INNTIL_1_MAANED -> tilbakedateringInntil30Dager
     }
