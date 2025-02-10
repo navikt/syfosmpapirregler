@@ -46,7 +46,7 @@ class FodselsdatoService(
 
         val fodselsdato =
             if (
-                pdlResponse.data.hentPerson.foedsel?.firstOrNull()?.foedselsdato?.isNotEmpty() ==
+                pdlResponse.data.hentPerson.foedselsdato?.firstOrNull()?.foedselsdato?.isNotEmpty() ==
                     true
             ) {
                 logger.info(
@@ -54,7 +54,7 @@ class FodselsdatoService(
                     StructuredArguments.fields(loggingMeta)
                 )
                 FODSELSDATO_FRA_PDL_COUNTER.inc()
-                LocalDate.parse(pdlResponse.data.hentPerson.foedsel.first().foedselsdato)
+                LocalDate.parse(pdlResponse.data.hentPerson.foedselsdato.first().foedselsdato)
             } else {
                 logger.info(
                     "Utleder fødselsdato fra fnr {}",
