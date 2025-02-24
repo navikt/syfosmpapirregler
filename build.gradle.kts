@@ -19,7 +19,7 @@ val ktfmtVersion="0.44"
 val snappyJavaVersion = "1.1.10.7"
 val diagnosekoderVersion = "1.2025.0"
 val kafkaVersion = "3.9.0"
-val junitJupiterVersion = "5.11.4"
+val junitJupiterVersion = "5.12.0"
 val jvmVersion = JvmTarget.JVM_21
 
 application {
