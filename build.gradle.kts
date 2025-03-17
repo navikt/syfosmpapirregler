@@ -4,8 +4,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 group = "no.nav.syfo"
 version = "1.0.0"
 
+val jvmVersion = JvmTarget.JVM_21
+
 val coroutinesVersion="1.10.1"
-val ktorVersion="3.1.0"
+val ktorVersion="3.1.1"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.16"
@@ -16,11 +18,14 @@ val jacksonVersion="2.18.2"
 val kotlinVersion="2.1.10"
 val caffeineVersion="3.2.0"
 val ktfmtVersion="0.44"
-val snappyJavaVersion = "1.1.10.7"
-val diagnosekoderVersion = "1.2025.0"
 val kafkaVersion = "3.9.0"
 val junitJupiterVersion = "5.11.4"
-val jvmVersion = JvmTarget.JVM_21
+val diagnosekoderVersion = "1.2025.0"
+
+
+///Due to vulnerabilities
+val snappyJavaVersion = "1.1.10.7"
+val commonsCodecVersion = "1.18.0"
 
 application {
     mainClass.set("no.nav.syfo.ApplicationKt")
@@ -62,6 +67,11 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    constraints {
+        implementation("commons-codec:commons-codec:$commonsCodecVersion") {
+            because("override transient from io.ktor:ktor-client-apache")
+        }
+    }
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

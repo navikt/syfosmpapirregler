@@ -46,8 +46,10 @@ class FodselsdatoService(
 
         val fodselsdato =
             if (
-                pdlResponse.data.hentPerson.foedselsdato?.firstOrNull()?.foedselsdato?.isNotEmpty() ==
-                    true
+                pdlResponse.data.hentPerson.foedselsdato
+                    ?.firstOrNull()
+                    ?.foedselsdato
+                    ?.isNotEmpty() == true
             ) {
                 logger.info(
                     "Bruker fødselsdato fra PDL {}",
