@@ -46,7 +46,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -92,7 +93,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -130,7 +132,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -167,7 +170,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -205,7 +209,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -248,7 +253,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(
@@ -297,7 +303,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -342,7 +349,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -444,7 +452,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(
@@ -485,7 +494,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -587,7 +597,8 @@ class HPRTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(

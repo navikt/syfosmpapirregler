@@ -50,7 +50,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )
@@ -94,7 +95,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )
@@ -140,7 +142,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )
@@ -192,7 +195,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )
@@ -246,7 +250,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )
@@ -292,7 +297,8 @@ class ArbeidsuforhetTest {
         val ruleMetadataSykmelding =
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
-                sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+                sykmeldingMetadataInfo =
+                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
             )

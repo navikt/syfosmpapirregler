@@ -76,7 +76,7 @@ val arbeidsgiverperiode: TilbakedateringRule = { sykmelding, metadata ->
     val tom = sykmelding.perioder.sortedTOMDate().last()
     val arbeidsgiverperiode = ChronoUnit.DAYS.between(startDato, tom) < 16
 
-    val dager = metadata.sykmeldingMetadataInfo.arbeidsgiverperiodeDager
+    val dager = metadata.sykmeldingMetadataInfo.dagerForArbeidsgiverperiodeCheck
     val arbeidsgiverperiodeNy = dager.size < 17
     val arbeidsgiverperiodeGammel = arbeidsgiverperiode
 

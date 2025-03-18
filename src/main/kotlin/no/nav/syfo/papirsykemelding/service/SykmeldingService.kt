@@ -24,7 +24,8 @@ data class Forlengelse(val sykmeldingId: String, val fom: LocalDate, val tom: Lo
 data class SykmeldingMetadataInfo(
     val ettersendingAv: String?,
     val forlengelseAv: List<Forlengelse> = emptyList(),
-    val arbeidsgiverperiodeDager: List<LocalDate> = emptyList()
+    val dagerForArbeidsgiverperiodeCheck: List<LocalDate> = emptyList(),
+    val startDato: LocalDate,
 )
 
 data class StartdatoOgDager(val startDato: LocalDate, val dager: List<LocalDate>)
@@ -97,12 +98,7 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
     ): SykmeldingMetadataInfo {
 
         val sykmeldingerFraRegister = syfosmregisterClient.getSykmeldinger(fnr)
-        val fom = sykmelding.perioder.sortedFOMDate().first()
-        val tom = sykmelding.perioder.sortedTOMDate().last()
-        val dates =
-            filterDates(sykmelding.perioder.sortedFOMDate().first(), sykmeldingerFraRegister)
-        val arbeidsgiverPeriodeDatoer =
-            getArbeidsgiverperiodeDatoer(sykmeldingerFraRegister, sykmelding)
+        val startdatoOgDager = getStartdatoOgDager(sykmeldingerFraRegister, sykmelding)
         val tidligereSykmeldinger =
             sykmeldingerFraRegister
                 .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
@@ -115,26 +111,33 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
         return SykmeldingMetadataInfo(
             ettersendingAv = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
             forlengelseAv = erForlengelse(sykmelding, tidligereSykmeldinger),
-            arbeidsgiverperiodeDager = arbeidsgiverPeriodeDatoer
+            dagerForArbeidsgiverperiodeCheck = startdatoOgDager.dager,
+            startDato = startdatoOgDager.startDato
         )
     }
 
-    private fun getArbeidsgiverperiodeDatoer(
+    private fun getStartdatoOgDager(
         sykmeldingerFromRegister: List<SykmeldingDTO>,
         sykmelding: Sykmelding
-    ): List<LocalDate> {
+    ): StartdatoOgDager {
         val fom = sykmelding.perioder.sortedFOMDate().first()
         val tom = sykmelding.perioder.sortedTOMDate().last()
         val datoer = filterDates(fom, sykmeldingerFromRegister)
         var startdato = fom
         datoer.forEach {
             if (ChronoUnit.DAYS.between(it, startdato) > 16) {
-                return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+                return StartdatoOgDager(
+                    startdato,
+                    getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+                )
             } else {
                 startdato = it
             }
         }
-        return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+        return StartdatoOgDager(
+            startdato,
+            getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+        )
     }
 
     private fun erEttersending(
