@@ -2,8 +2,6 @@ package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 
 import java.time.temporal.ChronoUnit
 import no.nav.helse.diagnosekoder.Diagnosekoder
-import no.nav.syfo.logger
-import no.nav.syfo.metrics.ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER
 import no.nav.syfo.metrics.TILBAKEDATERING_RULE_DAYS_COUNTER
 import no.nav.syfo.model.Diagnose
 import no.nav.syfo.model.Sykmelding
@@ -33,7 +31,7 @@ val tilbakedatering: TilbakedateringRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs = mapOf("fom" to fom, "genereringstidspunkt" to genereringstidspunkt),
         rule = TILBAKEDATERING,
-        ruleResult = genereringstidspunkt.isAfter(fom.plusDays(3)),
+        ruleResult = genereringstidspunkt.isAfter(fom),
     )
 }
 
@@ -50,7 +48,7 @@ val tilbakedateringInntil4Dager: TilbakedateringRule = { sykmelding, _ ->
     )
 }
 
-val tilbakedateringInntil30Dager: TilbakedateringRule = { sykmelding, _ ->
+val tilbakedateringMindreEnn1Maaned: TilbakedateringRule = { sykmelding, _ ->
     val fom = sykmelding.perioder.sortedFOMDate().first()
     val genereringstidspunkt = sykmelding.signaturDato.toLocalDate()
     RuleResult(
@@ -74,29 +72,9 @@ val arbeidsgiverperiode: TilbakedateringRule = { sykmelding, metadata ->
     val startDato =
         metadata.behandlerOgStartdato.startdato ?: sykmelding.perioder.sortedFOMDate().first()
     val tom = sykmelding.perioder.sortedTOMDate().last()
-    val arbeidsgiverperiode = ChronoUnit.DAYS.between(startDato, tom) < 16
 
     val dager = metadata.sykmeldingMetadataInfo.dagerForArbeidsgiverperiodeCheck
     val arbeidsgiverperiodeNy = dager.size < 17
-    val arbeidsgiverperiodeGammel = arbeidsgiverperiode
-
-    ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER.labels("ny", if (arbeidsgiverperiodeNy) "ja" else "nei")
-        .inc()
-    ARBEIDSGIVERPERIODE_PAPIR_RULE_COUNTER.labels(
-            "gammel",
-            if (arbeidsgiverperiodeGammel) "ja" else "nei"
-        )
-        .inc()
-
-    if (!arbeidsgiverperiodeNy && arbeidsgiverperiodeGammel) {
-        logger.warn(
-            "ny arbeidsgiverperioderegel ikke godkjent, men gammel regel gir godkjent for sykmeldingId: ${sykmelding.id}"
-        )
-    } else if (arbeidsgiverperiodeNy && !arbeidsgiverperiodeGammel) {
-        logger.info("Ny arbeidsgiverperioderegel gokjent, men ikke gammel for ${sykmelding.id}")
-    } else {
-        logger.info("Ny og gammel arbeidsgiverperiode gir samme utslag $arbeidsgiverperiodeNy")
-    }
 
     RuleResult(
         ruleInputs =
@@ -108,7 +86,7 @@ val arbeidsgiverperiode: TilbakedateringRule = { sykmelding, metadata ->
                 "arbeidsgiverperiode" to arbeidsgiverperiodeNy,
             ),
         rule = ARBEIDSGIVERPERIODE,
-        ruleResult = arbeidsgiverperiode,
+        ruleResult = arbeidsgiverperiodeNy,
     )
 }
 
@@ -117,7 +95,7 @@ val begrunnelse_min_1_ord: TilbakedateringRule = { sykmelding, _ ->
     val wordCount = getNumberOfWords(begrunnelse)
     val result = wordCount >= 1
     RuleResult(
-        ruleInputs = mapOf("begrunnelse" to begrunnelse),
+        ruleInputs = mapOf("begrunnelse" to "$wordCount ord"),
         rule = BEGRUNNELSE_MIN_1_ORD,
         ruleResult = result,
     )
@@ -128,21 +106,18 @@ val begrunnelse_min_3_ord: TilbakedateringRule = { sykmelding, _ ->
     val wordCount = getNumberOfWords(begrunnelse)
     val result = wordCount >= 3
     RuleResult(
-        ruleInputs = mapOf("begrunnelse" to begrunnelse),
+        ruleInputs = mapOf("begrunnelse" to "$wordCount ord"),
         rule = BEGRUNNELSE_MIN_3_ORD,
         ruleResult = result,
     )
 }
 
 val ettersending: TilbakedateringRule = { _, metadata ->
-    val ettersendingAv = metadata.sykmeldingMetadataInfo.ettersendingAv
+    val ettersendingAv = metadata.sykmeldingMetadataInfo.ettersending
     val result = ettersendingAv != null
-    val ruleInputs =
-        mutableMapOf<String, Any>(
-            "ettersending" to result,
-        )
+    val ruleInputs = mutableMapOf<String, Any>()
     if (ettersendingAv != null) {
-        ruleInputs["ettersendingAv"] = ettersendingAv
+        ruleInputs["ettersending"] = ettersendingAv
     }
     RuleResult(
         ruleInputs = ruleInputs,
@@ -152,12 +127,12 @@ val ettersending: TilbakedateringRule = { _, metadata ->
 }
 
 val forlengelse: TilbakedateringRule = { _, metadata ->
-    val forlengelse = metadata.sykmeldingMetadataInfo.forlengelseAv
-    val result = forlengelse.isNotEmpty()
-    val ruleInputs = mutableMapOf<String, Any>("forlengelse" to result)
+    val forlengelse = metadata.sykmeldingMetadataInfo.forlengelse
+    val result = forlengelse != null
+    val ruleInputs = mutableMapOf<String, Any>()
 
-    if (result) {
-        ruleInputs["forlengelseAv"] = forlengelse
+    if (forlengelse != null) {
+        ruleInputs["forlengelse"] = forlengelse
     }
     RuleResult(
         ruleInputs = ruleInputs,
@@ -172,7 +147,7 @@ val spesialisthelsetjenesten: TilbakedateringRule = { sykmelding, _ ->
     RuleResult(
         ruleInputs =
             mapOf(
-                "hoveddiagnose" to (hoveddiagnose ?: ""),
+                "diagnosesystem" to (hoveddiagnose?.system ?: ""),
                 "spesialisthelsetjenesten" to spesialhelsetjenesten,
             ),
         rule = SPESIALISTHELSETJENESTEN,

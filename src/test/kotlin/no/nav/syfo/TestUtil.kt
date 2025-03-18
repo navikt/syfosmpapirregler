@@ -52,6 +52,5 @@ fun ruleMetadataSykmelding(
         ruleMetadata = ruleMetadata,
         doctorSuspensjon = false,
         behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-        sykmeldingMetadataInfo =
-            SykmeldingMetadataInfo(null, emptyList(), emptyList(), LocalDate.now()),
+        sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, null, LocalDate.now(), emptyList()),
     )

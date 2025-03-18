@@ -113,6 +113,6 @@ fun getRule(rules: TilbakedateringRules): Rule<TilbakedateringRules> {
         TILBAKEDATERING -> tilbakedatering
         TILBAKEDATERT_INNTIL_4_DAGER -> tilbakedateringInntil4Dager
         TILBAKEDATERT_INNTIL_8_DAGER -> tilbakedateringInntil8Dager
-        TILBAKEDATERT_MINDRE_ENN_1_MAANED -> tilbakedateringInntil30Dager
+        TILBAKEDATERT_MINDRE_ENN_1_MAANED -> tilbakedateringMindreEnn1Maaned
     }
 }

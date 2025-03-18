@@ -121,7 +121,12 @@ fun ruleMetadataSykmelding(ruleMetadata: RuleMetadata) =
         doctorSuspensjon = false,
         behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
         sykmeldingMetadataInfo =
-            SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+            SykmeldingMetadataInfo(
+                ettersending = null,
+                forlengelse = null,
+                dagerForArbeidsgiverperiodeCheck = emptyList(),
+                startDato = LocalDate.now()
+            ),
     )
 
 fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {

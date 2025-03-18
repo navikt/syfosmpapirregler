@@ -47,7 +47,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -94,7 +99,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -133,7 +143,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -171,7 +186,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -210,7 +230,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = BehandlerOgStartdato(behandler, null),
             )
@@ -254,7 +279,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(
@@ -304,7 +334,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -350,7 +385,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -453,7 +493,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(
@@ -495,7 +540,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato = behandlerOgStartdato,
             )
@@ -598,7 +648,12 @@ class HPRTest {
             RuleMetadataSykmelding(
                 ruleMetadata = ruleMetadata,
                 sykmeldingMetadataInfo =
-                    SykmeldingMetadataInfo(ettersendingAv = null, startDato = LocalDate.now()),
+                    SykmeldingMetadataInfo(
+                        ettersending = null,
+                        forlengelse = null,
+                        dagerForArbeidsgiverperiodeCheck = emptyList(),
+                        startDato = LocalDate.now()
+                    ),
                 doctorSuspensjon = false,
                 behandlerOgStartdato =
                     BehandlerOgStartdato(
