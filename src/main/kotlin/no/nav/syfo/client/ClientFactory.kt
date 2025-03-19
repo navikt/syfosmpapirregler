@@ -16,23 +16,10 @@ import no.nav.syfo.EnvironmentVariables
 import no.nav.syfo.ServiceUnavailableException
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
-import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.logger
 
 class ClientFactory {
     companion object {
-        fun createSyketilfelleClient(
-            env: EnvironmentVariables,
-            accessTokenClientV2: AccessTokenClientV2,
-            httpClient: HttpClient,
-        ): SyketilfelleClient {
-            return SyketilfelleClient(
-                env.syketilfelleEndpointURL,
-                accessTokenClientV2,
-                env.syketilfelleScope,
-                httpClient
-            )
-        }
 
         fun createHttpClient(): HttpClient {
             return HttpClient(Apache, getHttpClientConfig())

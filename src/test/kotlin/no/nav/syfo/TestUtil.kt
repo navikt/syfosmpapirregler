@@ -47,11 +47,10 @@ fun Sykmelding.toRuleMetadata(
 
 fun ruleMetadataSykmelding(
     ruleMetadata: RuleMetadata,
-    erNyttSyketilfelle: Boolean = false,
 ) =
     RuleMetadataSykmelding(
         ruleMetadata = ruleMetadata,
         doctorSuspensjon = false,
         behandlerOgStartdato = BehandlerOgStartdato(Behandler(emptyList(), null), null),
-        sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, emptyList()),
+        sykmeldingMetadataInfo = SykmeldingMetadataInfo(null, null, LocalDate.now(), emptyList()),
     )

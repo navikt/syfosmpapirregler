@@ -19,12 +19,18 @@ import no.nav.syfo.util.isWorkingDaysBetween
 import no.nav.syfo.util.sortedFOMDate
 import no.nav.syfo.util.sortedTOMDate
 
-data class Forlengelse(val sykmeldingId: String, val fom: LocalDate, val tom: LocalDate)
+data class SykmeldingInfo(
+    val sykmeldingId: String,
+    val fom: LocalDate,
+    val tom: LocalDate,
+    val gradert: Int?
+)
 
 data class SykmeldingMetadataInfo(
-    val ettersendingAv: String?,
-    val forlengelseAv: List<Forlengelse> = emptyList(),
-    val arbeidsgiverperiodeDager: List<LocalDate> = emptyList()
+    val ettersending: SykmeldingInfo?,
+    val forlengelse: SykmeldingInfo?,
+    val startDato: LocalDate,
+    val dagerForArbeidsgiverperiodeCheck: List<LocalDate> = emptyList(),
 )
 
 data class StartdatoOgDager(val startDato: LocalDate, val dager: List<LocalDate>)
@@ -97,12 +103,7 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
     ): SykmeldingMetadataInfo {
 
         val sykmeldingerFraRegister = syfosmregisterClient.getSykmeldinger(fnr)
-        val fom = sykmelding.perioder.sortedFOMDate().first()
-        val tom = sykmelding.perioder.sortedTOMDate().last()
-        val dates =
-            filterDates(sykmelding.perioder.sortedFOMDate().first(), sykmeldingerFraRegister)
-        val arbeidsgiverPeriodeDatoer =
-            getArbeidsgiverperiodeDatoer(sykmeldingerFraRegister, sykmelding)
+        val startdatoOgDager = getStartdatoOgDager(sykmeldingerFraRegister, sykmelding)
         val tidligereSykmeldinger =
             sykmeldingerFraRegister
                 .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
@@ -113,35 +114,42 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
                         sykmelding.medisinskVurdering.hovedDiagnose?.kode
                 }
         return SykmeldingMetadataInfo(
-            ettersendingAv = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
-            forlengelseAv = erForlengelse(sykmelding, tidligereSykmeldinger),
-            arbeidsgiverperiodeDager = arbeidsgiverPeriodeDatoer
+            ettersending = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
+            forlengelse = erForlengelse(sykmelding, tidligereSykmeldinger).firstOrNull(),
+            dagerForArbeidsgiverperiodeCheck = startdatoOgDager.dager,
+            startDato = startdatoOgDager.startDato
         )
     }
 
-    private fun getArbeidsgiverperiodeDatoer(
+    private fun getStartdatoOgDager(
         sykmeldingerFromRegister: List<SykmeldingDTO>,
         sykmelding: Sykmelding
-    ): List<LocalDate> {
+    ): StartdatoOgDager {
         val fom = sykmelding.perioder.sortedFOMDate().first()
         val tom = sykmelding.perioder.sortedTOMDate().last()
         val datoer = filterDates(fom, sykmeldingerFromRegister)
         var startdato = fom
         datoer.forEach {
             if (ChronoUnit.DAYS.between(it, startdato) > 16) {
-                return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+                return StartdatoOgDager(
+                    startdato,
+                    getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+                )
             } else {
                 startdato = it
             }
         }
-        return getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+        return StartdatoOgDager(
+            startdato,
+            getSykedagerForArbeidsgiverperiode(startdato, fom, tom, datoer)
+        )
     }
 
     private fun erEttersending(
         sykmelding: Sykmelding,
         tidligereSykemldinger: List<SykmeldingDTO>,
         loggingMeta: LoggingMeta
-    ): String? {
+    ): SykmeldingInfo? {
         if (sykmelding.perioder.size > 1) {
             logger.info(
                 "Flere perioder i periodelisten returnerer false {}",
@@ -154,6 +162,7 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
             return null
         }
         val periode = sykmelding.perioder.first()
+
         val tidligereSykmelding =
             tidligereSykemldinger.firstOrNull { tidligereSykmelding ->
                 tidligereSykmelding.sykmeldingsperioder.any { tidligerePeriode ->
@@ -163,20 +172,29 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
                         tidligerePeriode.type == periode.tilPeriodetypeDTO()
                 }
             }
+
         if (tidligereSykmelding != null) {
             logger.info(
                 "Sykmelding ${sykmelding.id} er ettersending av ${tidligereSykmelding.id} {}",
                 StructuredArguments.fields(loggingMeta)
             )
         }
-        return tidligereSykmelding?.id
+        return tidligereSykmelding?.let {
+            SykmeldingInfo(
+                sykmeldingId = it.id,
+                fom = it.sykmeldingsperioder.sortedFOMDate().first(),
+                tom = it.sykmeldingsperioder.sortedTOMDate().last(),
+                gradert = it.sykmeldingsperioder.first().gradert?.grad
+            )
+        }
     }
 
     private fun erForlengelse(
         sykmelding: Sykmelding,
         sykmeldinger: List<SykmeldingDTO>
-    ): List<Forlengelse> {
+    ): List<SykmeldingInfo> {
         val firstFom = sykmelding.perioder.sortedFOMDate().first()
+        val lastTom = sykmelding.perioder.sortedTOMDate().last()
         val tidligerePerioderFomTom =
             sykmeldinger
                 .filter {
@@ -189,16 +207,33 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
                     periode.type == PeriodetypeDTO.AKTIVITET_IKKE_MULIG ||
                         periode.type == PeriodetypeDTO.GRADERT
                 }
-                .map { (id, periode) -> Forlengelse(id, fom = periode.fom, tom = periode.tom) }
+                .map { (id, periode) ->
+                    SykmeldingInfo(
+                        id,
+                        fom = periode.fom,
+                        tom = periode.tom,
+                        gradert = periode.gradert?.grad
+                    )
+                }
 
         val forlengelserAv =
             tidligerePerioderFomTom.filter { periode ->
-                firstFom.isAfter(periode.fom.minusDays(1)) &&
-                    firstFom.isBefore(periode.tom.plusDays(17))
+                !isWorkingDaysBetween(firstFom, periode.tom) ||
+                    isOverlappendeAndForlengelse(periode.tom, periode.fom, firstFom, lastTom)
             }
 
         return forlengelserAv
     }
+
+    private fun isOverlappendeAndForlengelse(
+        periodeTom: LocalDate,
+        periodeFom: LocalDate,
+        firstFom: LocalDate,
+        lastTom: LocalDate
+    ) =
+        (firstFom.isAfter(periodeFom.minusDays(1)) &&
+            firstFom.isBefore(periodeTom.plusDays(1)) &&
+            lastTom.isAfter(periodeTom.minusDays(1)))
 
     private fun harTilbakedatertMerknad(sykmelding: SykmeldingDTO): Boolean {
         return sykmelding.merknader?.any { MerknadType.contains(it.type) } ?: false

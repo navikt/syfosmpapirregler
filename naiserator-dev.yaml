@@ -53,9 +53,6 @@ spec:
         - application: syfosmregister
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: flex-syketilfelle
-          namespace: flex
-          cluster: dev-gcp
         - application: syfohelsenettproxy
         - application: btsys-api
           namespace: team-rocket
@@ -69,8 +66,6 @@ spec:
   env:
     - name: HELSENETT_SCOPE
       value: api://dev-gcp.teamsykmelding.syfohelsenettproxy/.default
-    - name: SYKETILLFELLE_SCOPE
-      value: api://dev-gcp.flex.flex-syketilfelle/.default
     - name: PDL_GRAPHQL_PATH
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
     - name: PDL_SCOPE

@@ -10,7 +10,6 @@ import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.client.legesuspensjon.LegeSuspensjonClient
 import no.nav.syfo.client.norskhelsenett.Behandler
 import no.nav.syfo.client.norskhelsenett.NorskHelsenettClient
-import no.nav.syfo.client.syketilfelle.SyketilfelleClient
 import no.nav.syfo.metrics.RULE_NODE_RULE_HIT_COUNTER
 import no.nav.syfo.metrics.RULE_NODE_RULE_PATH_COUNTER
 import no.nav.syfo.model.ReceivedSykmelding
@@ -19,7 +18,6 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.papirsykemelding.model.LoggingMeta
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
-import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory
 @DelicateCoroutinesApi
 class PapirsykemeldingRegelService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
-    private val syketilfelleClient: SyketilfelleClient,
     private val norskHelsenettClient: NorskHelsenettClient,
     private val juridiskVurderingService: JuridiskVurderingService,
     private val fodselsdatoService: FodselsdatoService,
@@ -82,26 +79,20 @@ class PapirsykemeldingRegelService(
                     ?: return getAndRegisterBehandlerNotInHPR()
 
             val doctorSuspendedAsync = getDoctorSuspendedAsync(receivedSykmelding)
-            val syketilfelleStartdatoAsync =
-                getErNyttSyketilfelleAsync(receivedSykmelding, loggingMeta)
 
-            val syketilfelleStartdato = syketilfelleStartdatoAsync.await()
-            val ettersendingOgForlengelse =
-                if (erTilbakedatert(receivedSykmelding)) {
-                    sykmeldingService.getSykmeldingMetadataInfo(
-                        receivedSykmelding.personNrPasient,
-                        receivedSykmelding.sykmelding,
-                        loggingMeta
-                    )
-                } else {
-                    SykmeldingMetadataInfo(null, emptyList())
-                }
+            val sykmeldingMetadata =
+                sykmeldingService.getSykmeldingMetadataInfo(
+                    receivedSykmelding.personNrPasient,
+                    receivedSykmelding.sykmelding,
+                    loggingMeta,
+                )
             val ruleMetadataSykmelding =
                 RuleMetadataSykmelding(
                     ruleMetadata = ruleMetadata,
                     doctorSuspensjon = doctorSuspendedAsync.await(),
-                    behandlerOgStartdato = BehandlerOgStartdato(behandler, syketilfelleStartdato),
-                    ettersendingOgForlengelse,
+                    behandlerOgStartdato =
+                        BehandlerOgStartdato(behandler, sykmeldingMetadata.startDato),
+                    sykmeldingMetadata,
                 )
 
             securelog.info(
@@ -162,24 +153,6 @@ class PapirsykemeldingRegelService(
                 behandlerFnr = receivedSykmelding.personNrLege,
                 msgId = receivedSykmelding.msgId,
                 loggingMeta = loggingMeta,
-            )
-        }
-    }
-
-    private fun erTilbakedatert(receivedSykmelding: ReceivedSykmelding): Boolean =
-        receivedSykmelding.sykmelding.signaturDato
-            .toLocalDate()
-            .isAfter(receivedSykmelding.sykmelding.perioder.sortedFOMDate().first().plusDays(3))
-
-    private fun GlobalScope.getErNyttSyketilfelleAsync(
-        receivedSykmelding: ReceivedSykmelding,
-        loggingMeta: LoggingMeta
-    ): Deferred<LocalDate?> {
-        return async {
-            syketilfelleClient.finnStartdatoForSammenhengendeSyketilfelle(
-                receivedSykmelding.personNrPasient,
-                receivedSykmelding.sykmelding.perioder,
-                loggingMeta
             )
         }
     }

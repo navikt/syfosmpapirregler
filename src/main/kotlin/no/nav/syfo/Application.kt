@@ -126,12 +126,7 @@ fun Application.module() {
             environmentVariables.clientSecretV2,
             httpClient,
         )
-    val syketilfelleClient =
-        ClientFactory.createSyketilfelleClient(
-            environmentVariables,
-            accessTokenClientV2,
-            httpClient
-        )
+
     val legeSuspensjonClient =
         ClientFactory.createLegeSuspensjonClient(
             environmentVariables,
@@ -175,7 +170,6 @@ fun Application.module() {
         PapirsykemeldingRegelService(
             legeSuspensjonClient = legeSuspensjonClient,
             norskHelsenettClient = norskHelsenettClient,
-            syketilfelleClient = syketilfelleClient,
             juridiskVurderingService = juridiskVurderingService,
             fodselsdatoService = fodselsdatoService,
             ruleExecutionService = RuleExecutionService(),
