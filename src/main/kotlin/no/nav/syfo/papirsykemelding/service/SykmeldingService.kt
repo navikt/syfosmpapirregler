@@ -31,6 +31,8 @@ data class SykmeldingMetadataInfo(
     val forlengelse: SykmeldingInfo?,
     val startDato: LocalDate,
     val dagerForArbeidsgiverperiodeCheck: List<LocalDate> = emptyList(),
+        // TODO: Midlertidig, brukes kun til regulus-regula sin shadow-test
+    val sykmeldingerFraRegister: List<SykmeldingDTO> = emptyList(),
 )
 
 data class StartdatoOgDager(val startDato: LocalDate, val dager: List<LocalDate>)
@@ -117,7 +119,8 @@ class SykmeldingService(private val syfosmregisterClient: SmregisterClient) {
             ettersending = erEttersending(sykmelding, tidligereSykmeldinger, loggingMetadata),
             forlengelse = erForlengelse(sykmelding, tidligereSykmeldinger).firstOrNull(),
             dagerForArbeidsgiverperiodeCheck = startdatoOgDager.dager,
-            startDato = startdatoOgDager.startDato
+            startDato = startdatoOgDager.startDato,
+            sykmeldingerFraRegister = sykmeldingerFraRegister,
         )
     }
 
