@@ -59,17 +59,16 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to false,
             )
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
-            HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit
+        status.treeResult.ruleHit shouldBeEqualTo HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit
     }
 
     @Test
@@ -111,8 +110,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to false,
@@ -120,9 +119,9 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             HPRRuleHit.BEHANDLER_MANGLER_AUTORISASJON_I_HPR.ruleHit
     }
 
@@ -155,8 +154,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.OK
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.OK
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -165,8 +164,8 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
-        status.first.treeResult.ruleHit shouldBeEqualTo null
+        ) shouldBeEqualTo status.ruleInputs
+        status.treeResult.ruleHit shouldBeEqualTo null
     }
 
     @Test
@@ -198,8 +197,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.OK
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.OK
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -209,8 +208,8 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
-        status.first.treeResult.ruleHit shouldBeEqualTo null
+        ) shouldBeEqualTo status.ruleInputs
+        status.treeResult.ruleHit shouldBeEqualTo null
     }
 
     @Test
@@ -242,8 +241,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.OK
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.OK
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -258,8 +257,8 @@ class HPRTest {
             "fom" to sykmelding.perioder.first().fom,
             "tom" to sykmelding.perioder.first().tom,
             "startDatoSykefravær" to sykmelding.perioder.first().fom,
-        ) shouldBeEqualTo status.first.ruleInputs
-        status.first.treeResult.ruleHit shouldBeEqualTo null
+        ) shouldBeEqualTo status.ruleInputs
+        status.treeResult.ruleHit shouldBeEqualTo null
     }
 
     @Test
@@ -295,8 +294,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -311,9 +310,8 @@ class HPRTest {
             "fom" to sykmelding.perioder.first().fom,
             "tom" to sykmelding.perioder.first().tom,
             "startDatoSykefravær" to (ruleMetadataSykmelding.behandlerOgStartdato.startdato),
-        ) shouldBeEqualTo status.first.ruleInputs
-        status.first.treeResult.ruleHit shouldBeEqualTo
-            HPRRuleHit.BEHANDLER_MT_FT_KI_OVER_12_UKER.ruleHit
+        ) shouldBeEqualTo status.ruleInputs
+        status.treeResult.ruleHit shouldBeEqualTo HPRRuleHit.BEHANDLER_MT_FT_KI_OVER_12_UKER.ruleHit
     }
 
     @Test
@@ -346,8 +344,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -360,9 +358,9 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR.ruleHit
     }
 
@@ -397,8 +395,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -411,9 +409,9 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR.ruleHit
     }
 
@@ -448,8 +446,8 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.OK
-        result.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        result.treeResult.status shouldBeEqualTo Status.OK
+        result.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -508,8 +506,8 @@ class HPRTest {
             )
 
         val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        result.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -552,8 +550,8 @@ class HPRTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -566,9 +564,9 @@ class HPRTest {
 
         mapOf(
             "behandlerGodkjenninger" to behandler.godkjenninger,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR.ruleHit
     }
 
@@ -602,8 +600,8 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.OK
-        result.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        result.treeResult.status shouldBeEqualTo Status.OK
+        result.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -663,8 +661,8 @@ class HPRTest {
             )
 
         val result = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        result.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 HPRRules.BEHANDLER_GYLIDG_I_HPR to true,
                 HPRRules.BEHANDLER_HAR_AUTORISASJON_I_HPR to true,
@@ -716,7 +714,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.OK
+        result.treeResult.status shouldBeEqualTo Status.OK
     }
 
     @Test
@@ -758,7 +756,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
     }
 
     @Test
@@ -806,7 +804,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
     }
 
     @Test
@@ -851,7 +849,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.OK
+        result.treeResult.status shouldBeEqualTo Status.OK
     }
 
     @Test
@@ -896,7 +894,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
     }
 
     @Test
@@ -938,7 +936,7 @@ class HPRTest {
             BehandlerOgStartdato(behandler, null)
 
         val result = ruleTree.runRules(sykmedling, mockRuleMetadata)
-        result.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        result.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
     }
 }
 

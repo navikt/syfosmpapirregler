@@ -97,12 +97,10 @@ fun behandlerErFTMedTilligskompetanseSykmelding(rule: HPRRules): HPRRule =
                 HelsepersonellKategori.FYSIOTERAPAEUT
             )
 
-        val result = erFtMedTilleggskompetanse
-
         RuleResult(
             ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
             rule = rule,
-            ruleResult = result,
+            ruleResult = erFtMedTilleggskompetanse,
         )
     }
 
@@ -118,12 +116,10 @@ fun behandlerErKIMedTilligskompetanseSykmelding(rule: HPRRules): HPRRule =
                 HelsepersonellKategori.KIROPRAKTOR
             )
 
-        val result = erKIMedTilleggskompetanse
-
         RuleResult(
             ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
             rule = rule,
-            ruleResult = result,
+            ruleResult = erKIMedTilleggskompetanse,
         )
     }
 

@@ -3,8 +3,8 @@ package no.nav.syfo.papirsykemelding.rules.periode
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.MANUAL_PROCESSING
 import no.nav.syfo.model.Status.OK
+import no.nav.syfo.model.juridisk.JuridiskEnum
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
-import no.nav.syfo.papirsykemelding.rules.common.UtenJuridisk
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
 
@@ -24,20 +24,20 @@ val periodeRuleTree =
                 no(OK)
             }
         }
-    } to UtenJuridisk
+    }
 
 internal fun RuleNode<PeriodeRules, RuleResult>.yes(
     status: Status,
     ruleHit: PeriodeRuleHit? = null
 ) {
-    yes(RuleResult(status, ruleHit?.ruleHit))
+    yes(RuleResult(status, JuridiskEnum.INGEN.JuridiskHenvisning, ruleHit?.ruleHit))
 }
 
 internal fun RuleNode<PeriodeRules, RuleResult>.no(
     status: Status,
     ruleHit: PeriodeRuleHit? = null
 ) {
-    no(RuleResult(status, ruleHit?.ruleHit))
+    no(RuleResult(status, JuridiskEnum.INGEN.JuridiskHenvisning, ruleHit?.ruleHit))
 }
 
 fun getRule(rules: PeriodeRules): Rule<PeriodeRules> {

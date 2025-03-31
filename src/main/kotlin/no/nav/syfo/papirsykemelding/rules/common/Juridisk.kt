@@ -6,4 +6,4 @@ sealed interface Juridisk
 
 data object UtenJuridisk : Juridisk
 
-class MedJuridisk(val juridiskHenvisning: JuridiskHenvisning) : Juridisk
+data class MedJuridisk(val juridiskHenvisning: JuridiskHenvisning) : Juridisk

@@ -63,8 +63,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to false,
                 ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE to true,
@@ -73,9 +73,9 @@ class ArbeidsuforhetTest {
         mapOf(
             "hoveddiagnoseMangler" to false,
             "ugyldigKodeverkHovedDiagnose" to true,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE.ruleHit
     }
 
@@ -113,8 +113,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to false,
                 ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE to false,
@@ -125,10 +125,9 @@ class ArbeidsuforhetTest {
             "hoveddiagnoseMangler" to false,
             "ugyldigKodeverkHovedDiagnose" to false,
             "icpc2ZDiagnose" to true,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
-            ArbeidsuforhetRuleHit.ICPC_2_Z_DIAGNOSE.ruleHit
+        status.treeResult.ruleHit shouldBeEqualTo ArbeidsuforhetRuleHit.ICPC_2_Z_DIAGNOSE.ruleHit
     }
 
     @Test
@@ -165,8 +164,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to true,
                 ArbeidsuforhetRules.FRAVAERSGRUNN_MANGLER to true,
@@ -175,9 +174,9 @@ class ArbeidsuforhetTest {
         mapOf(
             "hoveddiagnoseMangler" to true,
             "fraversgrunnMangler" to true,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             ArbeidsuforhetRuleHit.FRAVAERSGRUNN_MANGLER.ruleHit
     }
 
@@ -223,8 +222,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to false,
                 ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE to true,
@@ -233,9 +232,9 @@ class ArbeidsuforhetTest {
         mapOf(
             "hoveddiagnoseMangler" to false,
             "ugyldigKodeverkHovedDiagnose" to true,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE.ruleHit
     }
 
@@ -283,8 +282,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to false,
                 ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE to false,
@@ -297,9 +296,9 @@ class ArbeidsuforhetTest {
             "ugyldigKodeverkHovedDiagnose" to false,
             "icpc2ZDiagnose" to false,
             "ugyldigKodeVerkBiDiagnose" to true,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo
+        status.treeResult.ruleHit shouldBeEqualTo
             ArbeidsuforhetRuleHit.UGYLDIG_KODEVERK_FOR_BIDIAGNOSE.ruleHit
     }
 
@@ -357,8 +356,8 @@ class ArbeidsuforhetTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
-        status.first.treeResult.status shouldBeEqualTo Status.OK
-        status.first.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
+        status.treeResult.status shouldBeEqualTo Status.OK
+        status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 ArbeidsuforhetRules.HOVEDDIAGNOSE_MANGLER to false,
                 ArbeidsuforhetRules.UGYLDIG_KODEVERK_FOR_HOVEDDIAGNOSE to false,
@@ -371,8 +370,8 @@ class ArbeidsuforhetTest {
             "ugyldigKodeverkHovedDiagnose" to false,
             "icpc2ZDiagnose" to false,
             "ugyldigKodeVerkBiDiagnose" to false,
-        ) shouldBeEqualTo status.first.ruleInputs
+        ) shouldBeEqualTo status.ruleInputs
 
-        status.first.treeResult.ruleHit shouldBeEqualTo null
+        status.treeResult.ruleHit shouldBeEqualTo null
     }
 }

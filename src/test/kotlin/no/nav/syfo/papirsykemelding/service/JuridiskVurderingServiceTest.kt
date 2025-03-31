@@ -73,13 +73,14 @@ internal class JuridiskVurderingServiceTest {
                         kilde = JuridiskVurderingService.KILDE,
                         versjonAvKode = "versjon",
                         fodselsnummer = receivedSykmelding.personNrPasient,
-                        juridiskHenvisning = (result.second as MedJuridisk).juridiskHenvisning,
+                        juridiskHenvisning =
+                            (result.treeResult.juridisk as MedJuridisk).juridiskHenvisning,
                         sporing =
                             mapOf(
                                 "sykmelding" to receivedSykmelding.sykmelding.id,
                             ),
-                        input = result.first.ruleInputs,
-                        utfall = toJuridiskUtfall(result.first.treeResult.status),
+                        input = result.ruleInputs,
+                        utfall = toJuridiskUtfall(result.treeResult.status),
                         tidsstempel = ZonedDateTime.now(ZoneOffset.UTC),
                     ),
                 ),

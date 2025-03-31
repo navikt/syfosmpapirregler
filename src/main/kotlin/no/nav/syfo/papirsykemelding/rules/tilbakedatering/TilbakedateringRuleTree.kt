@@ -3,9 +3,7 @@ package no.nav.syfo.papirsykemelding.rules.tilbakedatering
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Status.MANUAL_PROCESSING
 import no.nav.syfo.model.Status.OK
-import no.nav.syfo.model.juridisk.JuridiskHenvisning
-import no.nav.syfo.model.juridisk.Lovverk
-import no.nav.syfo.papirsykemelding.rules.common.MedJuridisk
+import no.nav.syfo.model.juridisk.JuridiskEnum
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
 import no.nav.syfo.papirsykemelding.rules.dsl.tree
@@ -39,67 +37,70 @@ enum class TilbakedateringRules {
 
 val tilbakedateringRuleTree =
     tree<TilbakedateringRules, RuleResult>(TILBAKEDATERING) {
-        yes(ETTERSENDING) {
-            yes(OK)
-            no(TILBAKEDATERT_INNTIL_4_DAGER) {
-                yes(OK)
-                no(TILBAKEDATERT_INNTIL_8_DAGER) {
-                    yes(BEGRUNNELSE_MIN_1_ORD) {
-                        yes(OK)
-                        no(FORLENGELSE) {
-                            yes(OK)
-                            no(SPESIALISTHELSETJENESTEN) {
-                                yes(OK)
-                                no(MANUAL_PROCESSING, INNTIL_8_DAGER)
+        yes(SPESIALISTHELSETJENESTEN) {
+            yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1)
+            no(ETTERSENDING) {
+                yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1)
+                no(TILBAKEDATERT_INNTIL_4_DAGER) {
+                    yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_2_2)
+                    no(TILBAKEDATERT_INNTIL_8_DAGER) {
+                        yes(BEGRUNNELSE_MIN_1_ORD) {
+                            yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_2_2)
+                            no(FORLENGELSE) {
+                                yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1)
+                                no(
+                                    MANUAL_PROCESSING,
+                                    JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1,
+                                    INNTIL_8_DAGER
+                                )
                             }
                         }
-                    }
-                    no(TILBAKEDATERT_MINDRE_ENN_1_MAANED) {
-                        yes(BEGRUNNELSE_MIN_1_ORD) {
-                            yes(FORLENGELSE) {
-                                yes(OK)
-                                no(ARBEIDSGIVERPERIODE) {
-                                    yes(OK)
-                                    no(SPESIALISTHELSETJENESTEN) {
-                                        yes(OK)
-                                        no(MANUAL_PROCESSING, MINDRE_ENN_1_MAANED_MED_BEGRUNNELSE)
+                        no(TILBAKEDATERT_MINDRE_ENN_1_MAANED) {
+                            yes(BEGRUNNELSE_MIN_1_ORD) {
+                                yes(FORLENGELSE) {
+                                    yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1)
+                                    no(ARBEIDSGIVERPERIODE) {
+                                        yes(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_2_2)
+                                        no(
+                                            MANUAL_PROCESSING,
+                                            JuridiskEnum.FOLKETRYGDLOVEN_8_7,
+                                            MINDRE_ENN_1_MAANED_MED_BEGRUNNELSE
+                                        )
                                     }
                                 }
+                                no(
+                                    MANUAL_PROCESSING,
+                                    JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1,
+                                    MINDRE_ENN_1_MAANED
+                                )
                             }
-                            no(SPESIALISTHELSETJENESTEN) {
-                                yes(OK)
-                                no(MANUAL_PROCESSING, MINDRE_ENN_1_MAANED)
-                            }
+                            no(
+                                MANUAL_PROCESSING,
+                                JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1,
+                                OVER_1_MAANED
+                            )
                         }
-                        no(MANUAL_PROCESSING, OVER_1_MAANED)
                     }
                 }
             }
         }
-        no(OK)
-    } to
-        MedJuridisk(
-            JuridiskHenvisning(
-                lovverk = Lovverk.FOLKETRYGDLOVEN,
-                paragraf = "8-7",
-                ledd = 2,
-                punktum = null,
-                bokstav = null,
-            ),
-        )
+        no(OK, JuridiskEnum.FOLKETRYGDLOVEN_8_7_1_1)
+    }
 
 internal fun RuleNode<TilbakedateringRules, RuleResult>.yes(
     status: Status,
+    juridisk: JuridiskEnum,
     ruleHit: TilbakedateringRuleHit? = null
 ) {
-    yes(RuleResult(status = status, ruleHit = ruleHit?.ruleHit))
+    yes(RuleResult(status = status, juridisk.JuridiskHenvisning, ruleHit = ruleHit?.ruleHit))
 }
 
 internal fun RuleNode<TilbakedateringRules, RuleResult>.no(
     status: Status,
+    juridisk: JuridiskEnum,
     ruleHit: TilbakedateringRuleHit? = null
 ) {
-    no(RuleResult(status = status, ruleHit = ruleHit?.ruleHit))
+    no(RuleResult(status = status, juridisk.JuridiskHenvisning, ruleHit = ruleHit?.ruleHit))
 }
 
 fun getRule(rules: TilbakedateringRules): Rule<TilbakedateringRules> {

@@ -104,13 +104,13 @@ class PapirsykemeldingRegelService(
                 ruleExecutionService.runRules(receivedSykmelding.sykmelding, ruleMetadataSykmelding)
             result.forEach {
                 RULE_NODE_RULE_PATH_COUNTER.labels(
-                        it.first.printRulePath(),
+                        it.printRulePath(),
                     )
                     .inc()
             }
 
             juridiskVurderingService.processRuleResults(receivedSykmelding, result)
-            val validationResult = validationResult(result.map { it.first })
+            val validationResult = validationResult(result.map { it })
             RULE_NODE_RULE_HIT_COUNTER.labels(
                     validationResult.status.name,
                     validationResult.ruleHits.firstOrNull()?.ruleName
@@ -122,7 +122,7 @@ class PapirsykemeldingRegelService(
                 securelog.info(
                     "RuleResult for ${receivedSykmelding.sykmelding.id}: ${
                         secureLogObjectMapper
-                        .writeValueAsString(result.filter { it.first.treeResult.status != Status.OK })}"
+                        .writeValueAsString(result.filter { it.treeResult.status != Status.OK })}"
                 )
             }
             return validationResult
