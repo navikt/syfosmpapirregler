@@ -118,6 +118,14 @@ class PapirsykemeldingRegelService(
                 )
                 .inc()
 
+            regulaShadowTest(
+                receivedSykmelding = receivedSykmelding,
+                ruleMetadataSykmelding = ruleMetadataSykmelding,
+                tidligereSykmeldinger = sykmeldingMetadata.sykmeldingerFraRegister,
+                oldResult = result,
+                oldValidationResult = validationResult,
+            )
+
             if (validationResult.status != Status.OK) {
                 securelog.info(
                     "RuleResult for ${receivedSykmelding.sykmelding.id}: ${

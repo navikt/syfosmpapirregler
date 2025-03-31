@@ -84,6 +84,8 @@ dependencies {
         }
     }
 
+    implementation("no.nav.tsm.regulus:regula:20")
+
     implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
