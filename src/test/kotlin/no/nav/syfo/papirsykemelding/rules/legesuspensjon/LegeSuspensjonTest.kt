@@ -36,7 +36,7 @@ class LegeSuspensjonTest {
     @Test
     internal fun `Testing legesuspensjon rules and checking the rule outcomes Er ikkje suspendert, Status OK`() {
 
-        val status = ruleTree.runRules(sykmelding, sykmeldingRuleMetadata).first
+        val status = ruleTree.runRules(sykmelding, sykmeldingRuleMetadata)
         status.treeResult.status shouldBeEqualTo Status.OK
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
@@ -53,9 +53,7 @@ class LegeSuspensjonTest {
     @Test
     internal fun `Testing legesuspensjon rules and checking the rule outcomes Er suspendert, Status MANUAL_PROCESSING`() {
         val status =
-            ruleTree
-                .runRules(sykmelding, sykmeldingRuleMetadata.copy(doctorSuspensjon = true))
-                .first
+            ruleTree.runRules(sykmelding, sykmeldingRuleMetadata.copy(doctorSuspensjon = true))
 
         status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo

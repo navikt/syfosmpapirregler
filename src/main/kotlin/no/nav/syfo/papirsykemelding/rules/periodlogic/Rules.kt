@@ -90,7 +90,7 @@ val manglendeInnspillArbeidsgiver: PeriodLogicRule = { sykmelding, _ ->
     val manglendeInnspillArbeidsgiver =
         perioder.any {
             it.avventendeInnspillTilArbeidsgiver != null &&
-                it.avventendeInnspillTilArbeidsgiver?.trim().isNullOrEmpty()
+                it.avventendeInnspillTilArbeidsgiver.trim().isNullOrEmpty()
         }
 
     RuleResult(
@@ -120,7 +120,7 @@ val forMangeBehandlingsDagerPrUke: PeriodLogicRule = { sykmelding, _ ->
 
     val forMangeBehandlingsDagerPrUke =
         perioder.any {
-            it.behandlingsdager != null && it.behandlingsdager!! > it.range().startedWeeksBetween()
+            it.behandlingsdager != null && it.behandlingsdager > it.range().startedWeeksBetween()
         }
 
     RuleResult(

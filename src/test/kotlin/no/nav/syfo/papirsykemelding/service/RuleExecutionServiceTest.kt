@@ -9,6 +9,7 @@ import no.nav.syfo.client.norskhelsenett.Kode
 import no.nav.syfo.generateSykemelding
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykmelding
+import no.nav.syfo.model.juridisk.JuridiskEnum
 import no.nav.syfo.papirsykemelding.model.sortedFOMDate
 import no.nav.syfo.papirsykemelding.rules.common.RuleExecution
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit
@@ -81,20 +82,22 @@ internal class RuleExecutionServiceTest {
                 any(),
             )
         } returns
-            (TreeOutput<TestRules, RuleResult>(
+            TreeOutput<TestRules, RuleResult>(
                 treeResult =
                     RuleResult(
                         status = Status.OK,
+                        JuridiskEnum.INGEN.JuridiskHenvisning,
                         ruleHit = null,
                     ),
-            ) to UtenJuridisk)
+            )
 
-        val (rule, juridisk) =
+        val rule =
             ruleExecutionService
                 .runRules(sykmeldnig, ruleMetadataSykmelding, sequenceOf(rulesExecution))
                 .first()
+
         assertEquals(Status.OK, rule.treeResult.status)
-        assertEquals(UtenJuridisk, juridisk)
+        assertEquals(UtenJuridisk, rule.treeResult.juridisk)
     }
 
     @Test
@@ -102,21 +105,23 @@ internal class RuleExecutionServiceTest {
         val okRule =
             mockk<RuleExecution<TestRules>>().also {
                 every { it.runRules(any(), any()) } returns
-                    (TreeOutput<TestRules, RuleResult>(
+                    TreeOutput<TestRules, RuleResult>(
                         treeResult =
                             RuleResult(
                                 status = Status.OK,
+                                juridisk = JuridiskEnum.INGEN.JuridiskHenvisning,
                                 ruleHit = null,
                             ),
-                    ) to UtenJuridisk)
+                    )
             }
         val manuallRuleExecution =
             mockk<RuleExecution<TestRules>>().also {
                 every { it.runRules(any(), any()) } returns
-                    (TreeOutput<TestRules, RuleResult>(
+                    TreeOutput<TestRules, RuleResult>(
                         treeResult =
                             RuleResult(
                                 status = Status.MANUAL_PROCESSING,
+                                juridisk = JuridiskEnum.INGEN.JuridiskHenvisning,
                                 ruleHit =
                                     RuleHit(
                                         Status.MANUAL_PROCESSING,
@@ -125,7 +130,7 @@ internal class RuleExecutionServiceTest {
                                         "message",
                                     ),
                             ),
-                    ) to UtenJuridisk)
+                    )
             }
         val results =
             ruleExecutionService.runRules(
@@ -134,6 +139,6 @@ internal class RuleExecutionServiceTest {
                 sequenceOf(manuallRuleExecution, okRule),
             )
         assertEquals(1, results.size)
-        assertEquals(Status.MANUAL_PROCESSING, results.first().first.treeResult.status)
+        assertEquals(Status.MANUAL_PROCESSING, results.first().treeResult.status)
     }
 }

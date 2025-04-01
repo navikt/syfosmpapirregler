@@ -49,7 +49,7 @@ internal class ValidationTest {
 
         val ruleMetadataSykmelding = ruleMetadataSykmelding(ruleMetadata)
 
-        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding).first
+        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding)
 
         assertEquals(Status.OK, status.treeResult.status)
         assertEquals(
@@ -95,7 +95,7 @@ internal class ValidationTest {
                 pasientFodselsdato = person31Years,
             )
 
-        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
+        val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata))
 
         assertEquals(Status.MANUAL_PROCESSING, status.treeResult.status)
         assertEquals(

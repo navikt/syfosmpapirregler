@@ -6,8 +6,6 @@ import no.nav.syfo.model.Sykmelding
 import no.nav.syfo.papirsykemelding.model.RuleMetadata
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleResult
 
-object EmptyObject {}
-
 typealias Rule<T> = (sykmelding: Sykmelding, ruleMetadata: RuleMetadata) -> RuleResult<T>
 
 typealias ArbeidsuforhetRule = Rule<ArbeidsuforhetRules>

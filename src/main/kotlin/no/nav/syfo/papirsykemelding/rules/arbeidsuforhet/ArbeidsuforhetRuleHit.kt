@@ -1,18 +1,7 @@
 package no.nav.syfo.papirsykemelding.rules.arbeidsuforhet
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.juridisk.JuridiskHenvisning
-import no.nav.syfo.model.juridisk.Lovverk
 import no.nav.syfo.papirsykemelding.rules.common.RuleHit
-
-private fun getJuridiskHenvisning(): JuridiskHenvisning =
-    JuridiskHenvisning(
-        lovverk = Lovverk.FOLKETRYGDLOVEN,
-        paragraf = "8-4",
-        ledd = 1,
-        punktum = 1,
-        bokstav = null,
-    )
 
 enum class ArbeidsuforhetRuleHit(
     val ruleHit: RuleHit,

@@ -19,7 +19,7 @@ class PeriodeRulestest {
     internal fun `Testing periode regler OK`() {
         val sykmelding = generateSykemelding()
         val ruleMetadata = ruleMetadataSykmelding(sykmelding.toRuleMetadata())
-        val status = periodeRules.runRules(sykmelding, ruleMetadata).first
+        val status = periodeRules.runRules(sykmelding, ruleMetadata)
         status.treeResult.status shouldBeEqualTo Status.OK
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
@@ -55,7 +55,7 @@ class PeriodeRulestest {
 
         val ruleMetadata = sykmelding.toRuleMetadata()
 
-        val status = periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
+        val status = periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata))
 
         status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
@@ -92,7 +92,7 @@ class PeriodeRulestest {
 
         val ruleMetadata = sykmelding.toRuleMetadata()
 
-        val status = periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata)).first
+        val status = periodeRules.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata))
 
         status.treeResult.status shouldBeEqualTo Status.MANUAL_PROCESSING
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
