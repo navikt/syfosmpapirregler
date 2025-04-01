@@ -10,7 +10,6 @@ import no.nav.syfo.model.Periode
 import no.nav.syfo.model.ReceivedSykmelding
 import no.nav.syfo.model.SporsmalSvar
 import no.nav.syfo.model.ValidationResult
-import no.nav.syfo.papirsykemelding.rules.common.Juridisk
 import no.nav.syfo.papirsykemelding.rules.common.RuleResult
 import no.nav.syfo.papirsykemelding.rules.dsl.TreeOutput
 import no.nav.syfo.papirsykemelding.rules.dsl.printRulePath
@@ -38,7 +37,7 @@ fun regulaShadowTest(
     receivedSykmelding: ReceivedSykmelding,
     ruleMetadataSykmelding: RuleMetadataSykmelding,
     tidligereSykmeldinger: List<SykmeldingDTO>,
-    oldResult: List<Pair<TreeOutput<out Enum<*>, RuleResult>, Juridisk>>,
+    oldResult: List<TreeOutput<out Enum<*>, RuleResult>>,
     oldValidationResult: ValidationResult,
 ) {
     try {
@@ -126,7 +125,7 @@ fun regulaShadowTest(
 
         val newVsOld: List<Pair<String, String>> =
             oldResult
-                .map { it.first.printRulePath() }
+                .map { it.printRulePath() }
                 .zip(
                     newResult.results.map { it.rulePath },
                 )
