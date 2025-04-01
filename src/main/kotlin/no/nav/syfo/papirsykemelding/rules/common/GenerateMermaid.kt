@@ -1,7 +1,6 @@
 package no.nav.syfo.papirsykemelding.rules.common
 
 import no.nav.syfo.model.Status
-import no.nav.syfo.model.juridisk.JuridiskHenvisning
 import no.nav.syfo.papirsykemelding.rules.arbeidsuforhet.arbeidsuforhetRuleTreeNew
 import no.nav.syfo.papirsykemelding.rules.dsl.ResultNode
 import no.nav.syfo.papirsykemelding.rules.dsl.RuleNode
@@ -27,11 +26,10 @@ fun main() {
             "Tilbakedatering" to tilbakedateringRuleTree,
         )
 
-    ruleTrees.forEachIndexed { idx, (name, ruleTree) -> // add index to differentiate each loop
+    ruleTrees.forEachIndexed { idx, (name, ruleTree) ->
         val builder = StringBuilder()
-        builder.append("## $idx. $name\n\n") // section headers with added index number
+        builder.append("## $idx. $name\n\n")
 
-        // separator
         builder.append("---\n\n")
         val treeStringBuilder = StringBuilder()
         val juridiskHenvisninger = mutableListOf<Juridisk>()
@@ -89,8 +87,7 @@ private fun <T> TreeNode<T, RuleResult>.traverseTree(
                 val childResult = (yes as ResultNode<T, RuleResult>).result
                 val childKey = "${currentNodeKey}_${childResult.status}"
                 juridiskHenvisninger.add(childResult.juridisk)
-                val result =
-                    "${childResult.status}\n${genererLovhenvisning(childResult.juridisk)}"
+                val result = "${childResult.status}${genererLovhenvisning(childResult.juridisk)}"
                 builder.append(
                     "    $thisNodeKey($rule) -->|Yes| $childKey($result)${getStyle(childResult.status)}\n"
                 )
@@ -104,8 +101,7 @@ private fun <T> TreeNode<T, RuleResult>.traverseTree(
                 val childResult = (no as ResultNode<T, RuleResult>).result
                 juridiskHenvisninger.add(childResult.juridisk)
                 val childKey = "${currentNodeKey}_${childResult.status}"
-                val result =
-                    "${childResult.status} <br/>" + genererLovhenvisning(childResult.juridisk)
+                val result = "${childResult.status}${genererLovhenvisning(childResult.juridisk)}"
                 builder.append(
                     "    $thisNodeKey($rule) -->|No| $childKey(${result})${getStyle(childResult.status)}\n"
                 )
@@ -136,12 +132,13 @@ fun genererLovhenvisning(juridisk: Juridisk): String {
         is UtenJuridisk -> ""
         is MedJuridisk -> {
             val henvisning = juridisk.juridiskHenvisning
-
-            val leddDel = henvisning.ledd?.let { "$it. ledd" }
+            val leddDel = henvisning.ledd?.let { "$it\\. ledd" }
             val punktumDel = henvisning.punktum?.let { "$it. punktum" }
             val bokstavDel = henvisning.bokstav?.let { "bokstav $it" }
 
-            return listOfNotNull(leddDel, punktumDel, bokstavDel).joinToString(" ")
+            return listOfNotNull(leddDel, punktumDel, bokstavDel)
+                .joinToString(" ")
+                .prependIndent("\n")
         }
     }
 }
