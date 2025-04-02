@@ -18,6 +18,7 @@ import no.nav.tsm.regulus.regula.RegulaBehandler
 import no.nav.tsm.regulus.regula.RegulaMeta
 import no.nav.tsm.regulus.regula.RegulaPasient
 import no.nav.tsm.regulus.regula.RegulaPayload
+import no.nav.tsm.regulus.regula.RegulaStatus
 import no.nav.tsm.regulus.regula.executeRegulaRules
 import no.nav.tsm.regulus.regula.executor.ExecutionMode
 import no.nav.tsm.regulus.regula.payload.Aktivitet
@@ -27,7 +28,10 @@ import no.nav.tsm.regulus.regula.payload.BehandlerKode
 import no.nav.tsm.regulus.regula.payload.BehandlerPeriode
 import no.nav.tsm.regulus.regula.payload.BehandlerTilleggskompetanse
 import no.nav.tsm.regulus.regula.payload.Diagnose
+import no.nav.tsm.regulus.regula.payload.RelevanteMerknader
 import no.nav.tsm.regulus.regula.payload.TidligereSykmelding
+import no.nav.tsm.regulus.regula.payload.TidligereSykmeldingAktivitet
+import no.nav.tsm.regulus.regula.payload.TidligereSykmeldingMeta
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -66,6 +70,15 @@ fun regulaShadowTest(
                                     system = "TODO: System kommer ikke fra registeret? :huh:",
                                 )
                             },
+                        meta =
+                            TidligereSykmeldingMeta(
+                                status = it.behandlingsutfall.status.toRegulaStatus(),
+                                userAction = it.sykmeldingStatus.statusEvent,
+                                merknader =
+                                    it.merknader
+                                        ?.map { merknad -> merknad.type.toRegulaMerknad() }
+                                        ?.filterNotNull(),
+                            ),
                     )
                 }
         val rulePayload =
@@ -113,7 +126,8 @@ fun regulaShadowTest(
                                 Godkjenning::toBehandlerGodkjenning,
                             ),
                     ),
-                // TODO: avsenderSammeSomPasient regel finnes ikke i syfosmpapirregler, burde være nullable?
+                // TODO: avsenderSammeSomPasient regel finnes ikke i syfosmpapirregler, burde være
+                // nullable?
                 avsender = RegulaAvsender("PAPIRSYKMELDING"),
             )
 
@@ -167,6 +181,22 @@ fun regulaShadowTest(
     }
 }
 
+private fun RegelStatusDTO.toRegulaStatus(): RegulaStatus =
+    when (this) {
+        RegelStatusDTO.OK -> RegulaStatus.OK
+        RegelStatusDTO.INVALID -> RegulaStatus.INVALID
+        RegelStatusDTO.MANUAL_PROCESSING -> RegulaStatus.MANUAL_PROCESSING
+    }
+
+private fun String.toRegulaMerknad() =
+    when (this) {
+        "UGYLDIG_TILBAKEDATERING" -> RelevanteMerknader.UGYLDIG_TILBAKEDATERING
+        "TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER" ->
+            RelevanteMerknader.TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER
+        "UNDER_BEHANDLING" -> RelevanteMerknader.UNDER_BEHANDLING
+        else -> null
+    }
+
 private fun Periode.toSykmeldingPeriode(): Aktivitet =
     when {
         aktivitetIkkeMulig != null ->
@@ -174,34 +204,29 @@ private fun Periode.toSykmeldingPeriode(): Aktivitet =
                 fom = fom,
                 tom = tom,
             )
-
         gradert != null ->
             Aktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
-
         reisetilskudd ->
             Aktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
-
         behandlingsdager != null ->
             Aktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
                 behandlingsdager = behandlingsdager,
             )
-
         avventendeInnspillTilArbeidsgiver != null ->
             Aktivitet.Avventende(
                 fom = fom,
                 tom = tom,
                 avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
             )
-
         else ->
             Aktivitet.Ugyldig(
                 fom = fom,
@@ -209,49 +234,37 @@ private fun Periode.toSykmeldingPeriode(): Aktivitet =
             )
     }
 
-private fun SykmeldingsperiodeDTO.toSykmeldingPeriode(): Aktivitet =
+private fun SykmeldingsperiodeDTO.toSykmeldingPeriode(): TidligereSykmeldingAktivitet =
     when {
         type == PeriodetypeDTO.AKTIVITET_IKKE_MULIG ->
-            Aktivitet.IkkeMulig(
+            TidligereSykmeldingAktivitet.IkkeMulig(
                 fom = fom,
                 tom = tom,
             )
-
         type == PeriodetypeDTO.GRADERT && gradert != null ->
-            Aktivitet.Gradert(
+            TidligereSykmeldingAktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
-
         type == PeriodetypeDTO.REISETILSKUDD ->
-            Aktivitet.Reisetilskudd(
+            TidligereSykmeldingAktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
-
         type == PeriodetypeDTO.BEHANDLINGSDAGER ->
-            Aktivitet.Behandlingsdager(
+            TidligereSykmeldingAktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
-                behandlingsdager =
-                    // TODO: Kommer ikke fra registeret, ikke nødvendig for testene, burde regula ha
-                    // forskjellige typer for de to periode (gamle og nåværende)
-                    0,
             )
-
         type == PeriodetypeDTO.AVVENTENDE ->
-            Aktivitet.Avventende(
+            TidligereSykmeldingAktivitet.Avventende(
                 fom = fom,
                 tom = tom,
-                // TODO: Kommer ikke fra registeret, ikke nødvendig for testene, burde regula ha
-                // forskjellige typer for de to periode (gamle og nåværende)
-                avventendeInnspillTilArbeidsgiver = null,
             )
-
         else -> {
             log.warn("Shadow test: Ukjent periode type: $type")
-            Aktivitet.Ugyldig(
+            TidligereSykmeldingAktivitet.Ugyldig(
                 fom = fom,
                 tom = tom,
             )

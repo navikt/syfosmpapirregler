@@ -31,7 +31,7 @@ data class SykmeldingMetadataInfo(
     val forlengelse: SykmeldingInfo?,
     val startDato: LocalDate,
     val dagerForArbeidsgiverperiodeCheck: List<LocalDate> = emptyList(),
-        // TODO: Midlertidig, brukes kun til regulus-regula sin shadow-test
+    // TODO: Midlertidig, brukes kun til regulus-regula sin shadow-test
     val sykmeldingerFraRegister: List<SykmeldingDTO> = emptyList(),
 )
 
