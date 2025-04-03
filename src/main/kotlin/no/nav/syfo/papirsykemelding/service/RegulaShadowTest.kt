@@ -141,7 +141,9 @@ fun regulaShadowTest(
             oldResult
                 .map { it.printRulePath() }
                 .zip(
-                    newResult.results.map { it.rulePath.replace("PAPIRSYKMELDING(yes)->", "") },
+                    newResult.results.map { it.rulePath
+                        .replace("BEHANDLER_FINNES_I_HPR(yes)->", "")
+                        .replace("PAPIRSYKMELDING(yes)->", "") },
                 )
 
         val allPathsEqual = newVsOld.all { (old, new) -> old == new }
