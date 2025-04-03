@@ -71,6 +71,25 @@ val oppholdMellomPerioder: PeriodLogicRule = { sykmelding, _ ->
     )
 }
 
+val ikkeDefinertPeriode: PeriodLogicRule = { sykmelding, _ ->
+    val perioder = sykmelding.perioder
+
+    val ikkeDefinertPeriode =
+        perioder.any {
+            it.aktivitetIkkeMulig == null &&
+                it.gradert == null &&
+                it.avventendeInnspillTilArbeidsgiver.isNullOrEmpty() &&
+                !it.reisetilskudd &&
+                (it.behandlingsdager == null || it.behandlingsdager == 0)
+        }
+
+    RuleResult(
+        ruleInputs = mapOf("perioder" to perioder),
+        rule = PeriodLogicRules.IKKE_DEFINERT_PERIODE,
+        ruleResult = ikkeDefinertPeriode,
+    )
+}
+
 val avventendeKombinert: PeriodLogicRule = { sykmelding, _ ->
     val perioder = sykmelding.perioder
 
@@ -151,5 +170,17 @@ val gradert0Prosent: PeriodLogicRule = { sykmelding, _ ->
         ruleInputs = mapOf("gradertePerioder" to gradertePerioder),
         rule = PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT,
         ruleResult = gradert0Prosent,
+    )
+}
+
+val inneholderBehandlingsDager: PeriodLogicRule = { sykmelding, _ ->
+    val perioder = sykmelding.perioder
+
+    val inneholderBehandlingsDager = perioder.any { it.behandlingsdager != null }
+
+    RuleResult(
+        ruleInputs = mapOf("inneholderBehandlingsDager" to inneholderBehandlingsDager),
+        rule = PeriodLogicRules.SYKMELDING_MED_BEHANDLINGSDAGER,
+        ruleResult = inneholderBehandlingsDager,
     )
 }

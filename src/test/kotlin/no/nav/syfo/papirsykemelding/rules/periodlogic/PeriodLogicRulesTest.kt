@@ -4,6 +4,7 @@ import java.time.LocalDate
 import no.nav.syfo.generateGradert
 import no.nav.syfo.generatePeriode
 import no.nav.syfo.generateSykemelding
+import no.nav.syfo.model.AktivitetIkkeMulig
 import no.nav.syfo.model.Status
 import no.nav.syfo.ruleMetadataSykmelding
 import no.nav.syfo.toRuleMetadata
@@ -14,7 +15,7 @@ class PeriodLogicRulesTest {
     private val ruleTree = PeriodLogicRulesExecution()
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Alt er ok, Status OK`() {
+    internal fun `Alt er ok, Status OK`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -22,6 +23,11 @@ class PeriodLogicRulesTest {
                         generatePeriode(
                             fom = LocalDate.now(),
                             tom = LocalDate.now().plusDays(10),
+                            aktivitetIkkeMulig =
+                                AktivitetIkkeMulig(
+                                    medisinskArsak = null,
+                                    arbeidsrelatertArsak = null
+                                )
                         ),
                     ),
                 tidspunkt = LocalDate.now().atStartOfDay(),
@@ -31,19 +37,21 @@ class PeriodLogicRulesTest {
 
         val status = ruleTree.runRules(sykmelding, ruleMetadataSykmelding(ruleMetadata))
 
-        // status.treeResult.status shouldBeEqualTo Status.OK
+        status.treeResult.status shouldBeEqualTo Status.OK
         status.rulePath.map { it.rule to it.ruleResult } shouldBeEqualTo
             listOf(
                 PeriodLogicRules.PERIODER_MANGLER to false,
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
                 PeriodLogicRules.FOR_MANGE_BEHANDLINGSDAGER_PER_UKE to false,
                 PeriodLogicRules.GRADERT_SYKMELDING_OVER_99_PROSENT to false,
                 PeriodLogicRules.GRADERT_SYKMELDING_0_PROSENT to false,
+                PeriodLogicRules.SYKMELDING_MED_BEHANDLINGSDAGER to false,
             )
 
         mapOf(
@@ -54,13 +62,14 @@ class PeriodLogicRulesTest {
             "avventendeOver16Dager" to false,
             "forMangeBehandlingsDagerPrUke" to false,
             "gradertePerioder" to sykmelding.perioder.mapNotNull { it.gradert },
+            "inneholderBehandlingsDager" to false,
         ) shouldBeEqualTo status.ruleInputs
 
         status.treeResult.ruleHit shouldBeEqualTo null
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Periode mangler, Status MANUAL_PROCESSING`() {
+    internal fun `Periode mangler, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder = listOf(),
@@ -83,7 +92,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Fra dato er etter til dato, Status MANUAL_PROCESSING`() {
+    internal fun `Fra dato er etter til dato, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -114,7 +123,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Overlapp i perioder, Status MANUAL_PROCESSING`() {
+    internal fun `Overlapp i perioder, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -150,7 +159,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Opphold mellom perioder, Status MANUAL_PROCESSING`() {
+    internal fun `Opphold mellom perioder, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -196,7 +205,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Avvendte kombinert med annen type periode, Status MANUAL_PROCESSING`() {
+    internal fun `Avvendte kombinert med annen type periode, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -209,6 +218,11 @@ class PeriodLogicRulesTest {
                         generatePeriode(
                             fom = LocalDate.now().plusDays(6),
                             tom = LocalDate.now().plusDays(10),
+                            aktivitetIkkeMulig =
+                                AktivitetIkkeMulig(
+                                    medisinskArsak = null,
+                                    arbeidsrelatertArsak = null,
+                                )
                         ),
                     ),
             )
@@ -224,8 +238,16 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to true,
             )
+
+        // Expected: <[(PERIODER_MANGLER, false), (FRADATO_ETTER_TILDATO, false),
+        // (OVERLAPPENDE_PERIODER, false), (OPPHOLD_MELLOM_PERIODER, false), (IKKE_DEFINERT_PERIODE,
+        // false), (AVVENTENDE_SYKMELDING_KOMBINERT, true)]>
+        // but was:  <[(PERIODER_MANGLER, false), (FRADATO_ETTER_TILDATO, false),
+        // (OVERLAPPENDE_PERIODER, false), (OPPHOLD_MELLOM_PERIODER, false), (IKKE_DEFINERT_PERIODE,
+        // true)]>
 
         mapOf(
             "perioder" to sykmelding.perioder,
@@ -239,7 +261,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Manglende innstill til arbeidsgiver, Status MANUAL_PROCESSING`() {
+    internal fun `Manglende innstill til arbeidsgiver, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -263,6 +285,7 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to true,
             )
@@ -280,7 +303,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Avventende over 16 dager, Status MANUAL_PROCESSING`() {
+    internal fun `Avventende over 16 dager, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -304,6 +327,7 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to true,
@@ -323,7 +347,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes For mange behandlingsdager pr uke, Status MANUAL_PROCESSING`() {
+    internal fun `For mange behandlingsdager pr uke, Status MANUAL_PROCESSING`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -347,6 +371,7 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
@@ -368,7 +393,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Gradert 0 prosent, Status MANUAL`() {
+    internal fun `Gradert 0 prosent, Status MANUAL`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -392,6 +417,7 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
@@ -416,7 +442,7 @@ class PeriodLogicRulesTest {
     }
 
     @Test
-    internal fun `Testing periodLogic rules and checking the rule outcomes Gradert over 99 prosent, Status MANUAL`() {
+    internal fun `Gradert over 99 prosent, Status MANUAL`() {
         val sykmelding =
             generateSykemelding(
                 perioder =
@@ -440,6 +466,7 @@ class PeriodLogicRulesTest {
                 PeriodLogicRules.FRADATO_ETTER_TILDATO to false,
                 PeriodLogicRules.OVERLAPPENDE_PERIODER to false,
                 PeriodLogicRules.OPPHOLD_MELLOM_PERIODER to false,
+                PeriodLogicRules.IKKE_DEFINERT_PERIODE to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_KOMBINERT to false,
                 PeriodLogicRules.MANGLENDE_INNSPILL_TIL_ARBEIDSGIVER to false,
                 PeriodLogicRules.AVVENTENDE_SYKMELDING_OVER_16_DAGER to false,
