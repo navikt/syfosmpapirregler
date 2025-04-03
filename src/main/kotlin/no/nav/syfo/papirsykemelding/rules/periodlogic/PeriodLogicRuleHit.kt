@@ -47,6 +47,21 @@ enum class PeriodLogicRuleHit(
                 messageForUser = "Det er opphold mellom sykmeldingsperiodene.",
             ),
     ),
+    IKKE_DEFINERT_PERIODE(
+        ruleHit =
+            RuleHit(
+                rule = "IKKE_DEFINERT_PERIODE",
+                status = Status.INVALID,
+                messageForSender =
+                    "Sykmeldingen kan ikke rettes, det må skrives en ny. Pasienten har fått beskjed om å" +
+                        " vente på ny sykmelding fra deg. Grunnet følgende: " +
+                        "Det er ikke oppgitt type for sykmeldingen " +
+                        "(den må være enten 100 prosent, gradert, avventende, reisetilskudd eller behandlingsdager).",
+                messageForUser =
+                    "Det er ikke oppgitt type for sykmeldingen " +
+                        "(den må være enten 100 prosent, gradert, avventende, reisetilskudd eller behandlingsdager).",
+            ),
+    ),
     AVVENTENDE_SYKMELDING_KOMBINERT(
         ruleHit =
             RuleHit(
@@ -118,4 +133,13 @@ enum class PeriodLogicRuleHit(
                     "Sykmeldingsgraden kan ikke være lik 0% fordi det er en gradert sykmelding.",
             ),
     ),
+    SYKMELDING_MED_BEHANDLINGSDAGER(
+        ruleHit =
+            RuleHit(
+                rule = "SYKMELDING_MED_BEHANDLINGSDAGER",
+                status = Status.MANUAL_PROCESSING,
+                messageForSender = "Sykmelding inneholder behandlingsdager (felt 4.4).",
+                messageForUser = "Sykmelding inneholder behandlingsdager.",
+            ),
+    )
 }
