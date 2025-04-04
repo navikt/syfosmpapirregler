@@ -7,15 +7,15 @@ version = "1.0.0"
 val jvmVersion = JvmTarget.JVM_21
 
 val coroutinesVersion="1.10.1"
-val ktorVersion="3.1.1"
+val ktorVersion="3.1.2"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
-val logbackVersion="1.5.17"
+val logbackVersion="1.5.18"
 val logstashEncoderVersion= "8.0"
 val mockkVersion="1.13.17"
-val nimbusdsVersion="10.0.2"
+val nimbusdsVersion="10.1"
 val jacksonVersion="2.18.3"
-val kotlinVersion="2.1.10"
+val kotlinVersion="2.1.20"
 val caffeineVersion="3.2.0"
 val ktfmtVersion="0.44"
 val kafkaVersion = "3.9.0"
@@ -36,7 +36,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.6"
     id("com.diffplug.spotless") version "7.0.2"
 }
