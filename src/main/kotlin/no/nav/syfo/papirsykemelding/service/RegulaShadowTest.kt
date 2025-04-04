@@ -48,14 +48,6 @@ fun regulaShadowTest(
         val oldSykmelding = receivedSykmelding.sykmelding
         val mappedTidligereSykmeldinger =
             tidligereSykmeldinger
-                // TODO: Should this be controlled by the lib? Probably
-                .filter { it.behandlingsutfall.status != RegelStatusDTO.INVALID }
-                .filterNot { harTilbakedatertMerknad(it) }
-                .filter { it.medisinskVurdering?.hovedDiagnose?.kode != null }
-                .filter {
-                    it.medisinskVurdering?.hovedDiagnose?.kode ==
-                        oldSykmelding.medisinskVurdering.hovedDiagnose?.kode
-                }
                 .map {
                     TidligereSykmelding(
                         sykmeldingId = it.id,
@@ -198,6 +190,7 @@ private fun String.toRegulaMerknad() =
         "UGYLDIG_TILBAKEDATERING" -> RelevanteMerknader.UGYLDIG_TILBAKEDATERING
         "TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER" ->
             RelevanteMerknader.TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER
+
         "UNDER_BEHANDLING" -> RelevanteMerknader.UNDER_BEHANDLING
         else -> null
     }
@@ -209,29 +202,34 @@ private fun Periode.toSykmeldingPeriode(): Aktivitet =
                 fom = fom,
                 tom = tom,
             )
+
         gradert != null ->
             Aktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
+
         reisetilskudd ->
             Aktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
+
         behandlingsdager != null ->
             Aktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
                 behandlingsdager = behandlingsdager,
             )
+
         avventendeInnspillTilArbeidsgiver != null ->
             Aktivitet.Avventende(
                 fom = fom,
                 tom = tom,
                 avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
             )
+
         else ->
             Aktivitet.Ugyldig(
                 fom = fom,
@@ -246,27 +244,32 @@ private fun SykmeldingsperiodeDTO.toSykmeldingPeriode(): TidligereSykmeldingAkti
                 fom = fom,
                 tom = tom,
             )
+
         type == PeriodetypeDTO.GRADERT && gradert != null ->
             TidligereSykmeldingAktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
+
         type == PeriodetypeDTO.REISETILSKUDD ->
             TidligereSykmeldingAktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
+
         type == PeriodetypeDTO.BEHANDLINGSDAGER ->
             TidligereSykmeldingAktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
             )
+
         type == PeriodetypeDTO.AVVENTENDE ->
             TidligereSykmeldingAktivitet.Avventende(
                 fom = fom,
                 tom = tom,
             )
+
         else -> {
             log.warn("Shadow test: Ukjent periode type: $type")
             TidligereSykmeldingAktivitet.Ugyldig(
