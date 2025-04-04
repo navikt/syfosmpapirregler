@@ -47,32 +47,31 @@ fun regulaShadowTest(
     try {
         val oldSykmelding = receivedSykmelding.sykmelding
         val mappedTidligereSykmeldinger =
-            tidligereSykmeldinger
-                .map {
-                    TidligereSykmelding(
-                        sykmeldingId = it.id,
-                        aktivitet =
-                            it.sykmeldingsperioder.map(
-                                SykmeldingsperiodeDTO::toSykmeldingPeriode,
-                            ),
-                        hoveddiagnose =
-                            it.medisinskVurdering?.hovedDiagnose?.let { diagnose ->
-                                Diagnose(
-                                    kode = diagnose.kode,
-                                    system = "TODO: System kommer ikke fra registeret? :huh:",
-                                )
-                            },
-                        meta =
-                            TidligereSykmeldingMeta(
-                                status = it.behandlingsutfall.status.toRegulaStatus(),
-                                userAction = it.sykmeldingStatus.statusEvent,
-                                merknader =
-                                    it.merknader
-                                        ?.map { merknad -> merknad.type.toRegulaMerknad() }
-                                        ?.filterNotNull(),
-                            ),
-                    )
-                }
+            tidligereSykmeldinger.map {
+                TidligereSykmelding(
+                    sykmeldingId = it.id,
+                    aktivitet =
+                        it.sykmeldingsperioder.map(
+                            SykmeldingsperiodeDTO::toSykmeldingPeriode,
+                        ),
+                    hoveddiagnose =
+                        it.medisinskVurdering?.hovedDiagnose?.let { diagnose ->
+                            Diagnose(
+                                kode = diagnose.kode,
+                                system = "TODO: System kommer ikke fra registeret? :huh:",
+                            )
+                        },
+                    meta =
+                        TidligereSykmeldingMeta(
+                            status = it.behandlingsutfall.status.toRegulaStatus(),
+                            userAction = it.sykmeldingStatus.statusEvent,
+                            merknader =
+                                it.merknader
+                                    ?.map { merknad -> merknad.type.toRegulaMerknad() }
+                                    ?.filterNotNull(),
+                        ),
+                )
+            }
         val rulePayload =
             RegulaPayload(
                 sykmeldingId = oldSykmelding.id,
@@ -118,9 +117,7 @@ fun regulaShadowTest(
                                 Godkjenning::toBehandlerGodkjenning,
                             ),
                     ),
-                // TODO: avsenderSammeSomPasient regel finnes ikke i syfosmpapirregler, burde være
-                // nullable?
-                avsender = RegulaAvsender("PAPIRSYKMELDING"),
+                avsender = RegulaAvsender.IngenAvsender,
             )
 
         val newResult =
@@ -190,7 +187,6 @@ private fun String.toRegulaMerknad() =
         "UGYLDIG_TILBAKEDATERING" -> RelevanteMerknader.UGYLDIG_TILBAKEDATERING
         "TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER" ->
             RelevanteMerknader.TILBAKEDATERING_KREVER_FLERE_OPPLYSNINGER
-
         "UNDER_BEHANDLING" -> RelevanteMerknader.UNDER_BEHANDLING
         else -> null
     }
@@ -202,34 +198,29 @@ private fun Periode.toSykmeldingPeriode(): Aktivitet =
                 fom = fom,
                 tom = tom,
             )
-
         gradert != null ->
             Aktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
-
         reisetilskudd ->
             Aktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
-
         behandlingsdager != null ->
             Aktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
                 behandlingsdager = behandlingsdager,
             )
-
         avventendeInnspillTilArbeidsgiver != null ->
             Aktivitet.Avventende(
                 fom = fom,
                 tom = tom,
                 avventendeInnspillTilArbeidsgiver = avventendeInnspillTilArbeidsgiver,
             )
-
         else ->
             Aktivitet.Ugyldig(
                 fom = fom,
@@ -244,32 +235,27 @@ private fun SykmeldingsperiodeDTO.toSykmeldingPeriode(): TidligereSykmeldingAkti
                 fom = fom,
                 tom = tom,
             )
-
         type == PeriodetypeDTO.GRADERT && gradert != null ->
             TidligereSykmeldingAktivitet.Gradert(
                 fom = fom,
                 tom = tom,
                 grad = gradert.grad,
             )
-
         type == PeriodetypeDTO.REISETILSKUDD ->
             TidligereSykmeldingAktivitet.Reisetilskudd(
                 fom = fom,
                 tom = tom,
             )
-
         type == PeriodetypeDTO.BEHANDLINGSDAGER ->
             TidligereSykmeldingAktivitet.Behandlingsdager(
                 fom = fom,
                 tom = tom,
             )
-
         type == PeriodetypeDTO.AVVENTENDE ->
             TidligereSykmeldingAktivitet.Avventende(
                 fom = fom,
                 tom = tom,
             )
-
         else -> {
             log.warn("Shadow test: Ukjent periode type: $type")
             TidligereSykmeldingAktivitet.Ugyldig(
