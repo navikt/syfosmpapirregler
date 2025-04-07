@@ -84,7 +84,7 @@ dependencies {
         }
     }
 
-    implementation("no.nav.tsm.regulus:regula:36")
+    implementation("no.nav.tsm.regulus:regula:37")
 
     implementation("no.nav.helse:diagnosekoder:$diagnosekoderVersion")
 
