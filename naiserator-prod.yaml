@@ -10,7 +10,9 @@ spec:
   replicas:
     min: 2
     max: 4
-    cpuThresholdPercentage: 90
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 90
   port: 8080
   liveness:
     path: /internal/is_alive
@@ -37,7 +39,7 @@ spec:
   resources:
     requests:
       cpu: 20m
-      memory: 400Mi
+      memory: 450Mi
   azure:
     application:
       enabled: true
