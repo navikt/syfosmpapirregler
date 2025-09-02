@@ -7,25 +7,25 @@ version = "1.0.0"
 val jvmVersion = JvmTarget.JVM_21
 
 val coroutinesVersion="1.10.2"
-val ktorVersion="3.2.1"
+val ktorVersion="3.2.3"
 val prometheusVersion="0.16.0"
 val kluentVersion="1.73"
 val logbackVersion="1.5.18"
 val logstashEncoderVersion= "8.1"
-val mockkVersion="1.14.4"
-val nimbusdsVersion="10.3.1"
-val jacksonVersion="2.19.1"
-val kotlinVersion="2.2.0"
-val caffeineVersion="3.2.1"
+val mockkVersion="1.14.5"
+val nimbusdsVersion="10.4.2"
+val jacksonVersion="2.20.0"
+val kotlinVersion="2.2.10"
+val caffeineVersion="3.2.2"
 val ktfmtVersion="0.44"
 val kafkaVersion = "3.9.1"
-val junitJupiterVersion = "5.13.3"
+val junitJupiterVersion = "5.13.4"
 val diagnosekoderVersion = "1.2025.0"
 
 
 ///Due to vulnerabilities
-val snappyJavaVersion = "1.1.10.7"
-val commonsCodecVersion = "1.18.0"
+val snappyJavaVersion = "1.1.10.8"
+val commonsCodecVersion = "1.19.0"
 
 application {
     mainClass.set("no.nav.syfo.ApplicationKt")
@@ -36,9 +36,9 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.2.0"
-    id("com.gradleup.shadow") version "8.3.8"
-    id("com.diffplug.spotless") version "7.0.4"
+    kotlin("jvm") version "2.2.10"
+    id("com.gradleup.shadow") version "9.1.0"
+    id("com.diffplug.spotless") version "7.2.1"
 }
 
 
